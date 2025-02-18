@@ -12,6 +12,9 @@ RUN go mod download
 # COPY SOURCE CODE
 COPY . .
 
+# COPY ENVIRONMENT VARIABLES
+COPY .env /usr/src/app/.env
+
 # BUILD BINARY
 
 RUN go build -v -o /usr/local/bin/ ./...

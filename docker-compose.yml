@@ -23,12 +23,22 @@ services:
 
   server:
     build: ./server
+    env_file:
+      - server/.env
     ports:
       - "5000:5000"
     depends_on:
       - db
     networks:
       - my-network
+    environment:
+      IN_DOCKER: "true"
+      DATABASE_HOST: "db"
+      DATABASE_PORT: "5432"
+      DATABASE_USER: "postgres"
+      DATABASE_PASSWORD: "admin"
+      DATABASE_NAME: "Filestorix"
+      DATABASE_SSL_MODE: "disable"
     deploy:
       resources:
         limits:

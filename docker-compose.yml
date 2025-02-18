@@ -15,6 +15,11 @@ services:
       - server
     networks:
       - my-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
 
   server:
     build: ./server
@@ -24,10 +29,15 @@ services:
       - db
     networks:
       - my-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
 
   db:
-    image: postgres:16
-    restart: always
+    image: postgres:17
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
@@ -38,6 +48,11 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - my-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
 
 networks:
   my-network:

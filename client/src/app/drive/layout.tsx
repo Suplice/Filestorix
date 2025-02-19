@@ -1,4 +1,4 @@
-import AppSidebar from "@/components/layout/AppSidebar";
+import AppSidebar from "@/components/layout/appSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface DriveLayoutProps {

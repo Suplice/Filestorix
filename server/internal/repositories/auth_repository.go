@@ -13,6 +13,7 @@ type AuthRepository struct {
 }
 
 func NewAuthRepository(db *gorm.DB, logger *slog.Logger) *AuthRepository {
+
 	return &AuthRepository{db, logger}
 }
 

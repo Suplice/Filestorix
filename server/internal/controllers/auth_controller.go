@@ -6,7 +6,6 @@ import (
 	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/services"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type AuthController struct {
@@ -14,9 +13,8 @@ type AuthController struct {
 	logger *slog.Logger
 }
 
-func NewAuthController(db *gorm.DB, logger *slog.Logger) *AuthController {
-	authService := services.NewAuthService(db, logger)
-	return &AuthController{authService, logger}
+func NewAuthController(_logger *slog.Logger, _as *services.AuthService) *AuthController {
+	return &AuthController{authService: _as, logger: _logger}
 }
 
 func (ac *AuthController) Register(c *gin.Context) {
@@ -24,7 +22,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	if err := c.ShouldBindBodyWithJSON(&registerData); err != nil {
 
-		ac.logger.Error("AuthController - An error occured while parsing email", err)
+		ac.logger.Error("AuthController - An error occured while parsing data", "error", err)
 
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -33,7 +31,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 	data, err := ac.authService.Register(registerData)
 
 	if err != nil {
-		ac.logger.Error("AuthController - Error occured while registering", err)
+		ac.logger.Error("AuthController - Error occured while registering", "error", err)
 		c.JSON(400, gin.H{
 			"message": err, // <- handle better this error, give info whether email already exist, or database is unavailable
 			"user": data,
@@ -44,6 +42,29 @@ func (ac *AuthController) Register(c *gin.Context) {
 		"message": "User registered successfully",
 		"user": data,
 	})
+}
 
+func (ac *AuthController) LoginWithEmail(c *gin.Context) {
+	var loginData dto.LoginRequestDTO
+
+	if err := c.ShouldBindBodyWithJSON(&loginData); err != nil {
+		ac.logger.Error("AuthController - An error occured while parsing data", "error", err)
+
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	// data, err := ac.authService.LoginWithEmail(loginData)
+
+
+	// To Be implemented
+
+	c.JSON(501, gin.H{
+		"error": "Route is not correctly implemented",
+	})
+	return
 
 }

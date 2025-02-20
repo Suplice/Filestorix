@@ -9,16 +9,16 @@ import (
 	"github.com/Suplice/Filestorix/internal/models"
 	"github.com/Suplice/Filestorix/internal/repositories"
 	"github.com/Suplice/Filestorix/internal/utils"
-	"gorm.io/gorm"
 )
 
 type AuthService struct {
-	authRepository *repositories.AuthRepository
-	logger *slog.Logger
+	authRepository 	*repositories.AuthRepository
+	userService 	*UserService
+	logger			*slog.Logger
 }
 
-func NewAuthService(db *gorm.DB, logger *slog.Logger) *AuthService {
-	return &AuthService{repositories.NewAuthRepository(db, logger), logger}
+func NewAuthService(_logger *slog.Logger, _us *UserService, _ar *repositories.AuthRepository ) *AuthService {
+	return &AuthService{authRepository: _ar, userService: _us ,logger: _logger}
 }
 
 
@@ -49,3 +49,10 @@ func (as *AuthService) Register(data dto.RegisterRequestDTO) (*models.User, erro
 
 	return as.authRepository.Register(newUser)
 } 
+
+func (as *AuthService) LoginWithEmail(data dto.LoginRequestDTO) (*models.User, error) {
+
+	// To be implemented
+	return nil, nil
+
+}

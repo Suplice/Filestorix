@@ -1,6 +1,10 @@
 package server
 
 import (
+	"log/slog"
+
+	"github.com/Suplice/Filestorix/internal/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -10,17 +14,21 @@ type Server struct {
 	router 		*gin.Engine
 }
 
-func NewServer(db *gorm.DB) *Server {
+func NewServer(db *gorm.DB, logger *slog.Logger) *Server {
 
 	server := &Server{
 		db: db,
 		router: gin.Default(),
 	}
 
-	server.router.GET("/ping", func(c *gin.Context) { 
-		c.String(200, "pong")
-		println("pong") 
-	})
+	server.router.Use(cors.New(cors.Config{
+		AllowOrigins: 		[]string{"http://localhost:3000"},
+		AllowMethods: 		[]string{"GET","POST","PUT","DELETE","PATCH","OPTIONS"},
+		AllowHeaders: 		[]string{"Origin","Content-Type","Authorization"},
+		AllowCredentials: true,
+	}))
+
+	routes.SetupAuthRoutes(server.router, server.db, logger)
 	
 
 	return server

@@ -7,8 +7,12 @@ import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import OAuth from "../sections/OAuth";
 import AuthFormInputField from "../ui/AuthFormInputField";
+import { signUpUsingEmail } from "@/lib/api/auth/auth";
+import { useState } from "react";
 
 const SignupForm = () => {
+  const [isSending, setIsSending] = useState<boolean>(false);
+
   const form = useForm<signUpForm>({
     resolver: zodResolver(userEmailRegistrationSchema),
     defaultValues: {
@@ -19,7 +23,10 @@ const SignupForm = () => {
   });
 
   const onSubmit = async (data: signUpForm) => {
-    console.log("Form Data:", data);
+    setIsSending(true);
+    await signUpUsingEmail(data);
+    setIsSending(false);
+    form.reset();
   };
 
   return (
@@ -28,7 +35,11 @@ const SignupForm = () => {
         Create an Account
       </h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
+          method="POST"
+        >
           <AuthFormInputField
             control={form.control}
             name="email"
@@ -54,6 +65,7 @@ const SignupForm = () => {
             variant="primary"
             size="lg"
             type="submit"
+            disabled={isSending}
             className="w-full bg-blue-600 hover:bg-blue-700 transition-all"
           >
             Sign Up

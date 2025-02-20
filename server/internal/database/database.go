@@ -7,7 +7,9 @@ import (
 )
 
 
-
+type Database struct {
+	DB *gorm.DB
+}
 
 
 

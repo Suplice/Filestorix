@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log/slog"
+	"os"
+
 	"github.com/Suplice/Filestorix/config"
 	"github.com/Suplice/Filestorix/internal/database"
 	"github.com/Suplice/Filestorix/internal/server"
@@ -22,8 +25,9 @@ func main() {
 		panic(err)
 	}
 
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	server := server.NewServer(db)
+	server := server.NewServer(db, logger)
 
 	server.Run(":5000")
 

@@ -45,7 +45,11 @@ func (as *AuthService) Register(data dto.RegisterRequestDTO) (*models.User, erro
 		PasswordHash: hashedPassword,
 	}
 
-	return as.authRepository.Register(newUser)
+	user, err := as.authRepository.Register(newUser)
+
+	user.PasswordHash = ""
+
+	return user, err
 } 
 
 func (as *AuthService) LoginWithEmail(data dto.LoginRequestDTO) (*models.User, error) {
@@ -59,6 +63,8 @@ func (as *AuthService) LoginWithEmail(data dto.LoginRequestDTO) (*models.User, e
 	if compareErr := utils.ComparePasswords(data.Password, []byte(user.PasswordHash)); compareErr != nil {
 		return nil, errors.New("email or password is incorrect")
 	}
+
+	user.PasswordHash = ""
 
 	return user, nil
 

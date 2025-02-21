@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"log/slog"
+	"time"
 
 	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/services"
+	"github.com/Suplice/Filestorix/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,10 +40,35 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
+
+
+	jwtString, err := utils.CreateJWT(data)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ac.logger.Info("jwtString", "jwtStrings", jwtString)
+
+	c.SetCookie(
+		"user_auth",
+		jwtString,
+		utils.Day,
+		"/",
+		"service",
+		true,
+		true,
+	)
+
 	c.JSON(201, gin.H{
 		"message": "User registered successfully",
 		"user": data,
+		"sessionExpiresAt": time.Now().Add(24 * time.Hour).Unix(),
 	})
+
 }
 
 func (ac *AuthController) LoginWithEmail(c *gin.Context) {
@@ -57,7 +84,7 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 		return
 	}
 
-	 data, err := ac.authService.LoginWithEmail(loginData)
+	data, err := ac.authService.LoginWithEmail(loginData)
 
 
 	if err != nil {
@@ -67,8 +94,33 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 		return
 	}
 
+
+
+	jwtString, err := utils.CreateJWT(data)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ac.logger.Info("jwtString", "jwtStrings", jwtString)
+
+	c.SetCookie(
+		"user_auth",
+		jwtString,
+		utils.Day,
+		"/",
+		"localhost",
+		true,
+		true,
+	)
+
 	c.JSON(200, gin.H{
 		"message": "User logged in successfully",
 		"user": data,
+		"sessionExpiresAt": time.Now().Add(24 * time.Hour).Unix(),
 	})
+
 }

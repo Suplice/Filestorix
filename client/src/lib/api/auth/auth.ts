@@ -1,4 +1,5 @@
 import { signInForm, signUpForm } from "@/lib/utils/forms";
+import { toast } from "react-toastify";
 
 export const signUpUsingEmail = async (data: signUpForm) => {
   try {
@@ -21,7 +22,11 @@ export const signUpUsingEmail = async (data: signUpForm) => {
 
     if (!response.ok) {
       console.error(responseData);
+      toast.error(responseData.error);
+      return;
     }
+
+    toast.success(responseData.message);
   } catch (error) {
     console.error(error);
   }
@@ -46,7 +51,11 @@ export const signInUsingEmail = async (data: signInForm) => {
 
     if (!response.ok) {
       console.error(responseData);
+      toast.error(responseData.error);
+      return;
     }
+
+    toast.success(responseData.message);
   } catch (error) {
     console.error(error);
   }

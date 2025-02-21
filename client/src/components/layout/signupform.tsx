@@ -29,6 +29,16 @@ const SignupForm = () => {
     },
   });
 
+  /**
+   * Handles the form submission for the sign-up process.
+   *
+   * @param {signUpForm} data - The data submitted from the sign-up form.
+   * @returns {Promise<void>} A promise that resolves when the submission is complete.
+   *
+   * @throws Will display an error toast if an unexpected error occurs during submission.
+   *
+   * @async
+   */
   const onSubmit = async (data: signUpForm) => {
     try {
       setIsSending(true);

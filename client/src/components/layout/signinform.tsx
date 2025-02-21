@@ -28,6 +28,16 @@ const SigninForm = () => {
     },
   });
 
+  /**
+   * Handles the form submission for signing in.
+   *
+   * @param {signInForm} data - The data from the sign-in form.
+   * @returns {Promise<void>} A promise that resolves when the sign-in process is complete.
+   *
+   * @throws Will display an error toast if an unexpected error occurs during the sign-in process.
+   *
+   * @async
+   */
   const onSubmit = async (data: signInForm) => {
     try {
       setIsSending(true);

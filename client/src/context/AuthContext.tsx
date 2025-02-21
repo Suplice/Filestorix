@@ -28,6 +28,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkCredentials();
   }, []);
 
+  /**
+   * Checks the validity of the current session credentials.
+   *
+   * This function retrieves the session expiration date and compares it with the current date.
+   * If the session expiration date is not available or has already passed, it removes the credentials.
+   *
+   * @returns {void}
+   */
   const checkCredentials = () => {
     const sessionExpireDate = getSessionExpireDate();
 
@@ -46,6 +54,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  /**
+   * Removes the user's authentication credentials.
+   *
+   * This function sets the authentication state to false and clears the user information.
+   */
   const removeCredentials = () => {
     setIsAuthenticated(false);
     setUser(null);

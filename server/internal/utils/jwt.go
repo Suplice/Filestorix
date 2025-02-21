@@ -11,6 +11,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// GetJWTSecret retrieves the JWT secret from the environment variables.
+// If the application is not running inside a Docker container, it attempts to load
+// environment variables from a .env file located two directories up from the current file.
+// If the JWT_SECRET environment variable is not set, it returns an error.
+//
+// Returns:
+//   - []byte: The JWT secret as a byte slice.
+//   - error: An error if the JWT_SECRET environment variable is not set or if there is an issue loading the .env file.
 func GetJWTSecret() ([]byte, error) {
 	if os.Getenv("IN_DOCKER") != "true" {
 		if err := godotenv.Load("../../.env"); err != nil {
@@ -27,6 +35,16 @@ func GetJWTSecret() ([]byte, error) {
 	return []byte(jwtSecret), nil
 }
 
+// CreateJWT generates a new JSON Web Token (JWT) for the given user.
+// The token is signed using the HS256 signing method and includes the user's ID,
+// an expiration time of 24 hours from the time of creation, and the issued at time.
+//
+// Parameters:
+//   - user: A pointer to the User model containing the user's information.
+//
+// Returns:
+//   - A string representing the signed JWT if successful.
+//   - An error if there is an issue generating the JWT or retrieving the secret.
 func CreateJWT(user *models.User) (string, error) {
 
 	jwtSecret, err := GetJWTSecret()

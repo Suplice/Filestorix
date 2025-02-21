@@ -8,6 +8,11 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// ValidateJWT is a middleware function for the Gin framework that validates
+// the JWT token from the "user_auth" cookie. If the token is valid, it extracts
+// the user ID from the token claims and sets it in the context. If the token is
+// invalid or missing, it aborts the request with an appropriate HTTP status code
+// and error message.
 func ValidateJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Cookie("user_auth")

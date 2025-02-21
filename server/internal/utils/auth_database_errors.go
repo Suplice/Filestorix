@@ -13,6 +13,17 @@ var (
 	ErrUnknown             = errors.New("an error occurred, please try again later")
 )
 
+// ParseDBError parses the provided database error and returns a more specific error type.
+// It returns nil if the provided error is nil.
+// If the error is a gorm.ErrRecordNotFound, it returns ErrRecordNotFound.
+// If the error message contains "duplicate key" or "unique constraint", it returns ErrRecordAlreadyExists.
+// For any other error, it returns ErrUnknown.
+//
+// Parameters:
+//   err (error): The error to parse.
+//
+// Returns:
+//   error: A more specific error type based on the provided error.
 func ParseDBError(err error) error {
 	if err == nil {
 		return nil

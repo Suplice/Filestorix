@@ -10,6 +10,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// SetupAuthRoutes sets up the authentication routes for the given router.
+// It initializes the necessary repositories, services, and controllers
+// for handling authentication-related requests.
+//
+// Parameters:
+//   - router: The Gin engine instance to which the authentication routes will be added.
+//   - db: The Gorm database instance used for database operations.
+//   - logger: The slog.Logger instance used for logging.
 func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	// Setup Repositories
 	authRepository := repositories.NewAuthRepository(db, logger)

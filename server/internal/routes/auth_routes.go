@@ -25,5 +25,6 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	authRoutes := router.Group("/auth") 
 	{
 		authRoutes.POST("/register", authController.Register)
+		authRoutes.POST("/login", authController.LoginWithEmail)
 	}
 }

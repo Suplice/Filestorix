@@ -22,7 +22,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	if err := c.ShouldBindBodyWithJSON(&registerData); err != nil {
 
-		ac.logger.Error("AuthController - An error occured while parsing data", "error", err)
+		ac.logger.Error("AuthController - An error occured while parsing data", "error", err.Error())
 
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -31,11 +31,11 @@ func (ac *AuthController) Register(c *gin.Context) {
 	data, err := ac.authService.Register(registerData)
 
 	if err != nil {
-		ac.logger.Error("AuthController - Error occured while registering", "error", err)
+		ac.logger.Error("AuthController - Error occured while registering", "error", err.Error())
 		c.JSON(400, gin.H{
-			"message": err, // <- handle better this error, give info whether email already exist, or database is unavailable
-			"user": data,
+			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(201, gin.H{
@@ -48,7 +48,7 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 	var loginData dto.LoginRequestDTO
 
 	if err := c.ShouldBindBodyWithJSON(&loginData); err != nil {
-		ac.logger.Error("AuthController - An error occured while parsing data", "error", err)
+		ac.logger.Error("AuthController - An error occured while parsing data", "error", err.Error())
 
 		c.JSON(400, gin.H{
 			"error": err.Error(),
@@ -57,14 +57,18 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 		return
 	}
 
-	// data, err := ac.authService.LoginWithEmail(loginData)
+	 data, err := ac.authService.LoginWithEmail(loginData)
 
 
-	// To Be implemented
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	c.JSON(501, gin.H{
-		"error": "Route is not correctly implemented",
+	c.JSON(200, gin.H{
+		"message": "User logged in successfully",
+		"user": data,
 	})
-	return
-
 }

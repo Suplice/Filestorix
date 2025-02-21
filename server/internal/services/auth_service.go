@@ -27,14 +27,12 @@ func (as *AuthService) Register(data dto.RegisterRequestDTO) (*models.User, erro
 	username := strings.Split(data.Email, "@")[0]
 
 	if username == "" {
-		as.logger.Error("AuthService - email is invalid")
 		return nil , errors.New("email is invalid")
 	}
 
 	hashedPassword, err := utils.HashPassword(data.Password)
 
 	if err != nil {
-		as.logger.Error("AuthService - Error occured while hashing password", err)
 		return nil, err
 	}
 
@@ -52,7 +50,16 @@ func (as *AuthService) Register(data dto.RegisterRequestDTO) (*models.User, erro
 
 func (as *AuthService) LoginWithEmail(data dto.LoginRequestDTO) (*models.User, error) {
 
-	// To be implemented
-	return nil, nil
+	user, err := as.userService.GetUserByEmail(data.Email)
+
+	if err != nil  {
+		return nil, errors.New("email or password is incorrect") 
+	}
+
+	if compareErr := utils.ComparePasswords(data.Password, []byte(user.PasswordHash)); compareErr != nil {
+		return nil, errors.New("email or password is incorrect")
+	}
+
+	return user, nil
 
 }

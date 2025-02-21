@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/Suplice/Filestorix/internal/models"
+	"github.com/Suplice/Filestorix/internal/utils"
 	"gorm.io/gorm"
 )
 
@@ -24,8 +25,7 @@ func (ar *AuthRepository) Register(userModel *models.User) (*models.User, error)
 	result := ar.db.Create(userModel)
 
 	if result.Error != nil {
-		ar.logger.Error("AuthRepository - Error occured while adding user to database", slog.Any("error", result.Error))
-		return nil, result.Error
+		return nil, utils.ParseDBError(result.Error)
 	}
 
 	return userModel, nil

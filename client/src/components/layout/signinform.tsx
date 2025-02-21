@@ -1,6 +1,6 @@
 "use client";
 import { userEmailLoginSchema } from "@/lib/schemas/userRelatedSchemas";
-import { signInForm } from "@/lib/utils/forms";
+import { signInForm } from "@/lib/types/forms";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
@@ -9,9 +9,16 @@ import OAuth from "../sections/OAuth";
 import AuthFormInputField from "../ui/authFormInputField";
 import { signInUsingEmail } from "@/lib/api/auth/auth";
 import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const SigninForm = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
+
+  const { setUser, setIsAuthenticated } = useAuth();
+
+  const router = useRouter();
 
   const form = useForm<signInForm>({
     resolver: zodResolver(userEmailLoginSchema),
@@ -22,10 +29,28 @@ const SigninForm = () => {
   });
 
   const onSubmit = async (data: signInForm) => {
-    setIsSending(true);
-    await signInUsingEmail(data);
-    setIsSending(false);
-    form.reset();
+    try {
+      setIsSending(true);
+
+      const result = await signInUsingEmail(data);
+
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(result.message);
+
+      console.log("result user", result.user);
+
+      setUser(result.user!);
+      setIsAuthenticated(true);
+      router.push("/");
+    } catch {
+      toast.error("An unexpected error occured, please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -75,9 +100,15 @@ const SigninForm = () => {
 
       <p className="text-sm text-gray-400 text-center mt-4">
         Not registered yet?{" "}
-        <a href="#" className="text-blue-400 hover:underline">
+        <Button
+          variant="link"
+          className="text-blue-400 px-1"
+          onClick={() => {
+            router.push("/auth/signup");
+          }}
+        >
           Sign Up
-        </a>
+        </Button>
       </p>
     </>
   );

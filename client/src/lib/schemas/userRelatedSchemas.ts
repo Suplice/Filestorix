@@ -19,7 +19,7 @@ import { roles } from "../types/role";
  *
  */
 export const userSchema = z.object({
-  id: z.number(),
+  ID: z.number(),
   username: z.string(),
   email: z.string(),
   createdAt: z.string().transform((value) => new Date(value)),

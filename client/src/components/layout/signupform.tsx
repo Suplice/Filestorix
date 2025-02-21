@@ -1,6 +1,6 @@
 "use client";
 import { userEmailRegistrationSchema } from "@/lib/schemas/userRelatedSchemas";
-import { signUpForm } from "@/lib/utils/forms";
+import { signUpForm } from "@/lib/types/forms";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
@@ -9,10 +9,16 @@ import OAuth from "../sections/OAuth";
 import AuthFormInputField from "../ui/authFormInputField";
 import { signUpUsingEmail } from "@/lib/api/auth/auth";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const SignupForm = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const { setUser, setIsAuthenticated } = useAuth();
 
   const form = useForm<signUpForm>({
     resolver: zodResolver(userEmailRegistrationSchema),
@@ -24,10 +30,25 @@ const SignupForm = () => {
   });
 
   const onSubmit = async (data: signUpForm) => {
-    setIsSending(true);
-    await signUpUsingEmail(data);
-    setIsSending(false);
-    form.reset();
+    try {
+      setIsSending(true);
+
+      const result = await signUpUsingEmail(data);
+
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(result.message);
+      setUser(result.user!);
+      setIsAuthenticated(true);
+      router.push("/");
+    } catch {
+      toast.error("An unexpected error occured, please try again.");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -84,9 +105,14 @@ const SignupForm = () => {
 
       <p className="text-sm text-gray-400 text-center mt-4">
         Already have an account?{" "}
-        <a href="#" className="text-blue-400 hover:underline">
+        <Button
+          variant="link"
+          size="default"
+          className="px-1 text-blue-400"
+          onClick={() => router.push("/auth/signin")}
+        >
           Sign in
-        </a>
+        </Button>
       </p>
     </>
   );

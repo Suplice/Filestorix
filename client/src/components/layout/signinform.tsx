@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import OAuth from "../sections/OAuth";
-import AuthFormInputField from "../ui/AuthFormInputField";
+import AuthFormInputField from "../ui/authFormInputField";
 import { signInUsingEmail } from "@/lib/api/auth/auth";
 import { useState } from "react";
 

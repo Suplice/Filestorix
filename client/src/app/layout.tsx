@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/themes/theme-provider";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -16,6 +17,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <ToastContainer />
         </ThemeProvider>
       </body>
     </html>

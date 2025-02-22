@@ -99,6 +99,27 @@ export const signInUsingEmail = async (
   }
 };
 
+export const logout = async (): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/logout`,
+      {
+        credentials: "include",
+        method: "POST",
+      }
+    );
+
+    if (!response.ok) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
 /**
  * Sets the session expiration date in the local storage.
  *
@@ -117,4 +138,13 @@ const setSessionExpireDate = (date: number) => {
  */
 export const getSessionExpireDate = () => {
   return localStorage.getItem("sessionExpiresAt");
+};
+
+/**
+ * Removes the session expiration date from the local storage.
+ * This function deletes the "sessionExpiresAt" item from the local storage,
+ * effectively clearing any stored session expiration information.
+ */
+export const removeSessionEpireDate = () => {
+  localStorage.removeItem("sessionExpiresAt");
 };

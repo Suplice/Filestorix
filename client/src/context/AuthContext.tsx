@@ -1,6 +1,8 @@
 "use client";
 import {
   getSessionExpireDate,
+  logout,
+  removeSessionEpireDate,
   signInUsingEmail,
   signUpUsingEmail,
 } from "@/lib/api/auth/auth";
@@ -25,6 +27,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   handleRegisterWithEmail: (data: signUpForm) => Promise<void>;
   handleLoginWithEmail: (data: signInForm) => Promise<void>;
+  handleLogout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -71,6 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * This function sets the authentication state to false and clears the user information.
    */
   const removeCredentials = () => {
+    removeSessionEpireDate();
     setIsAuthenticated(false);
     setUser(null);
   };
@@ -132,6 +136,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const result = await logout();
+
+      if (result) {
+        removeCredentials();
+        toast.success("Logged out successfully.");
+        router.push("/auth/signin");
+      } else {
+        toast.error(
+          "An error occured while trying to log out, please try again."
+        );
+      }
+    } catch {
+      toast.error("An error occured, please try again.");
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -141,6 +163,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isAuthenticated,
         handleRegisterWithEmail,
         handleLoginWithEmail,
+        handleLogout,
       }}
     >
       {children}

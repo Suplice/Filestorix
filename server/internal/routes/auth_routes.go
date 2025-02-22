@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/Suplice/Filestorix/internal/controllers"
+	"github.com/Suplice/Filestorix/internal/middleware"
 	"github.com/Suplice/Filestorix/internal/repositories"
 	"github.com/Suplice/Filestorix/internal/services"
 	"github.com/gin-gonic/gin"
@@ -34,5 +35,6 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	{
 		authRoutes.POST("/register", authController.Register)
 		authRoutes.POST("/login", authController.LoginWithEmail)
+		authRoutes.POST("/logout", middleware.ValidateJWT(), authController.Logout)
 	}
 }

@@ -140,3 +140,19 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 	})
 
 }
+
+func (ac *AuthController) Logout(c *gin.Context) {
+	c.SetCookie(
+		"user_auth",
+		"",
+		-1,
+		"/",
+		"localhost",
+		true,
+		true,
+	)
+
+	c.JSON(200, gin.H{
+		"message": "Logged out successfully",
+	})
+}

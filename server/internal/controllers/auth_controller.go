@@ -68,7 +68,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 		jwtString,
 		utils.Day,
 		"/",
-		"service",
+		"localhost",
 		true,
 		true,
 	)

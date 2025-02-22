@@ -11,17 +11,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
             {children}
             <Toaster />
-          </ThemeProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

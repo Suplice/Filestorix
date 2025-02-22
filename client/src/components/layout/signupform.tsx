@@ -7,9 +7,7 @@ import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import OAuth from "../sections/OAuth";
 import AuthFormInputField from "../ui/authFormInputField";
-import { signUpUsingEmail } from "@/lib/api/auth/auth";
 import { useState } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
@@ -18,7 +16,7 @@ const SignupForm = () => {
 
   const router = useRouter();
 
-  const { setUser, setIsAuthenticated } = useAuth();
+  const { handleRegisterWithEmail } = useAuth();
 
   const form = useForm<signUpForm>({
     resolver: zodResolver(userEmailRegistrationSchema),
@@ -30,35 +28,15 @@ const SignupForm = () => {
   });
 
   /**
-   * Handles the form submission for the sign-up process.
+   * Handles the form submission for the sign-up form.
    *
-   * @param {signUpForm} data - The data submitted from the sign-up form.
-   * @returns {Promise<void>} A promise that resolves when the submission is complete.
-   *
-   * @throws Will display an error toast if an unexpected error occurs during submission.
-   *
-   * @async
+   * @param {signUpForm} data - The data from the sign-up form.
+   * @returns {Promise<void>} A promise that resolves when the registration process is complete.
    */
   const onSubmit = async (data: signUpForm) => {
-    try {
-      setIsSending(true);
-
-      const result = await signUpUsingEmail(data);
-
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-
-      toast.success(result.message);
-      setUser(result.user!);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch {
-      toast.error("An unexpected error occured, please try again.");
-    } finally {
-      setIsSending(false);
-    }
+    setIsSending(true);
+    await handleRegisterWithEmail(data);
+    setIsSending(false);
   };
 
   return (

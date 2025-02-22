@@ -7,16 +7,14 @@ import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import OAuth from "../sections/OAuth";
 import AuthFormInputField from "../ui/authFormInputField";
-import { signInUsingEmail } from "@/lib/api/auth/auth";
 import { useState } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 const SigninForm = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
 
-  const { setUser, setIsAuthenticated } = useAuth();
+  const { handleLoginWithEmail } = useAuth();
 
   const router = useRouter();
 
@@ -39,28 +37,9 @@ const SigninForm = () => {
    * @async
    */
   const onSubmit = async (data: signInForm) => {
-    try {
-      setIsSending(true);
-
-      const result = await signInUsingEmail(data);
-
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-
-      toast.success(result.message);
-
-      console.log("result user", result.user);
-
-      setUser(result.user!);
-      setIsAuthenticated(true);
-      router.push("/");
-    } catch {
-      toast.error("An unexpected error occured, please try again.");
-    } finally {
-      setIsSending(false);
-    }
+    setIsSending(true);
+    await handleLoginWithEmail(data);
+    setIsSending(false);
   };
 
   return (

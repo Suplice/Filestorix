@@ -1,51 +1,48 @@
 "use client";
-import { userEmailLoginSchema } from "@/lib/schemas/userRelatedSchemas";
-import { signInForm } from "@/lib/types/forms";
+import { userEmailRegistrationSchema } from "@/lib/schemas/userRelatedSchemas";
+import { signUpForm } from "@/lib/types/forms";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "../ui/form";
-import { Button } from "../ui/button";
-import OAuth from "../sections/OAuth";
-import AuthFormInputField from "../ui/authFormInputField";
+import { Form } from "../../ui/form";
+import { Button } from "../../ui/button";
+import OAuth from "../../sections/OAuth";
+import AuthFormInputField from "../../ui/authFormInputField";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-const SigninForm = () => {
+const SignupForm = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
-
-  const { handleLoginWithEmail } = useAuth();
 
   const router = useRouter();
 
-  const form = useForm<signInForm>({
-    resolver: zodResolver(userEmailLoginSchema),
+  const { handleRegisterWithEmail } = useAuth();
+
+  const form = useForm<signUpForm>({
+    resolver: zodResolver(userEmailRegistrationSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   /**
-   * Handles the form submission for signing in.
+   * Handles the form submission for the sign-up form.
    *
-   * @param {signInForm} data - The data from the sign-in form.
-   * @returns {Promise<void>} A promise that resolves when the sign-in process is complete.
-   *
-   * @throws Will display an error toast if an unexpected error occurs during the sign-in process.
-   *
-   * @async
+   * @param {signUpForm} data - The data from the sign-up form.
+   * @returns {Promise<void>} A promise that resolves when the registration process is complete.
    */
-  const onSubmit = async (data: signInForm) => {
+  const onSubmit = async (data: signUpForm) => {
     setIsSending(true);
-    await handleLoginWithEmail(data);
+    await handleRegisterWithEmail(data);
     setIsSending(false);
   };
 
   return (
     <>
       <h2 className="text-2xl font-semibold text-center mb-6">
-        Log in into account
+        Create an Account
       </h2>
       <Form {...form}>
         <form
@@ -67,6 +64,13 @@ const SigninForm = () => {
             type="password"
             placeholder="Password"
           />
+          <AuthFormInputField
+            control={form.control}
+            name="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            placeholder="Confirm Password"
+          />
           <Button
             variant="primary"
             size="lg"
@@ -74,7 +78,7 @@ const SigninForm = () => {
             disabled={isSending}
             className="w-full bg-blue-600 hover:bg-blue-700 transition-all"
           >
-            Sign In
+            Sign Up
           </Button>
         </form>
       </Form>
@@ -88,19 +92,18 @@ const SigninForm = () => {
       <OAuth />
 
       <p className="text-sm text-gray-400 text-center mt-4">
-        Not registered yet?{" "}
+        Already have an account?{" "}
         <Button
           variant="link"
-          className="text-blue-400 px-1"
-          onClick={() => {
-            router.push("/auth/signup");
-          }}
+          size="default"
+          className="px-1 text-blue-400"
+          onClick={() => router.push("/auth/signin")}
         >
-          Sign Up
+          Sign in
         </Button>
       </p>
     </>
   );
 };
 
-export default SigninForm;
+export default SignupForm;

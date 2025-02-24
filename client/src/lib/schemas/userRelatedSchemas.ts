@@ -89,5 +89,5 @@ export const userEmailRegistrationSchema = z
  */
 export const userEmailLoginSchema = z.object({
   email: emailSchema,
-  password: z.string(),
+  password: passwordSchema,
 });

@@ -37,6 +37,7 @@ const FormInputField = <T extends FieldValues>({
               className="w-full px-4 py-2 rounded-md bg-gray-700 text-white outline-none transition-all duration-100"
               autoComplete="off"
               {...field}
+              required
             />
           </FormControl>
           <FormMessage />

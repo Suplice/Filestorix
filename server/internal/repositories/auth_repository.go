@@ -4,7 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/Suplice/Filestorix/internal/models"
-	"github.com/Suplice/Filestorix/internal/utils"
+	"github.com/Suplice/Filestorix/internal/utils/constants"
 	"gorm.io/gorm"
 )
 
@@ -42,7 +42,7 @@ func (ar *AuthRepository) Register(userModel *models.User) (*models.User, error)
 	result := ar.db.Create(userModel)
 
 	if result.Error != nil {
-		return nil, utils.ParseDBError(result.Error)
+		return nil, constants.ParseDBError(result.Error, "user")
 	}
 
 	return userModel, nil

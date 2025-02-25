@@ -18,21 +18,6 @@ export type signUpForm = z.infer<typeof userEmailRegistrationSchema>;
 export type signInForm = z.infer<typeof userEmailLoginSchema>;
 
 /**
- * Represents the result of a sign form operation.
- *
- * @property {boolean} ok - Indicates whether the operation was successful.
- * @property {string} [error] - An optional error message if the operation failed.
- * @property {User} [user] - An optional user object if the operation was successful.
- * @property {string} [message] - An optional message received after success
- */
-export type signFormResult = {
-  ok: boolean;
-  error?: string;
-  user?: User;
-  message?: string;
-};
-
-/**
  * Represents the response from a sign form submission.
  *
  * @property {User} [user] - The user object if the sign form submission is successful.
@@ -44,5 +29,16 @@ export type signFormResponse = {
   user?: User;
   message?: string;
   error?: string;
-  sessionExpiresAt?: number;
+};
+
+/**
+ * Represents the result of a sign form operation.
+ *
+ * @property {boolean} ok - Indicates whether the operation was successful.
+ * @property {string} [error] - An optional error message if the operation failed.
+ * @property {User} [user] - An optional user object if the operation was successful.
+ * @property {string} [message] - An optional message received after success
+ */
+export type signFormResult = signFormResponse & {
+  ok?: boolean;
 };

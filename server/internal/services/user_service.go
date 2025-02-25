@@ -40,3 +40,13 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 
 	return user, nil
 }
+
+func (us *UserService) GetUserById(id uint) (*models.User, error) {
+	user, err := us.userRepository.GetUserById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}

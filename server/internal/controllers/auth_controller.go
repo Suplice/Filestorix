@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"log/slog"
-	"time"
 
 	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/services"
 	"github.com/Suplice/Filestorix/internal/utils"
+	"github.com/Suplice/Filestorix/internal/utils/constants"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,7 +36,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 		ac.logger.Error("AuthController - An error occured while parsing data", "error", err.Error())
 
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{"error": constants.ErrInvalidData})
 		return
 	}
 
@@ -56,27 +56,18 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error": constants.ErrUnexpected,
 		})
 		return
 	}
 
 	ac.logger.Info("jwtString", "jwtStrings", jwtString)
 
-	c.SetCookie(
-		"user_auth",
-		jwtString,
-		utils.Day,
-		"/",
-		"localhost",
-		true,
-		true,
-	)
+	setAuthCookie(c, jwtString)
 
 	c.JSON(201, gin.H{
-		"message": "User registered successfully",
+		"message": constants.SuccessUserRegistered,
 		"user": data,
-		"sessionExpiresAt": time.Now().Add(24 * time.Hour).Unix(),
 	})
 
 }
@@ -94,7 +85,7 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 		ac.logger.Error("AuthController - An error occured while parsing data", "error", err.Error())
 
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error": constants.ErrInvalidData,
 		})
 
 		return
@@ -116,32 +107,85 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error": constants.ErrUnexpected,
 		})
 		return
 	}
 
 	ac.logger.Info("jwtString", "jwtStrings", jwtString)
 
-	c.SetCookie(
-		"user_auth",
-		jwtString,
-		utils.Day,
-		"/",
-		"localhost",
-		true,
-		true,
-	)
+	setAuthCookie(c, jwtString)
 
 	c.JSON(200, gin.H{
-		"message": "User logged in successfully",
+		"message": constants.SuccessUserLoggedIn,
 		"user": data,
-		"sessionExpiresAt": time.Now().Add(24 * time.Hour).Unix(),
 	})
 
 }
 
 func (ac *AuthController) Logout(c *gin.Context) {
+	removeAuthCookie(c)
+
+	c.JSON(200, gin.H{
+		"message": constants.SuccessUserLoggedOut,
+	})
+}
+
+func (ac *AuthController) CheckCredentials(c *gin.Context){
+	
+
+	userId, err := c.Get("UserID")
+
+	if err {
+		removeAuthCookie(c)
+		c.JSON(400, gin.H{
+			"message": constants.ErrUnexpected,
+		})
+	}
+
+	userIdUint, ok := userId.(uint)
+	if !ok {
+		ac.logger.Debug("error converting user to Uint")
+		removeAuthCookie(c)
+		c.JSON(400, gin.H{
+			"message": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	user, fetchError := ac.authService.FetchUser(userIdUint)
+
+	if fetchError != nil {
+		ac.logger.Debug("Error fetching user", "error", fetchError.Error())
+		removeAuthCookie(c)
+		c.JSON(400, gin.H{
+			"message": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	jwtString, jwtError := utils.CreateJWT(user)
+
+	if jwtError != nil {
+		ac.logger.Debug("Error on jwt", "error", jwtError.Error())
+		c.JSON(400, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	ac.logger.Info("jwtString", "jwtStrings", jwtString)
+
+	setAuthCookie(c, jwtString)
+	
+	c.JSON(200, gin.H{
+		"user": user,
+	})
+}
+
+
+
+func removeAuthCookie(c *gin.Context) {
 	c.SetCookie(
 		"user_auth",
 		"",
@@ -151,8 +195,16 @@ func (ac *AuthController) Logout(c *gin.Context) {
 		true,
 		true,
 	)
+}
 
-	c.JSON(200, gin.H{
-		"message": "Logged out successfully",
-	})
+func setAuthCookie(c *gin.Context, jwtString string) {
+	c.SetCookie(
+		"user_auth",
+		jwtString,
+		constants.Day,
+		"/",
+		"localhost",
+		true,
+		true,
+	)
 }

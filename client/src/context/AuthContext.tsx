@@ -1,13 +1,12 @@
 "use client";
 import {
-  getSessionExpireDate,
+  fetchUser,
   logout,
-  removeSessionEpireDate,
   signInUsingEmail,
   signUpUsingEmail,
 } from "@/lib/api/auth/auth";
 import { signInForm, signUpForm } from "@/lib/types/forms";
-import { User } from "@/lib/types/user";
+import { fetchUserResult, User } from "@/lib/types/user";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -39,32 +38,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    checkCredentials();
+    const fetchCredentials = async () => {
+      await checkCredentials();
+    };
+
+    fetchCredentials();
   }, []);
 
   /**
-   * Checks the validity of the current session credentials.
+   * Asynchronously checks user credentials by fetching user data.
    *
-   * This function retrieves the session expiration date and compares it with the current date.
-   * If the session expiration date is not available or has already passed, it removes the credentials.
-   *
-   * @returns {void}
+   * If the fetch is successful and the result is ok, it sets the user as authenticated
+   * and updates the user state. If the fetch is unsuccessful or the result is not ok,
+   * it removes the credentials.
    */
-  const checkCredentials = () => {
-    const sessionExpireDate = getSessionExpireDate();
+  const checkCredentials = async () => {
+    try {
+      const result: fetchUserResult = await fetchUser();
 
-    if (!sessionExpireDate) {
+      if (result.ok) {
+        setIsAuthenticated(true);
+        setUser(result.user!);
+      } else {
+        removeCredentials();
+      }
+    } catch (error) {
+      console.error(error);
       removeCredentials();
-      return;
-    }
-
-    const expireDate = new Date(sessionExpireDate);
-
-    const currentDate = new Date();
-
-    if (expireDate < currentDate) {
-      removeCredentials();
-      return;
     }
   };
 
@@ -74,7 +74,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * This function sets the authentication state to false and clears the user information.
    */
   const removeCredentials = () => {
-    removeSessionEpireDate();
     setIsAuthenticated(false);
     setUser(null);
   };

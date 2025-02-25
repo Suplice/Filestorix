@@ -9,6 +9,7 @@ import (
 	"github.com/Suplice/Filestorix/internal/models"
 	"github.com/Suplice/Filestorix/internal/repositories"
 	"github.com/Suplice/Filestorix/internal/utils"
+	"github.com/Suplice/Filestorix/internal/utils/constants"
 )
 
 type AuthService struct {
@@ -47,7 +48,7 @@ func (as *AuthService) Register(data dto.RegisterRequestDTO) (*models.User, erro
 	username := strings.Split(data.Email, "@")[0]
 
 	if username == "" {
-		return nil , errors.New("email is invalid")
+		return nil , errors.New(constants.ErrInvalidData)
 	}
 
 	hashedPassword, err := utils.HashPassword(data.Password)
@@ -67,9 +68,13 @@ func (as *AuthService) Register(data dto.RegisterRequestDTO) (*models.User, erro
 
 	user, err := as.authRepository.Register(newUser)
 
+	if err != nil {
+		return nil, err
+	}
+
 	user.PasswordHash = ""
 
-	return user, err
+	return user, nil
 } 
 
 // LoginWithEmail authenticates a user using their email and password.
@@ -87,14 +92,26 @@ func (as *AuthService) LoginWithEmail(data dto.LoginRequestDTO) (*models.User, e
 	user, err := as.userService.GetUserByEmail(data.Email)
 
 	if err != nil  {
-		return nil, errors.New("email or password is incorrect") 
+		return nil, err
 	}
 
 	if compareErr := utils.ComparePasswords(data.Password, []byte(user.PasswordHash)); compareErr != nil {
-		return nil, errors.New("email or password is incorrect")
+		return nil, errors.New(constants.ErrInvalidData)
 	}
 
 	user.PasswordHash = ""
+
+	return user, nil
+
+}
+
+
+func (as *AuthService) FetchUser(userId uint) (*models.User, error) {
+	user, err := as.userService.GetUserById(userId)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return user, nil
 

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Suplice/Filestorix/internal/utils"
+	"github.com/Suplice/Filestorix/internal/utils/constants"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -19,7 +20,7 @@ func ValidateJWT() gin.HandlerFunc {
 		cookie, err := c.Cookie("user_auth")
 
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": constants.ErrSessionExpired})
 			return
 		}
 
@@ -27,7 +28,7 @@ func ValidateJWT() gin.HandlerFunc {
 
 		jwtSecret, err := utils.GetJWTSecret()
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "An error occurred, please try again"})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": constants.ErrUnauthorized})
 			return
 		}
 
@@ -36,26 +37,26 @@ func ValidateJWT() gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Token parsed"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": constants.ErrUnauthorized})
 			return
 		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Token claims"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": constants.ErrUnauthorized})
 			return
 		}
 
 		res, err := claims.GetSubject()
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Token no sub"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": constants.ErrUnauthorized})
 			return
 		}
 
 		userID, err := strconv.ParseUint(res, 10, 0)
 
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "error when converting sub"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": constants.ErrUnauthorized})
 		}
 
 

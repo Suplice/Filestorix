@@ -4,6 +4,8 @@ import {
   signInForm,
   signUpForm,
 } from "@/lib/types/forms";
+import { fetchUserResponse, fetchUserResult } from "@/lib/types/user";
+import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 
 /**
  * Registers a new user using their email.
@@ -37,18 +39,20 @@ export const signUpUsingEmail = async (
       console.error(responseData);
       return {
         ok: false,
-        error: responseData.error || "An error occured, please try again",
+        error: getErrorMessage(responseData.error),
       };
     }
 
-    setSessionExpireDate(responseData.sessionExpiresAt!);
-
-    return { ok: true, user: responseData.user, message: responseData.message };
+    return {
+      ok: true,
+      user: responseData.user,
+      message: getSuccessMessage(responseData.message),
+    };
   } catch (error) {
     console.error(error);
     return {
       ok: false,
-      error: "An unexpected error occurred, please try again",
+      error: getErrorMessage(error as string),
     };
   }
 };
@@ -83,22 +87,29 @@ export const signInUsingEmail = async (
       console.error(responseData);
       return {
         ok: false,
-        error: responseData.error || "An error occured, please try again",
+        error: getErrorMessage(responseData.error),
       };
     }
 
-    setSessionExpireDate(responseData.sessionExpiresAt!);
-
-    return { ok: true, user: responseData.user, message: responseData.message };
+    return {
+      ok: true,
+      user: responseData.user,
+      message: getSuccessMessage(responseData.message),
+    };
   } catch (error) {
     console.error(error);
     return {
       ok: false,
-      error: "An unexpected error occured, please try again",
+      error: getErrorMessage(error as string),
     };
   }
 };
 
+/**
+ * Logs out the current user by making a POST request to the logout endpoint.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the logout was successful, or `false` otherwise.
+ */
 export const logout = async (): Promise<boolean> => {
   try {
     const response = await fetch(
@@ -121,30 +132,39 @@ export const logout = async (): Promise<boolean> => {
 };
 
 /**
- * Sets the session expiration date in the local storage.
+ * Fetches the authenticated user's information from the API.
  *
- * @param date - The expiration date as a Unix timestamp (in seconds).
+ * @returns {Promise<fetchUserResult>} A promise that resolves to an object containing the user's information,
+ *                                     or an error message if the request fails.
  */
-const setSessionExpireDate = (date: number) => {
-  const actualDate = new Date(date * 1000);
+export const fetchUser = async (): Promise<fetchUserResult> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/user`,
+      {
+        credentials: "include",
+      }
+    );
 
-  localStorage.setItem("sessionExpiresAt", actualDate.toISOString());
-};
+    const responseData: fetchUserResponse = await response.json();
 
-/**
- * Retrieves the session expiration date from the local storage.
- *
- * @returns {string | null} The session expiration date as a string if it exists, otherwise null.
- */
-export const getSessionExpireDate = () => {
-  return localStorage.getItem("sessionExpiresAt");
-};
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: getErrorMessage(responseData.error),
+      };
+    }
 
-/**
- * Removes the session expiration date from the local storage.
- * This function deletes the "sessionExpiresAt" item from the local storage,
- * effectively clearing any stored session expiration information.
- */
-export const removeSessionEpireDate = () => {
-  localStorage.removeItem("sessionExpiresAt");
+    return {
+      ok: true,
+      message: getSuccessMessage(responseData.message),
+      user: responseData.user,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: false,
+      error: getErrorMessage(error as string),
+    };
+  }
 };

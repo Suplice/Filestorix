@@ -1,6 +1,11 @@
 package utils
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"errors"
+
+	"github.com/Suplice/Filestorix/internal/utils/constants"
+	"golang.org/x/crypto/bcrypt"
+)
 
 // HashPassword takes a plain text password as input and returns the hashed password
 // using bcrypt with a default cost of 10. If an error occurs during hashing, it is returned.
@@ -13,7 +18,12 @@ import "golang.org/x/crypto/bcrypt"
 //   - error: An error that occurred during hashing, or nil if no error occurred.
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	return string(bytes), err
+
+	if err != nil {
+		return string(bytes), errors.New(constants.ErrUnexpected)
+	}
+
+	return string(bytes), nil
 }
 
 // ComparePasswords compares a plain text password with a hashed password.

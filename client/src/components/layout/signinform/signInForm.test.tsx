@@ -20,6 +20,14 @@ describe("SigninForm Component", () => {
     });
   });
 
+  test("renders compoennt successfully", async () => {
+    render(<SigninForm />);
+
+    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign In" })).toBeInTheDocument();
+  });
+
   test("navigates to signup page when 'Sign Up' button is clicked", () => {
     render(<SigninForm />);
 
@@ -35,6 +43,25 @@ describe("SigninForm Component", () => {
 
     await waitFor(() => {
       expect(mockHandleLoginWithEmail).not.toHaveBeenCalled();
+    });
+  });
+
+  test("Provides email and password errors if email or password is invalid", async () => {
+    render(<SigninForm />);
+
+    fireEvent.change(screen.getByPlaceholderText(/email/i), {
+      target: { value: "test@example" },
+    });
+
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
+      target: { value: "test" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Invalid email/i)).toBeInTheDocument();
+      expect(screen.getByText(/Password is too short/i)).toBeInTheDocument();
     });
   });
 

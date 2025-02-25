@@ -1,10 +1,13 @@
 import "@testing-library/jest-dom";
 
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-}));
+jest.mock("next/navigation", () => {
+  const actual = jest.requireActual("next/navigation");
+
+  return {
+    ...actual,
+    useRouter: jest.fn(actual.useRouter),
+  };
+});
 
 jest.mock("@/context/AuthContext", () => ({
   useAuth: jest.fn(),

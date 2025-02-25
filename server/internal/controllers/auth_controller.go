@@ -133,30 +133,30 @@ func (ac *AuthController) Logout(c *gin.Context) {
 
 func (ac *AuthController) CheckCredentials(c *gin.Context){
 	
+	ac.logger.Error("i am in CheckCredentials")
 
-	userId, err := c.Get("UserID")
-
-	if err {
+	userIdRaw, exists := c.Get("userID")
+	if !exists {
+		ac.logger.Error("userID not found in context")
 		removeAuthCookie(c)
-		c.JSON(400, gin.H{
-			"message": constants.ErrUnexpected,
-		})
-	}
-
-	userIdUint, ok := userId.(uint)
-	if !ok {
-		ac.logger.Debug("error converting user to Uint")
-		removeAuthCookie(c)
-		c.JSON(400, gin.H{
-			"message": constants.ErrUnexpected,
-		})
+		c.JSON(400, gin.H{"message": constants.ErrUnexpected})
 		return
 	}
+
+	userIdUint64, ok := userIdRaw.(uint64)
+	if !ok {
+		ac.logger.Error("error converting userID to uint64")
+		removeAuthCookie(c)
+		c.JSON(400, gin.H{"message": constants.ErrUnexpected})
+		return
+	}
+
+	userIdUint := uint(userIdUint64)
 
 	user, fetchError := ac.authService.FetchUser(userIdUint)
 
 	if fetchError != nil {
-		ac.logger.Debug("Error fetching user", "error", fetchError.Error())
+		ac.logger.Error("Error fetching user", "error", fetchError.Error())
 		removeAuthCookie(c)
 		c.JSON(400, gin.H{
 			"message": constants.ErrUnexpected,
@@ -167,7 +167,7 @@ func (ac *AuthController) CheckCredentials(c *gin.Context){
 	jwtString, jwtError := utils.CreateJWT(user)
 
 	if jwtError != nil {
-		ac.logger.Debug("Error on jwt", "error", jwtError.Error())
+		ac.logger.Error("Error on jwt", "error", jwtError.Error())
 		c.JSON(400, gin.H{
 			"error": constants.ErrUnexpected,
 		})

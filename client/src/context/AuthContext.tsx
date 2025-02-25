@@ -7,6 +7,7 @@ import {
 } from "@/lib/api/auth/auth";
 import { signInForm, signUpForm } from "@/lib/types/forms";
 import { fetchUserResult, User } from "@/lib/types/user";
+import { ErrorMessage, SuccessMessage } from "@/lib/utils/ApiResponses";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -141,15 +142,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (result) {
         removeCredentials();
-        toast.success("Logged out successfully.");
+        toast.success(SuccessMessage.LOGGED_OUT);
         router.push("/auth/signin");
       } else {
-        toast.error(
-          "An error occured while trying to log out, please try again."
-        );
+        toast.error(ErrorMessage.LOGOUT_FAILED);
       }
     } catch {
-      toast.error("An error occured, please try again.");
+      toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
   };
 

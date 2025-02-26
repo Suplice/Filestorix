@@ -106,6 +106,15 @@ func (as *AuthService) LoginWithEmail(data dto.LoginRequestDTO) (*models.User, e
 }
 
 
+// FetchUser retrieves a user by their unique identifier.
+// It returns a pointer to the User model and an error if the user could not be found.
+//
+// Parameters:
+//   userId - the unique identifier of the user to be fetched.
+//
+// Returns:
+//   *models.User - a pointer to the User model if found.
+//   error - an error if the user could not be found or any other issue occurred.
 func (as *AuthService) FetchUser(userId uint) (*models.User, error) {
 	user, err := as.userService.GetUserById(userId)
 

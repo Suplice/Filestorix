@@ -41,6 +41,15 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
+// GetUserById retrieves a user by their unique ID.
+// It returns a pointer to the User model and an error if the user cannot be found or if there is an issue with the retrieval process.
+// 
+// Parameters:
+//   - id: The unique identifier of the user to be retrieved.
+//
+// Returns:
+//   - *models.User: A pointer to the User model if found.
+//   - error: An error if the user cannot be found or if there is an issue with the retrieval process.
 func (us *UserService) GetUserById(id uint) (*models.User, error) {
 	user, err := us.userRepository.GetUserById(id)
 

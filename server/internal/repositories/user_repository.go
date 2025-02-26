@@ -50,6 +50,9 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 
 }
 
+// GetUserById retrieves a user from the database by their ID.
+// It takes a user ID as a parameter and returns a pointer to the User model and an error.
+// If the user is not found or any other database error occurs, it returns an appropriate error.
 func (ur *UserRepository) GetUserById(id uint) (*models.User, error){
 	var user *models.User
 

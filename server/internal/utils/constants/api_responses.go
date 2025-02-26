@@ -9,19 +9,29 @@ import (
 
 // Api info messages
 const (
+	// Success message, when user successfully logged in
 	SuccessUserLoggedIn		= "USER_LOGGED_IN"
+	// Success message, when user successfully logged out
 	SuccessUserLoggedOut	= "LOGGED_OUT"
+	// Success message, when user successfully registered
 	SuccessUserRegistered	= "USER_REGISTERED"
 )
 
 // Api error messages
 const (
-	ErrUserExists   		= "USER_ALREADY_EXISTS"
+	// Error message, when user does not exist in database
+	ErrUserExists   		= "USER_ALREADY_EXISTS" 
+	// Error message, when record is not found in database
 	ErrRecordNotFound 		= "INVALID_DATA"
+	// Error message, when unexpected error occured in database
 	ErrDBUnknown    		= "DB_UNKNOWN_ERROR"
+	// Error message, when provided data is invalid 
 	ErrInvalidData 			= "INVALID_DATA"
+	// Error message, when an unexpected error occurs
 	ErrUnexpected 			= "UNEXPECTED_ERROR"
+	// Error message, when user is not authorized
 	ErrUnauthorized			= "UNAUTHORIZED"
+	// Error message, when user session has expired
 	ErrSessionExpired		= "SESSION_EXPIRED"
 )
 

@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       router.push("/");
     } catch {
-      toast.error("An unexpected error occured, please try again.");
+      toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
   };
 
@@ -132,10 +132,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(true);
       router.push("/");
     } catch {
-      toast.error("An unexpected error occured, please try again.");
+      toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
   };
 
+  // const handleLoginWithGoogle = async (code: string) => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
+  //       {
+  //         method: "POST",
+  //         body: JSON.stringify(code),
+  //       }
+  //     );
+
+  //     const responseData = await response.json();
+
+  //     if (!response.ok) {
+  //       toast.error();
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  /**
+   * Handles the user logout process.
+   *
+   * This function attempts to log out the user by calling the `logout` function.
+   * If the logout is successful, it removes the user's credentials, displays a success message,
+   * and redirects the user to the sign-in page.
+   * If the logout fails, it displays an error message.
+   * If an unexpected error occurs during the process, it displays a generic error message.
+   *
+   * @returns {Promise<void>} A promise that resolves when the logout process is complete.
+   */
   const handleLogout = async () => {
     try {
       const result = await logout();

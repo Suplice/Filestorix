@@ -6,6 +6,7 @@ export enum ErrorMessage {
   UNAUTHORIZED = "You are not authorized, please sign in and try again.",
   SESSION_EXPIRED = "Your session has expired, please log in again.",
   LOGOUT_FAILED = "An error occured while trying to log out, please try again.",
+  OAUTH_AUTHENTICATION_FAILED = "Authentication failed, please try again.",
 }
 
 export enum SuccessMessage {

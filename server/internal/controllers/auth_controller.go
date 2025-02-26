@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"log/slog"
+	"net/http"
 
 	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/services"
@@ -181,6 +182,38 @@ func (ac *AuthController) CheckCredentials(c *gin.Context){
 	c.JSON(200, gin.H{
 		"user": user,
 	})
+}
+
+
+func (ac *AuthController) GoogleLogin(c *gin.Context){
+	var googleData *dto.GoogleRequestDTO
+
+	if err := c.ShouldBindBodyWithJSON(&googleData); err != nil {
+		ac.logger.Error("AuthController - An error occured while parsing body")
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrFaildedGoogle,
+		})
+		return
+	}
+
+	user, err := ac.authService.LoginWithGoogle(googleData.Code)
+
+	if err != nil {
+		ac.logger.Error("AuthController - An error occured while handling google login")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	
+
+	c.JSON(http.StatusOK, gin.H{
+		"user": user,
+		"message": constants.SuccessUserGoogleLogin,
+	})
+	return
+
 }
 
 

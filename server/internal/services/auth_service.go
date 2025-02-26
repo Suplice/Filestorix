@@ -1,8 +1,12 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
 	"log/slog"
+	"net/http"
+	"net/url"
+	"os"
 	"strings"
 
 	"github.com/Suplice/Filestorix/internal/dto"
@@ -123,5 +127,89 @@ func (as *AuthService) FetchUser(userId uint) (*models.User, error) {
 	}
 
 	return user, nil
+
+}
+
+func (as *AuthService) LoginWithGoogle(code string) (*models.User, error) {
+	clientID := os.Getenv("GOOGLE_CLIENT_ID")
+	clientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")
+	redirectURI := os.Getenv("GOOGLE_REDIRECT_URI")
+
+	if clientID == "" || clientSecret == "" || redirectURI == "" {
+		as.logger.Error("AuthService - Loaded env variables are incorrect %s, %s, %s", clientID, clientSecret, redirectURI)
+		return nil, errors.New(constants.ErrUnexpected)
+	} 
+
+	data := url.Values{}
+	data.Set("code", code)
+	data.Set("client_id", clientID)
+	data.Set("client_secret", clientSecret)
+	data.Set("redirect_uri", redirectURI)
+	data.Set("grant_type", "authorization_code")
+
+	resp, err := http.PostForm("https://oauth2.googleapis.com/token", data)
+
+	if err != nil {
+		return nil, errors.New(constants.ErrFaildedGoogle)
+	}
+	
+	defer resp.Body.Close()
+
+	var tokenRes *dto.GoogleAuthTokenResult
+
+	if err := json.NewDecoder(resp.Body).Decode(&tokenRes); err != nil {
+		return nil, errors.New(constants.ErrFaildedGoogle)
+	}
+
+	userInfo, err := fetchGoogleUserInfo(tokenRes.AccessToken)
+
+	if err != nil {
+		return nil, errors.New(constants.ErrFaildedGoogle)
+	}
+
+	user, err := as.userService.GetUserByEmail(userInfo.Email)
+
+	if err != nil && err.Error() != constants.ErrRecordNotFound {
+		return nil, err
+	} 
+
+	if user != nil && user.GoogleID == userInfo.GoogleID {
+		return user, nil
+	}
+
+	registeredUser, err := as.authRepository.Register(userInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return registeredUser, nil
+
+}
+
+func fetchGoogleUserInfo(accessToken string) (*models.User, error) {
+	resp, err := http.Get("https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + accessToken)
+
+	if err != nil {
+		return nil, errors.New(constants.ErrFaildedGoogle)
+	}
+
+	defer resp.Body.Close()
+
+	var user *dto.GoogleUser
+
+	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+		return nil, errors.New(constants.ErrFaildedGoogle)
+	}
+
+	return &models.User{
+		GoogleID: user.Sub,
+		Username: user.Name,
+		Email:	user.Email,
+		AvatarURL: user.Picture,
+		Provider: "GOOGLE",
+		Role: "USER",
+	}, nil
+
 
 }

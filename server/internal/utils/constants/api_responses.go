@@ -15,6 +15,8 @@ const (
 	SuccessUserLoggedOut	= "LOGGED_OUT"
 	// Success message, when user successfully registered
 	SuccessUserRegistered	= "USER_REGISTERED"
+	// Success message, when user successfully logged in via google
+	SuccessUserGoogleLogin	= "SUCCESS_GOOGLE_LOGIN"
 )
 
 // Api error messages
@@ -33,6 +35,8 @@ const (
 	ErrUnauthorized			= "UNAUTHORIZED"
 	// Error message, when user session has expired
 	ErrSessionExpired		= "SESSION_EXPIRED"
+	// Error message, when logging in via google fails
+	ErrFaildedGoogle		= "FAILED_GOOGLE_LOGIN"
 )
 
 // ParseDBError parses the provided database error based on the given context.

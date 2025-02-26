@@ -17,4 +17,5 @@ type User struct {
 	Role 			string 			`gorm:"size:255;not null" json:"role"`
 	PasswordHash 	string 			`gorm:"size:255" json:"passwordHash"`
 	LastLoginAt 	time.Time 		`gorm:"autoCreateTime;autoUpdateTime" json:"lastLoginAt"`
+	GoogleID		string			`gorm:"size:255" json:"googleId"`
 }

@@ -28,6 +28,7 @@ interface AuthContextType {
   handleRegisterWithEmail: (data: signUpForm) => Promise<void>;
   handleLoginWithEmail: (data: signInForm) => Promise<void>;
   handleLogout: () => Promise<void>;
+  handleLoginWithGoogle: (code: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -136,25 +137,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const handleLoginWithGoogle = async (code: string) => {
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
-  //       {
-  //         method: "POST",
-  //         body: JSON.stringify(code),
-  //       }
-  //     );
+  const handleLoginWithGoogle = async (code: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
+        {
+          method: "POST",
+          body: JSON.stringify({ code: code }),
+        }
+      );
 
-  //     const responseData = await response.json();
-
-  //     if (!response.ok) {
-  //       toast.error();
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   /**
    * Handles the user logout process.
@@ -193,6 +191,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleRegisterWithEmail,
         handleLoginWithEmail,
         handleLogout,
+        handleLoginWithGoogle,
       }}
     >
       {children}

@@ -29,6 +29,7 @@ export const userSchema = z.object({
   role: z.enum(roles),
   passwordHash: z.string().optional().nullable(),
   lastLoginAt: z.string().transform((value) => new Date(value)),
+  GoogleId: z.string(),
 });
 
 /**

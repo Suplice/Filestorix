@@ -13,7 +13,7 @@ RUN go mod download
 COPY . .
 
 # COPY ENVIRONMENT VARIABLES
-COPY .env /usr/src/app/.env
+COPY .env /usr/.env
 
 # BUILD BINARY
 

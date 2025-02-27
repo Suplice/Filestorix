@@ -30,6 +30,7 @@ export const userSchema = z.object({
   passwordHash: z.string().optional().nullable(),
   lastLoginAt: z.string().transform((value) => new Date(value)),
   GoogleId: z.string(),
+  GithubId: z.string(),
 });
 
 /**

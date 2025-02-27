@@ -18,4 +18,5 @@ type User struct {
 	PasswordHash 	string 			`gorm:"size:255" json:"passwordHash"`
 	LastLoginAt 	time.Time 		`gorm:"autoCreateTime;autoUpdateTime" json:"lastLoginAt"`
 	GoogleID		string			`gorm:"size:255" json:"googleId"`
+	GithubID		string			`gorm:"size:255" json:"githubId"`
 }

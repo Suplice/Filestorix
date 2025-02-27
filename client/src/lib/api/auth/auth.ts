@@ -105,6 +105,79 @@ export const signInUsingEmail = async (
   }
 };
 
+export const signInUsingGoogle = async (
+  code: string
+): Promise<signFormResult> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
+      {
+        method: "POST",
+        body: JSON.stringify({ code: code }),
+        credentials: "include",
+      }
+    );
+
+    const responseData: signFormResponse = await response.json();
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: getErrorMessage(responseData.error),
+      };
+    }
+
+    return {
+      ok: true,
+      message: getSuccessMessage(responseData.message),
+      user: responseData.user,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: false,
+      error: getErrorMessage(error as string),
+    };
+  }
+};
+
+export const signInUsingGithub = async (
+  code: string
+): Promise<signFormResult> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/github`,
+      {
+        method: "POST",
+        body: JSON.stringify({ code: code }),
+        credentials: "include",
+      }
+    );
+
+    const responseData: signFormResponse = await response.json();
+
+    console.log(responseData);
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: getErrorMessage(responseData.error),
+      };
+    }
+
+    return {
+      ok: true,
+      message: getSuccessMessage(responseData.message),
+      user: responseData.user,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: false,
+      error: getErrorMessage(error as string),
+    };
+  }
+};
 /**
  * Logs out the current user by making a POST request to the logout endpoint.
  *

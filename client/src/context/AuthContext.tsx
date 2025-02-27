@@ -1,11 +1,14 @@
 "use client";
+import LoadingSpinner from "@/components/layout/loadingSpinner/loadingSpinner";
 import {
   fetchUser,
   logout,
   signInUsingEmail,
+  signInUsingGithub,
+  signInUsingGoogle,
   signUpUsingEmail,
 } from "@/lib/api/auth/auth";
-import { signInForm, signUpForm } from "@/lib/types/forms";
+import { signFormResult, signInForm, signUpForm } from "@/lib/types/forms";
 import { fetchUserResult, User } from "@/lib/types/user";
 import { ErrorMessage, SuccessMessage } from "@/lib/utils/ApiResponses";
 import { useRouter } from "next/navigation";
@@ -17,6 +20,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useTransition,
 } from "react";
 import { toast } from "sonner";
 
@@ -29,6 +33,7 @@ interface AuthContextType {
   handleLoginWithEmail: (data: signInForm) => Promise<void>;
   handleLogout: () => Promise<void>;
   handleLoginWithGoogle: (code: string) => Promise<void>;
+  handleLoginWithGithub: (code: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,6 +41,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
 
@@ -67,6 +76,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error(error);
       removeCredentials();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,18 +150,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const handleLoginWithGoogle = async (code: string) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/google`,
-        {
-          method: "POST",
-          body: JSON.stringify({ code: code }),
-        }
-      );
+      const result: signFormResult = await signInUsingGoogle(code);
 
-      const responseData = await response.json();
-      console.log(responseData);
-    } catch (error) {
-      console.error(error);
+      if (!result.ok) {
+        toast.error(result.error);
+        router.push("/auth/signin");
+        return;
+      }
+
+      toast.success(result.message);
+
+      setUser(result.user!);
+      setIsAuthenticated(true);
+
+      router.push("/");
+    } catch {
+      toast.error(ErrorMessage.UNEXPECTED_ERROR);
+      router.push("/auth/signin");
+    }
+  };
+
+  const handleLoginWithGithub = async (code: string) => {
+    try {
+      const result: signFormResult = await signInUsingGithub(code);
+
+      if (!result.ok) {
+        toast.error(result.error);
+        router.push("/auth/signin");
+        return;
+      }
+
+      toast.success(result.message);
+
+      setUser(result.user!);
+      setIsAuthenticated(true);
+
+      router.push("/");
+    } catch {
+      toast.error(ErrorMessage.UNEXPECTED_ERROR);
+      router.push("/auth/signin");
     }
   };
 
@@ -166,19 +204,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    * @returns {Promise<void>} A promise that resolves when the logout process is complete.
    */
   const handleLogout = async () => {
-    try {
-      const result = await logout();
+    startTransition(async () => {
+      try {
+        const result = await logout();
 
-      if (result) {
-        removeCredentials();
-        toast.success(SuccessMessage.LOGGED_OUT);
-        router.push("/auth/signin");
-      } else {
-        toast.error(ErrorMessage.LOGOUT_FAILED);
+        if (result) {
+          toast.success(SuccessMessage.LOGGED_OUT);
+          router.push("/auth/signin");
+          removeCredentials();
+        } else {
+          toast.error(ErrorMessage.LOGOUT_FAILED);
+        }
+      } catch {
+        toast.error(ErrorMessage.UNEXPECTED_ERROR);
       }
-    } catch {
-      toast.error(ErrorMessage.UNEXPECTED_ERROR);
-    }
+    });
   };
 
   return (
@@ -192,9 +232,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleLoginWithEmail,
         handleLogout,
         handleLoginWithGoogle,
+        handleLoginWithGithub,
       }}
     >
-      {children}
+      {isPending || isLoading ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
 };

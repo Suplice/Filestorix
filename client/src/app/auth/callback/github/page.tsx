@@ -10,27 +10,27 @@ const AuthCallback = () => {
   const searchParams = useSearchParams();
   const code = searchParams.get("code");
 
-  const hasRun = useRef(false);
-
-  const { handleLoginWithGoogle } = useAuth();
+  const { handleLoginWithGithub } = useAuth();
 
   const router = useRouter();
+
+  const hasRun = useRef(false);
 
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
 
-    const signInWithGoogle = async () => {
-      await handleLoginWithGoogle(code!);
+    const signInWithGithub = async () => {
+      await handleLoginWithGithub(code!);
     };
 
     if (!code) {
       router.push("/auth/signin");
       setTimeout(() => {
-        toast.error(ErrorMessage.FAILED_GOOGLE_LOGIN);
+        toast.error(ErrorMessage.FAILED_GITHUB_LOGIN);
       }, 0);
     } else {
-      signInWithGoogle();
+      signInWithGithub();
     }
   }, []);
 

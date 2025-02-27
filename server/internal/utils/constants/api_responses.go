@@ -17,6 +17,8 @@ const (
 	SuccessUserRegistered	= "USER_REGISTERED"
 	// Success message, when user successfully logged in via google
 	SuccessUserGoogleLogin	= "SUCCESS_GOOGLE_LOGIN"
+	// Success message, when user successfully logged in via github
+	SuccessUserGithubLogin = "SUCCESS_GITHUB_LOGIN"
 )
 
 // Api error messages
@@ -37,6 +39,8 @@ const (
 	ErrSessionExpired		= "SESSION_EXPIRED"
 	// Error message, when logging in via google fails
 	ErrFaildedGoogle		= "FAILED_GOOGLE_LOGIN"
+	// Error message, when logging in via github fails
+	ErrFailedGithub 		= "FAILED_GITHUB_LOGIN"
 )
 
 // ParseDBError parses the provided database error based on the given context.

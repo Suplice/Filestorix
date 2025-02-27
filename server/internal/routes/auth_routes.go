@@ -38,5 +38,6 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		authRoutes.POST("/logout", middleware.ValidateJWT(), authController.Logout)
 		authRoutes.GET("/user", middleware.ValidateJWT(), authController.CheckCredentials)
 		authRoutes.POST("/google", authController.GoogleLogin)
+		authRoutes.POST("/github", authController.GithubLogin)
 	}
 }

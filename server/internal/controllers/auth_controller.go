@@ -186,7 +186,7 @@ func (ac *AuthController) CheckCredentials(c *gin.Context){
 
 
 func (ac *AuthController) GoogleLogin(c *gin.Context){
-	var googleData *dto.GoogleRequestDTO
+	var googleData *dto.OAuthRequestDTO
 
 	if err := c.ShouldBindBodyWithJSON(&googleData); err != nil {
 		ac.logger.Error("AuthController - An error occured while parsing body")
@@ -206,13 +206,64 @@ func (ac *AuthController) GoogleLogin(c *gin.Context){
 		})
 		return
 	}
+
+
+	jwtString, jwtError := utils.CreateJWT(user)
+
+	if jwtError != nil {
+		ac.logger.Error("Error on jwt", "error", jwtError.Error())
+		c.JSON(400, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	setAuthCookie(c, jwtString)
 	
 
 	c.JSON(http.StatusOK, gin.H{
 		"user": user,
 		"message": constants.SuccessUserGoogleLogin,
 	})
-	return
+
+}
+
+func (ac *AuthController) GithubLogin(c *gin.Context) {
+
+	var githubData *dto.OAuthRequestDTO
+
+	if err := c.ShouldBindBodyWithJSON(&githubData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrFailedGithub,
+		})
+	}
+
+	user, err := ac.authService.LoginWithGithub(githubData.Code)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	jwtString, jwtError := utils.CreateJWT(user)
+
+	if jwtError != nil {
+		ac.logger.Error("Error on jwt", "error", jwtError.Error())
+		c.JSON(400, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	setAuthCookie(c, jwtString)
+	
+
+	c.JSON(http.StatusOK, gin.H{
+		"user": user,
+		"message": constants.SuccessUserGithubLogin,
+	})
 
 }
 

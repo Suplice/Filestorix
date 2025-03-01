@@ -42,8 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
@@ -76,8 +74,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error(error);
       removeCredentials();
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -235,7 +231,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleLoginWithGithub,
       }}
     >
-      {isPending || isLoading ? <LoadingSpinner /> : children}
+      {isPending ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
 };

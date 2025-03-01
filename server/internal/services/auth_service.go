@@ -133,13 +133,22 @@ func (as *AuthService) FetchUser(userId uint) (*models.User, error) {
 
 }
 
+// LoginWithGoogle handles the OAuth2 login process using a Google authorization code.
+// It exchanges the authorization code for an access token, retrieves user information
+// from Google, and either logs in the user or registers a new user if they do not exist.
+//
+// Parameters:
+//   - code: The authorization code received from Google after user consent.
+//
+// Returns:
+//   - *models.User: The authenticated or newly registered user.
+//   - error: An error if the login or registration process fails.
 func (as *AuthService) LoginWithGoogle(code string) (*models.User, error) {
 	clientID := os.Getenv("GOOGLE_CLIENT_ID")
 	clientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")
 	redirectURI := os.Getenv("GOOGLE_REDIRECT_URI")
 
 	if clientID == "" || clientSecret == "" || redirectURI == "" {
-		as.logger.Error("AuthService - Loaded env variables are incorrect %s, %s, %s", clientID, clientSecret, redirectURI)
 		return nil, errors.New(constants.ErrUnexpected)
 	} 
 
@@ -190,6 +199,17 @@ func (as *AuthService) LoginWithGoogle(code string) (*models.User, error) {
 
 }
 
+// LoginWithGithub handles the OAuth login process with GitHub.
+// It exchanges the provided authorization code for an access token,
+// retrieves the user's information and email from GitHub, and either
+// logs in the user if they already exist or registers a new user.
+//
+// Parameters:
+//   - code: The authorization code received from GitHub after user authorization.
+//
+// Returns:
+//   - *models.User: The authenticated or newly registered user.
+//   - error: An error if the login or registration process fails.
 func (as *AuthService) LoginWithGithub(code string) (*models.User, error) {
 
 	clientID := os.Getenv("GITHUB_CLIENT_ID")
@@ -210,7 +230,6 @@ func (as *AuthService) LoginWithGithub(code string) (*models.User, error) {
 	resp, err := http.PostForm("https://github.com/login/oauth/access_token", data)
 
 	if err != nil {
-		as.logger.Info("error in posting to login oauth")
 		return nil, errors.New(constants.ErrFailedGithub)
 	}
 
@@ -218,14 +237,12 @@ func (as *AuthService) LoginWithGithub(code string) (*models.User, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		as.logger.Info("error in reading response body", "error", err.Error())
 		return nil, errors.New(constants.ErrFailedGithub)
 	}
 
 
 	values, err := url.ParseQuery(string(body))
 	if err != nil {
-		as.logger.Info("error in parsing response", "error", err.Error())
 		return nil, errors.New(constants.ErrFailedGithub)
 	}
 
@@ -235,14 +252,12 @@ func (as *AuthService) LoginWithGithub(code string) (*models.User, error) {
 	}
 
 	if tokenRes.AccessToken == "" {
-		as.logger.Info("empty access token received")
 		return nil, errors.New(constants.ErrFailedGithub)
 	}
 
 	userInfo, err := fetchGithubUserInfo(tokenRes.AccessToken)
 
 	if err != nil {
-		as.logger.Info("error in fetch githubuserinfo", "error", err.Error())
 		return nil, err
 	}
 
@@ -257,11 +272,8 @@ func (as *AuthService) LoginWithGithub(code string) (*models.User, error) {
 	user, err := as.userService.GetUserByEmail(userInfo.Email)
 
 	if err != nil && err.Error() != constants.ErrRecordNotFound {
-		as.logger.Info("error in errrecordnotfound", "error", err.Error())
 		return nil, err
 	} 
-
-	as.logger.Info("here is userInfo github id", "id", userInfo.GithubID)
 
 	if user != nil && user.GithubID == userInfo.GithubID {
 		return user, nil
@@ -275,9 +287,17 @@ func (as *AuthService) LoginWithGithub(code string) (*models.User, error) {
 
 	return registeredUser, nil
 
-
 }
 
+// fetchGithubUserInfo retrieves the GitHub user information using the provided access token.
+// It sends a GET request to the GitHub API to fetch the user details.
+//
+// Parameters:
+//   - accessToken: A string containing the GitHub access token.
+//
+// Returns:
+//   - *models.User: A pointer to the User model containing the GitHub user information.
+//   - error: An error if the request fails or the response is invalid.
 func fetchGithubUserInfo(accessToken string) (*models.User, error) {
 	req, err := http.NewRequest("GET", "https://api.github.com/user", nil)
 	if err != nil {
@@ -320,6 +340,15 @@ func fetchGithubUserInfo(accessToken string) (*models.User, error) {
 	}, nil
 }
 
+// fetchGithubUserEmail retrieves the primary email address of a GitHub user using the provided access token.
+// It sends a GET request to the GitHub API endpoint for user emails and parses the response to find the primary email.
+//
+// Parameters:
+//   - accessToken: A string containing the GitHub OAuth access token.
+//
+// Returns:
+//   - A string containing the primary email address of the GitHub user.
+//   - An error if the request fails, the response cannot be decoded, or no primary email is found.
 func fetchGithubUserEmail(accessToken string) (string, error) {
 	req, _ := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
     req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
@@ -348,6 +377,17 @@ func fetchGithubUserEmail(accessToken string) (string, error) {
 }
 
 
+// fetchGoogleUserInfo retrieves user information from Google using the provided access token.
+// It sends a GET request to the Google OAuth2 userinfo endpoint and decodes the response into a GoogleUser DTO.
+// If successful, it returns a User model populated with the retrieved information.
+// In case of an error during the request or decoding, it returns an error indicating the failure.
+//
+// Parameters:
+//   - accessToken: A string containing the Google OAuth2 access token.
+//
+// Returns:
+//   - *models.User: A pointer to the User model containing the Google user information.
+//   - error: An error indicating the failure reason, if any.
 func fetchGoogleUserInfo(accessToken string) (*models.User, error) {
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + accessToken)
 
@@ -363,9 +403,6 @@ func fetchGoogleUserInfo(accessToken string) (*models.User, error) {
 		return nil, errors.New(constants.ErrFaildedGoogle)
 	}
 
-
-
-
 	return &models.User{
 		GoogleID: user.Sub,
 		Username: user.Name,
@@ -374,6 +411,5 @@ func fetchGoogleUserInfo(accessToken string) (*models.User, error) {
 		Provider: "GOOGLE",
 		Role: "USER",
 	}, nil
-
 
 }

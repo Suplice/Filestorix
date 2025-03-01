@@ -124,6 +124,8 @@ func (ac *AuthController) LoginWithEmail(c *gin.Context) {
 
 }
 
+// Logout handles the user logout process by removing the authentication cookie
+// and returning a JSON response indicating successful logout.
 func (ac *AuthController) Logout(c *gin.Context) {
 	removeAuthCookie(c)
 
@@ -132,6 +134,12 @@ func (ac *AuthController) Logout(c *gin.Context) {
 	})
 }
 
+// CheckCredentials is a method of AuthController that verifies the user's credentials.
+// It retrieves the userID from the context, fetches the user from the authService, 
+// and generates a JWT token if the user is successfully fetched. 
+// If any error occurs during these steps, it logs the error, removes the authentication cookie, 
+// and responds with a 400 status code and an error message.
+// On success, it sets the authentication cookie with the generated JWT token and responds with the user data.
 func (ac *AuthController) CheckCredentials(c *gin.Context){
 	
 	ac.logger.Error("i am in CheckCredentials")
@@ -185,6 +193,12 @@ func (ac *AuthController) CheckCredentials(c *gin.Context){
 }
 
 
+// GoogleLogin handles the Google OAuth login process.
+// It binds the incoming JSON request body to an OAuthRequestDTO, 
+// and uses the authService to log in with the provided Google OAuth code.
+// If successful, it generates a JWT token and sets it as an authentication cookie.
+// It returns a JSON response with the user information and a success message.
+// In case of errors, it logs the error and returns an appropriate JSON error response.
 func (ac *AuthController) GoogleLogin(c *gin.Context){
 	var googleData *dto.OAuthRequestDTO
 
@@ -225,9 +239,14 @@ func (ac *AuthController) GoogleLogin(c *gin.Context){
 		"user": user,
 		"message": constants.SuccessUserGoogleLogin,
 	})
-
 }
 
+// GithubLogin handles the GitHub OAuth login process.
+// It binds the incoming JSON request body to an OAuthRequestDTO, 
+// and uses the authService to log in with the provided GitHub OAuth code.
+// If successful, it generates a JWT token and sets it as an authentication cookie.
+// It returns a JSON response with the user information and a success message.
+// In case of errors, it logs the error and returns an appropriate JSON error response.
 func (ac *AuthController) GithubLogin(c *gin.Context) {
 
 	var githubData *dto.OAuthRequestDTO
@@ -269,6 +288,10 @@ func (ac *AuthController) GithubLogin(c *gin.Context) {
 
 
 
+// removeAuthCookie removes the authentication cookie from the client's browser.
+// It sets the "user_auth" cookie with an empty value and a max age of -1 to expire it immediately.
+// The cookie is set for the "localhost" domain with the path "/".
+// The cookie is marked as Secure and HttpOnly.
 func removeAuthCookie(c *gin.Context) {
 	c.SetCookie(
 		"user_auth",
@@ -281,6 +304,9 @@ func removeAuthCookie(c *gin.Context) {
 	)
 }
 
+// setAuthCookie sets a secure HTTP-only cookie with the given JWT string.
+// The cookie is named "user_auth" and is valid for one day. It is restricted
+// to the localhost domain and the root path.
 func setAuthCookie(c *gin.Context, jwtString string) {
 	c.SetCookie(
 		"user_auth",

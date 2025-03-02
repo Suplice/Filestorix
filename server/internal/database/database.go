@@ -39,8 +39,7 @@ func Connect(databaseURL string) (*gorm.DB, error) {
 func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&models.User{},
-		&models.File{},
-		&models.Catalog{},
+		&models.UserFile{},
 		&models.FavoriteFile{},
 		&models.Thrash{},
 		&models.ActivityLog{},

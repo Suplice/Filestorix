@@ -15,6 +15,6 @@ type Thrash struct {
 	ThrashedAt 		time.Time 		`json:"trashed_at"`
 
 	User 			User 			`gorm:"foreignKey:UserID" json:"-"`
-	File 			File 			`gorm:"foreignKey:FileID" json:"-"`
+	File 			UserFile 		`gorm:"foreignKey:FileID" json:"-"`
 
 }

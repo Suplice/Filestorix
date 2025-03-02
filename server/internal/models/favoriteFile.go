@@ -13,6 +13,6 @@ type FavoriteFile struct {
 
 
 	User 			User 			`gorm:"foreignKey:UserID" json:"-"`
-	File 			File 			`gorm:"foreignKey:FileID" json:"-"`
+	File 			UserFile 		`gorm:"foreignKey:FileID" json:"-"`
 
 }

@@ -4,6 +4,16 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+#modal-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
 }
 
 @layer base {
@@ -86,8 +96,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-
 
 @layer base {
   * {

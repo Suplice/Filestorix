@@ -44,7 +44,11 @@ const thirdGroup = [
   { title: "Storage", url: "/drive/storage", icon: HardDrive },
 ];
 
-const AppSidebar = () => {
+interface AppSidebarProps {
+  handleOpenAddFile: () => void;
+}
+
+const AppSidebar: React.FC<AppSidebarProps> = ({ handleOpenAddFile }) => {
   const pathname = usePathname();
 
   return (
@@ -72,7 +76,9 @@ const AppSidebar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Add File</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleOpenAddFile}>
+                Add File
+              </DropdownMenuItem>
               <DropdownMenuItem>Add Folder</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

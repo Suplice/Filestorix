@@ -41,6 +41,8 @@ const (
 	ErrFaildedGoogle		= "FAILED_GOOGLE_LOGIN"
 	// Error message, when logging in via github fails
 	ErrFailedGithub 		= "FAILED_GITHUB_LOGIN"
+	// Error message, when fetching files fails
+	ErrFailedToFetchFiles 	= "FAILED_FETCH_FILES"
 )
 
 // ParseDBError parses the provided database error based on the given context.

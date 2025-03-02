@@ -9,9 +9,11 @@ export const fetchUserFiles = async (userId: number) => {
     }
   );
 
+  const responseData = await response.json();
+
   if (!response.ok) {
-    throw new Error(getErrorMessage("error"));
+    throw new Error(getErrorMessage(responseData.error));
   }
 
-  return [];
+  return responseData.files;
 };

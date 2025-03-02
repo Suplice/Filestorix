@@ -11,6 +11,7 @@ import {
 import { signFormResult, signInForm, signUpForm } from "@/lib/types/forms";
 import { fetchUserResult, User } from "@/lib/types/user";
 import { ErrorMessage, SuccessMessage } from "@/lib/utils/ApiResponses";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -41,6 +42,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
 
   const [isPending, startTransition] = useTransition();
 
@@ -85,6 +88,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const removeCredentials = () => {
     setIsAuthenticated(false);
     setUser(null);
+
+    queryClient.invalidateQueries({ queryKey: ["files"] });
   };
 
   /**
@@ -111,7 +116,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(result.user!);
       setIsAuthenticated(true);
 
-      router.push("/");
+      router.push("/drive");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
@@ -138,7 +143,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setUser(result.user!);
       setIsAuthenticated(true);
-      router.push("/");
+      router.push("/drive");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
@@ -159,7 +164,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(result.user!);
       setIsAuthenticated(true);
 
-      router.push("/");
+      router.push("/drive");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
       router.push("/auth/signin");
@@ -181,7 +186,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(result.user!);
       setIsAuthenticated(true);
 
-      router.push("/");
+      router.push("/drive");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
       router.push("/auth/signin");

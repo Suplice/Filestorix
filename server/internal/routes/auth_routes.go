@@ -23,13 +23,16 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	// Setup Repositories
 	authRepository := repositories.NewAuthRepository(db, logger)
 	userRepository := repositories.NewUserRepository(db, logger)
+	fileRepository := repositories.NewFileRepository(db, logger)
 
 	// Setup Services
 	userService := services.NewUserService(userRepository, logger)
 	authService := services.NewAuthService(logger, userService, authRepository)
+	fileService := services.NewFileService(fileRepository, logger)
 
 	// Setup Controllers
 	authController := controllers.NewAuthController(logger, authService)
+	fileController := controllers.NewFileController(logger, fileService)
 
 	authRoutes := router.Group("/auth") 
 	{
@@ -39,5 +42,10 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		authRoutes.GET("/user", middleware.ValidateJWT(), authController.CheckCredentials)
 		authRoutes.POST("/google", authController.GoogleLogin)
 		authRoutes.POST("/github", authController.GithubLogin)
+	}
+
+	fileRoutes := router.Group("/files") 
+	{
+		fileRoutes.GET("/fetchall/:userId", middleware.ValidateJWT(), fileController.FetchAllUserFiles)
 	}
 }

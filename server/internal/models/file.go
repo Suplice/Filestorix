@@ -2,12 +2,9 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type UserFile struct {
-	gorm.Model
 	ID 				uint 			`gorm:"primaryKey;autoIncrement" json:"id"`
 	UserID 			uint 			`gorm:"not null;constraint:OnDelete:CASCADE" json:"userId"`
 	Name 			string 			`gorm:"size:255;not null" json:"name"`

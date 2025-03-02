@@ -1,3 +1,6 @@
+import LoadingSpinner from "@/components/sections/loadingSpinner/loadingSpinner";
+import { Suspense } from "react";
+
 interface GoogleAuthCallbackLayoutProps {
   children: React.ReactNode;
 }
@@ -5,7 +8,11 @@ interface GoogleAuthCallbackLayoutProps {
 const GoogleAuthCallback: React.FC<GoogleAuthCallbackLayoutProps> = ({
   children,
 }) => {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+    </div>
+  );
 };
 
 export default GoogleAuthCallback;

@@ -1,3 +1,6 @@
+import LoadingSpinner from "@/components/sections/loadingSpinner/loadingSpinner";
+import { Suspense } from "react";
+
 interface GithubAuthCallbackLayoutProps {
   children: React.ReactNode;
 }
@@ -5,7 +8,11 @@ interface GithubAuthCallbackLayoutProps {
 const GithubAuthCallback: React.FC<GithubAuthCallbackLayoutProps> = ({
   children,
 }) => {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+    </div>
+  );
 };
 
 export default GithubAuthCallback;

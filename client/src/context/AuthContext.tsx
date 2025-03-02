@@ -1,5 +1,5 @@
 "use client";
-import LoadingSpinner from "@/components/layout/loadingSpinner/loadingSpinner";
+import LoadingSpinner from "@/components/sections/loadingSpinner/loadingSpinner";
 import {
   fetchUser,
   logout,

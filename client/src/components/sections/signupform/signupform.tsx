@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../../ui/form";
 import { Button } from "../../ui/button";
-import OAuth from "../../sections/OAuth";
+import OAuth from "../OAuth";
 import AuthFormInputField from "../../ui/authFormInputField";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

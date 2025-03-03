@@ -7,7 +7,7 @@ interface AddFileProps {
   handleClose: () => void;
 }
 
-const AddFile: React.FC<AddFileProps> = ({ isOpen, handleClose }) => {
+const FileAdder: React.FC<AddFileProps> = ({ isOpen, handleClose }) => {
   if (!isOpen) {
     return;
   }
@@ -25,4 +25,4 @@ const AddFile: React.FC<AddFileProps> = ({ isOpen, handleClose }) => {
   );
 };
 
-export default AddFile;
+export default FileAdder;

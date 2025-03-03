@@ -1,5 +1,5 @@
 import { FcGoogle } from "react-icons/fc";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { FaGithub } from "react-icons/fa";
 
 const handleGoogleLogin = () => {

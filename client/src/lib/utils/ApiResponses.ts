@@ -8,6 +8,7 @@ export enum ErrorMessage {
   LOGOUT_FAILED = "An error occured while trying to log out, please try again.",
   FAILED_GOOGLE_LOGIN = "An error occured, while trying to log in via google, please try again.",
   FAILED_GITHUB_LOGIN = "An error occured, while trying to log in via github, please try again.",
+  FAILED_FETCH_FILES = "An error occured while fetching files, please try again.",
 }
 
 export enum SuccessMessage {

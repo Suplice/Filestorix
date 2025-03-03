@@ -21,6 +21,9 @@ func NewFileService(_fileRepository *repositories.FileRepository, _logger *slog.
 }
 
 
+// FetchAllUserFiles retrieves all files associated with a given user ID.
+// It converts the user ID from a string to a uint and then fetches the files
+// from the file repository.
 func (fs * FileService) FetchAllUserFiles(userId string) ([]*models.UserFile, error) {
 	numberUserId, err := convertUserIdToUint(userId)
 
@@ -38,6 +41,10 @@ func (fs * FileService) FetchAllUserFiles(userId string) ([]*models.UserFile, er
 
 }
 
+// convertUserIdToUint converts a user ID from a string to a uint.
+// It trims any leading or trailing whitespace from the input string,
+// then attempts to parse it as an unsigned integer (base 10, 32-bit).
+// If the parsing fails, it returns an error with a constant error message.
 func convertUserIdToUint(userId string) (uint, error) {
 	trimmedUserId := strings.TrimSpace(userId) 
 

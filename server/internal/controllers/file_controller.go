@@ -19,6 +19,11 @@ func NewFileController(_logger *slog.Logger, _fileService *services.FileService)
 }
 
 
+// FetchAllUserFiles handles the HTTP request to fetch all files for a specific user.
+// It retrieves the user ID from the URL parameters and uses the file service to fetch the files.
+// If the user ID is not provided, it responds with a 400 Bad Request status and an error message.
+// If an error occurs while fetching the files, it responds with a 400 Bad Request status and the error message.
+// On success, it responds with a 200 OK status and the list of files.
 func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
 	userId := c.Param("userId")
 

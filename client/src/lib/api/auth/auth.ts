@@ -105,6 +105,12 @@ export const signInUsingEmail = async (
   }
 };
 
+/**
+ * Signs in a user using Google authentication.
+ *
+ * @param code - access code, received from google oauth
+ * @returns A promise that resolves to a `signFormResult` object containing the result of the sign-in attempt.
+ */
 export const signInUsingGoogle = async (
   code: string
 ): Promise<signFormResult> => {
@@ -141,6 +147,11 @@ export const signInUsingGoogle = async (
   }
 };
 
+/**
+ * Signs in a user using their GitHub account.
+ * @param code - access code, received from github oauth
+ * @returns A promise that resolves to a `signFormResult` object containing the result of the sign-in operation.
+ */
 export const signInUsingGithub = async (
   code: string
 ): Promise<signFormResult> => {

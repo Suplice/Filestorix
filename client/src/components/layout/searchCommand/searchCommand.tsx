@@ -29,7 +29,7 @@ const SearchCommand = () => {
     : [];
 
   return (
-    <div className="relative w-full max-w-md ml-4 ">
+    <div className="relative  max-w-md ml-4 ">
       <Command className="bg-muted rounded-none border-b border-gray-600 ">
         <CommandInput
           className="w-full border-b "
@@ -40,7 +40,7 @@ const SearchCommand = () => {
           onBlur={() => setIsFocused(false)}
         />
         {isFocused && (
-          <CommandList className="absolute top-full left-0 w-full z-50 max-w-lg bg-muted rounded-b-md ">
+          <CommandList className="absolute top-full left-0 w-full z-50 max-w-lg bg-muted rounded-b-md  shadow-xl ">
             {filteredItems.length === 0 ? (
               <CommandEmpty>No results found.</CommandEmpty>
             ) : (

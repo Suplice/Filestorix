@@ -1,12 +1,17 @@
 export type UserFile = {
   id: number;
-  UserId: number;
+  userId: number;
   name: string;
   type: "FILE" | "CATALOG";
   size: number;
   path: string;
   modifiedAt: Date;
-  CreatedAt: Date;
+  createdAt: Date;
   isTrashed: boolean;
   parentId: number;
+};
+
+export type FetchFilesResponse = {
+  files?: UserFile[];
+  error?: string;
 };

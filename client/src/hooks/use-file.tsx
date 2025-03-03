@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils/ApiResponses";
 
 export const useFile = () => {
   const dispatch = useDispatch();
@@ -21,15 +22,16 @@ export const useFile = () => {
     enabled: isAuthenticated,
     retry: 0,
     staleTime: 5 * 60 * 1000,
+    throwOnError: true,
   });
 
   useEffect(() => {
     if (query.data) {
-      dispatch(setFiles(query.data));
+      dispatch(setFiles(query.data.files!));
       return;
     } else if (query.error) {
       console.log(query.error);
-      toast.error(query.error?.message);
+      toast.error(getErrorMessage(query.error.message));
     }
   }, [query, dispatch]);
 

@@ -46,6 +46,9 @@ func (fs * FileService) FetchAllUserFiles(userId string) ([]*models.UserFile, er
 
 
 
+// UploadFiles handles the uploading of multiple files for a given user.
+// It parses the multipart form data from the request, validates the files,
+// and saves them to the user's designated folder.
 func (fs *FileService) UploadFiles(c *gin.Context, userId string) ([]*models.UserFile, error) {
 	err := c.Request.ParseMultipartForm(constants.MaxFileSize)
 	if err != nil {

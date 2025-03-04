@@ -35,6 +35,9 @@ func (fr *FileRepository) FetchAllUserFiles(userId uint) ([]*models.UserFile, er
 	return files, nil
 }
 
+// UploadFiles uploads multiple files for a given user to a specified folder.
+// It begins a database transaction for each file, handles the file upload,
+// commits the transaction, and appends the uploaded file information to the result slice.
 func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader, userFolder string) ([]*models.UserFile, error) {
 	var uploadedFiles []*models.UserFile
 
@@ -66,6 +69,10 @@ func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader
 
 
 
+// handleUpload handles the process of uploading a file. It performs the following steps:
+// Checks if the file already exists for the user.
+// If the file exists, it rolls back the transaction and returns an error.
+// If the file does not exist, it creates a new UserFile model and uploads it to the database.
 func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId uint, tx *gorm.DB) (*models.UserFile, error) {
 	fileName := fileHeader.Filename
 	filePath := filepath.Join(userFolder, fileName)
@@ -101,6 +108,9 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 	return fileToUpload, nil
 }
 
+// saveFileToDisk saves the uploaded file to the specified file path on disk.
+// It checks if the file already exists at the given path and returns an error if it does.
+// It also handles errors related to file corruption and failure during the saving process.
 func saveFileToDisk(fileHeader *multipart.FileHeader, filePath string) error {
 	if _, err := os.Stat(filePath); err == nil {
 		return errors.New(constants.ErrFileAlreadyExists)
@@ -129,6 +139,9 @@ func saveFileToDisk(fileHeader *multipart.FileHeader, filePath string) error {
 	return nil
 }
 
+// FileExists checks if a file with the given name exists for a specific user in the database.
+// It returns true if the file exists, otherwise false. If an error occurs during the database query,
+// it returns the error.
 func FileExists(userId uint, fileName string, db *gorm.DB) (bool, error) {
 	var count int64
 
@@ -138,6 +151,7 @@ func FileExists(userId uint, fileName string, db *gorm.DB) (bool, error) {
 
 }
 
+// UploadFileToDatabase uploads a file record to the database.
 func UploadFileToDatabase(fileToUpload *models.UserFile, tx *gorm.DB) error {
 
 	result := tx.Create(fileToUpload)

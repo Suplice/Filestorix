@@ -1,17 +1,18 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import { fetchUserFiles } from "@/lib/api/file/filesApi";
+import { fetchUserFiles, uploadFiles } from "@/lib/api/file/filesApi";
 import { setFiles } from "@/store/fileSlice";
 import { RootState } from "@/store/store";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils/ApiResponses";
+import { UserFile } from "@/lib/types/file";
 
 export const useFile = () => {
   const dispatch = useDispatch();
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const files = useSelector((state: RootState) => state.file.files);
 
   const { user, isAuthenticated } = useAuth();
@@ -35,16 +36,18 @@ export const useFile = () => {
     }
   }, [query, dispatch]);
 
-  //   const uploadMutation = useMutation({
-  //     mutationFn: (file: UserFile, userId: number) => uploadFile(file, userId),
-  //     onSuccess: (newFile: UserFile) => {
-  //       dispatch(addFile(newFile));
-  //       queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
-  //     },
-  //     onError: (error: Error) => {
-  //       toast.error(error.message);
-  //     },
-  //   });
+  const uploadMutation = useMutation({
+    mutationFn: (files: File[]) => uploadFiles(files, user!.ID),
+    onSuccess: (newFiles: UserFile[]) => {
+      console.log(newFiles);
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
 
   //   const deleteMutation = useMutation({
   //     mutationFn: (fileId: number, userId: number) => deleteFile(fileId, userId),
@@ -60,7 +63,7 @@ export const useFile = () => {
   return {
     files,
     isLoading: query.isLoading,
-    // uploadFile: uploadMutation.mutate,
+    uploadFiles: uploadMutation.mutate,
     // deleteFile: uploadMutation.mutate,
   };
 };

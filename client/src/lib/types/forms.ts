@@ -4,6 +4,7 @@ import {
   userEmailLoginSchema,
 } from "../schemas/userRelatedSchemas";
 import { User } from "../types/user";
+import { UserFile } from "./file";
 
 /**
  * Represents the form data for user sign-up.
@@ -41,4 +42,10 @@ export type signFormResponse = {
  */
 export type signFormResult = signFormResponse & {
   ok?: boolean;
+};
+
+export type AddFileResponse = {
+  files?: UserFile[];
+  message?: string;
+  error?: string;
 };

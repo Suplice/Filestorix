@@ -1,4 +1,5 @@
-import { FetchFilesResponse } from "@/lib/types/file";
+import { FetchFilesResponse, UserFile } from "@/lib/types/file";
+import { AddFileResponse } from "@/lib/types/forms";
 
 /**
  * Fetches the files associated with a specific user.
@@ -25,4 +26,32 @@ export const fetchUserFiles = async (
   }
 
   return { files: responseData.files };
+};
+
+export const uploadFiles = async (
+  files: File[],
+  userId: number
+): Promise<UserFile[]> => {
+  const filesData = new FormData();
+
+  for (const file of files) {
+    filesData.append("files", file);
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/add/${userId}`,
+    {
+      method: "POST",
+      credentials: "include",
+      body: filesData,
+    }
+  );
+
+  const responseData: AddFileResponse = await response.json();
+
+  if (!response.ok || !responseData.files) {
+    throw new Error(responseData.error);
+  }
+
+  return responseData.files;
 };

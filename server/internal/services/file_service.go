@@ -3,12 +3,15 @@ package services
 import (
 	"errors"
 	"log/slog"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/Suplice/Filestorix/internal/models"
 	"github.com/Suplice/Filestorix/internal/repositories"
 	"github.com/Suplice/Filestorix/internal/utils/constants"
+	"github.com/gin-gonic/gin"
 )
 
 type FileService struct {
@@ -38,6 +41,43 @@ func (fs * FileService) FetchAllUserFiles(userId string) ([]*models.UserFile, er
 	}
 
 	return files, nil
+
+}
+
+
+
+func (fs *FileService) UploadFiles(c *gin.Context, userId string) ([]*models.UserFile, error) {
+	err := c.Request.ParseMultipartForm(constants.MaxFileSize)
+	if err != nil {
+		return nil, errors.New(constants.ErrExceededFileSize)
+	}
+
+	form, _ := c.MultipartForm()
+	files := form.File["files"]
+
+	if len(files) == 0 {
+		return nil, errors.New(constants.ErrInvalidData)
+	}
+
+	userIDInt, err := convertUserIdToUint(userId)
+
+	if err != nil {
+		return nil, errors.New(constants.ErrUnauthorized)
+	}
+
+	userFolder := filepath.Join("/server/uploads", userId)
+	if err := os.MkdirAll(userFolder, os.ModeDir); err != nil {
+		return nil, errors.New(constants.ErrUnexpected)
+	}
+
+	uploadedFiles, err := fs.fileRepository.UploadFiles(userIDInt, files, userFolder)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return uploadedFiles, nil
+
 
 }
 

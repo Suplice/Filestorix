@@ -47,5 +47,6 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	fileRoutes := router.Group("/files") 
 	{
 		fileRoutes.GET("/fetchall/:userId", middleware.ValidateJWT(), fileController.FetchAllUserFiles)
+		fileRoutes.POST("/add/:userId", middleware.ValidateJWT(), fileController.UploadFiles)
 	}
 }

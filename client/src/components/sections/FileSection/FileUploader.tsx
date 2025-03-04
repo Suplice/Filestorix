@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useFile } from "@/hooks/use-file";
 import { cn } from "@/lib/utils/utils";
 import { X } from "lucide-react";
 import { useState, useCallback } from "react";
@@ -12,6 +13,7 @@ type FilePreview = {
 
 const FileUploader = () => {
   const [files, setFiles] = useState<FilePreview[]>([]);
+  const { uploadFiles } = useFile();
 
   const handleRemoveFile = (file: File) => {
     setFiles((prevFiles) => {
@@ -19,7 +21,10 @@ const FileUploader = () => {
     });
   };
 
-  const handleUpload = () => {};
+  const handleUploadFiles = () => {
+    uploadFiles(files.map((filePreview) => filePreview.file));
+    setFiles([]);
+  };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles((prevFiles) => {
@@ -116,7 +121,7 @@ const FileUploader = () => {
       </div>
       {files.length > 0 && (
         <div className="w-full flex justify-center mt-5">
-          <Button onClick={handleUpload}>Upload</Button>
+          <Button onClick={handleUploadFiles}>Upload</Button>
         </div>
       )}
     </>

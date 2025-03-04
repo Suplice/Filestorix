@@ -41,3 +41,24 @@ func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"files": files})
 
 }
+
+
+func (fc *FileController) UploadFiles(c * gin.Context) {
+	userId := c.Param("userId")
+
+	files, err := fc.fileService.UploadFiles(c, userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+		return
+	}
+
+
+	c.JSON(http.StatusOK, gin.H{
+		"files": files,
+		"message": constants.SuccessUploadFiles,
+	})
+
+
+
+}

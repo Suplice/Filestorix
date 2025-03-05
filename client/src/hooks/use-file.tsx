@@ -4,7 +4,7 @@ import { fetchUserFiles, uploadFiles } from "@/lib/api/file/filesApi";
 import { setFiles } from "@/store/fileSlice";
 import { RootState } from "@/store/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils/ApiResponses";
@@ -29,12 +29,27 @@ export const useFile = () => {
   useEffect(() => {
     if (query.data) {
       dispatch(setFiles(query.data.files!));
-      return;
     } else if (query.error) {
-      console.log(query.error);
       toast.error(getErrorMessage(query.error.message));
     }
-  }, [query, dispatch]);
+  }, [query.data, query.error, dispatch]);
+
+  const favoriteFiles = useMemo(() => {
+    return query.isLoading ? [] : files.filter((file) => file.isFavorite);
+  }, [query.isLoading, files]);
+
+  const recentFiles = useMemo(() => {
+    return query.isLoading
+      ? []
+      : [...files].sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+  }, [query.isLoading, files]);
+
+  const trashedFiles = useMemo(() => {
+    return query.isLoading ? [] : files.filter((file) => file.isTrashed);
+  }, [query.isLoading, files]);
 
   const uploadMutation = useMutation({
     mutationFn: (files: File[]) => uploadFiles(files, user!.ID),
@@ -49,21 +64,12 @@ export const useFile = () => {
     },
   });
 
-  //   const deleteMutation = useMutation({
-  //     mutationFn: (fileId: number, userId: number) => deleteFile(fileId, userId),
-  //     onSuccess: (fileId: number) => {
-  //       dispatch(removeFile(fileId));
-  //       queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
-  //     },
-  //     onError: (error: Error) => {
-  //       toast.error(error.message);
-  //     },
-  //   });
-
   return {
     files,
+    favoriteFiles,
+    recentFiles,
+    trashedFiles,
     isLoading: query.isLoading,
     uploadFiles: uploadMutation.mutate,
-    // deleteFile: uploadMutation.mutate,
   };
 };

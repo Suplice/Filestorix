@@ -35,7 +35,7 @@ const mainGroup = [
 ];
 
 const secondGroup = [
-  { title: "Starred", url: "/drive/starred", icon: Star },
+  { title: "Favorite", url: "/drive/favorite", icon: Star },
   { title: "Recent", url: "/drive/recent", icon: Search },
 ];
 

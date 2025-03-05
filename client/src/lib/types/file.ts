@@ -8,6 +8,7 @@ export type UserFile = {
   modifiedAt: Date;
   createdAt: Date;
   isTrashed: boolean;
+  isFavorite: boolean;
   parentId: number;
 };
 

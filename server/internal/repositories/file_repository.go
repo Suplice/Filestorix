@@ -93,6 +93,7 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 		Path: filePath,
 		IsTrashed: false,
 		ParentID: nil,
+		IsFavorite: false,
 	}
 
 	if err := UploadFileToDatabase(fileToUpload, tx); err != nil {

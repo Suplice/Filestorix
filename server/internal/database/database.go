@@ -40,7 +40,7 @@ func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&models.User{},
 		&models.UserFile{},
-		&models.FavoriteFile{},
+		//&models.FavoriteFile{},
 		&models.Thrash{},
 		&models.ActivityLog{},
 		&models.Settings{},

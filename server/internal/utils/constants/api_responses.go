@@ -11,16 +11,24 @@ import (
 const (
 	// Success message, when user successfully logged in
 	SuccessUserLoggedIn		= "USER_LOGGED_IN"
+	
 	// Success message, when user successfully logged out
 	SuccessUserLoggedOut	= "LOGGED_OUT"
+
 	// Success message, when user successfully registered
 	SuccessUserRegistered	= "USER_REGISTERED"
+
 	// Success message, when user successfully logged in via google
 	SuccessUserGoogleLogin	= "SUCCESS_GOOGLE_LOGIN"
+
 	// Success message, when user successfully logged in via github
 	SuccessUserGithubLogin = "SUCCESS_GITHUB_LOGIN"
+
 	// Success message, when user successfuly uploads files
 	SuccessUploadFiles = "SUCCESS_UPLOAD_FILES"
+
+	//Success message, when Catalog was created successfully
+	SuccessCreateCatalog = "SUCCES_UPLOAD_CATALOG"
 )
 
 // Api error messages

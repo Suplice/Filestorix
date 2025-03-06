@@ -7,7 +7,7 @@ interface FileTableHeaderProps {
   section: "Recent" | "Favorite" | "Trash" | "Main";
 }
 
-const FileTableHeader: React.FC<FileTableHeaderProps> = ({ section }) => {
+const FileTableHeader: React.FC<FileTableHeaderProps> = ({}) => {
   return (
     <div className="grid grid-cols-4 gap-4 p-4 bg-muted/80 text-muted-foreground font-medium border-b place-items-start">
       {headers.map((header) => (

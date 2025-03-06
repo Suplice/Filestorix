@@ -16,3 +16,15 @@ export type FetchFilesResponse = {
   files?: UserFile[];
   error?: string;
 };
+
+export type UploadCatalogRequest = {
+  name: string;
+  parentId: number | null;
+  userId: number;
+};
+
+export type UploadFilesRequest = {
+  files: File[];
+  parentId: number | null;
+  userId: number;
+};

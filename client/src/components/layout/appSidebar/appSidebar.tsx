@@ -46,9 +46,13 @@ const thirdGroup = [
 
 interface AppSidebarProps {
   handleOpenAddFile: () => void;
+  handleOpenAddFolder: () => void;
 }
 
-const AppSidebar: React.FC<AppSidebarProps> = ({ handleOpenAddFile }) => {
+const AppSidebar: React.FC<AppSidebarProps> = ({
+  handleOpenAddFile,
+  handleOpenAddFolder,
+}) => {
   const pathname = usePathname();
 
   return (
@@ -79,7 +83,9 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ handleOpenAddFile }) => {
               <DropdownMenuItem onClick={handleOpenAddFile}>
                 Add File
               </DropdownMenuItem>
-              <DropdownMenuItem>Add Folder</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleOpenAddFolder}>
+                Add Folder
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarGroup>

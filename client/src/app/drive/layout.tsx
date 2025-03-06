@@ -14,17 +14,24 @@ interface DriveLayoutProps {
 }
 
 const FileAdder = lazy(
-  () => import("@/components/sections/FileSection/FileAdder")
+  () => import("@/components/sections/FileSection/FileAdder/FileAdder")
+);
+
+const FolderAdder = lazy(
+  () => import("@/components/sections/FileSection/CatalogAdder/CatalogAdder")
 );
 
 const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
-  const { showModal, isOpen } = useModal();
+  const { showModal, isOpen, modalType } = useModal();
 
   return (
     <SidebarProvider>
       <AppSidebar
         handleOpenAddFile={() => {
-          showModal();
+          showModal("addFile", { parentId: null });
+        }}
+        handleOpenAddFolder={() => {
+          showModal("addFolder", { parentId: null });
         }}
       />
       <div className="flex flex-col w-full p-4 gap-4 bg-sidebar h-screen">
@@ -42,7 +49,10 @@ const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
         </main>
       </div>
       <Suspense fallback={<ModalLoadingSpinner />}>
-        {isOpen && <FileAdder />}
+        {isOpen && modalType == "addFile" && <FileAdder />}
+      </Suspense>
+      <Suspense fallback={<ModalLoadingSpinner />}>
+        {isOpen && modalType == "addFolder" && <FolderAdder />}
       </Suspense>
     </SidebarProvider>
   );

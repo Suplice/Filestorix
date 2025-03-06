@@ -22,6 +22,7 @@ export enum SuccessMessage {
   SUCCESS_GOOGLE_LOGIN = "Logged in via google successfully!",
   SUCCESS_GITHUB_LOGIN = "Logged in via github successfully!",
   SUCCESS_UPLOAD_FILES = "Uploaded files successfully!",
+  SUCCESS_UPLOAD_CATALOG = "Successfully created new catalog!",
 }
 
 export const getErrorMessage = (errorCode?: string): string => {

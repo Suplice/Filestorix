@@ -1,0 +1,49 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useFile } from "@/hooks/use-file";
+import { useModal } from "@/hooks/use-modal";
+import { addCatalogSchema } from "@/lib/schemas/fileRelatedSchemas";
+import { AddCatalogForm } from "@/lib/types/forms";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+const FolderUploader = () => {
+  const { uploadCatalog } = useFile();
+
+  const { hideModal, modalProps } = useModal();
+
+  const form = useForm<AddCatalogForm>({
+    resolver: zodResolver(addCatalogSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
+
+  const handleSubmit = (data: AddCatalogForm) => {
+    console.log(data.name);
+    uploadCatalog({ name: data.name, parentId: modalProps!.parentId });
+    hideModal();
+  };
+
+  return (
+    <form
+      onSubmit={form.handleSubmit(handleSubmit)}
+      className="flex flex-col gap-6 items-center justify-center"
+    >
+      <div className="p-4 border rounded-md w-full h-full dark:bg-neutral-900 transition-all max-h-96 overflow-auto flex  gap-2 flex-col ">
+        <Label>Catalog Name</Label>
+        <Input
+          type="text"
+          className="outline-none"
+          {...form.register("name")}
+        ></Input>
+        <p className="text-red-500">{form.formState.errors.name?.message}</p>
+      </div>
+
+      <Button type="submit"> Create Catalog </Button>
+    </form>
+  );
+};
+
+export default FolderUploader;

@@ -5,6 +5,7 @@ import {
 } from "../schemas/userRelatedSchemas";
 import { User } from "../types/user";
 import { UserFile } from "./file";
+import { addCatalogSchema } from "../schemas/fileRelatedSchemas";
 
 /**
  * Represents the form data for user sign-up.
@@ -46,6 +47,13 @@ export type signFormResult = signFormResponse & {
 
 export type AddFileResponse = {
   files?: UserFile[];
+  message?: string;
+  error?: string;
+};
+
+export type AddCatalogForm = z.infer<typeof addCatalogSchema>;
+
+export type AddCatalogResponse = {
   message?: string;
   error?: string;
 };

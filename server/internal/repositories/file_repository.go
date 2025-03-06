@@ -38,7 +38,7 @@ func (fr *FileRepository) FetchAllUserFiles(userId uint) ([]*models.UserFile, er
 // UploadFiles uploads multiple files for a given user to a specified folder.
 // It begins a database transaction for each file, handles the file upload,
 // commits the transaction, and appends the uploaded file information to the result slice.
-func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader, userFolder string) ([]*models.UserFile, error) {
+func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader, userFolder string, parentId *uint) ([]*models.UserFile, error) {
 	var uploadedFiles []*models.UserFile
 
 
@@ -51,7 +51,7 @@ func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader
 			return nil, errors.New(constants.ErrFailedSaving)
 		}
 
-		fileToUpload, err := handleUpload(fileHeader, userFolder, userId, tx)
+		fileToUpload, err := handleUpload(fileHeader, userFolder, userId, tx, parentId)
 
 		if err != nil {
 			return nil, err
@@ -73,12 +73,12 @@ func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader
 // Checks if the file already exists for the user.
 // If the file exists, it rolls back the transaction and returns an error.
 // If the file does not exist, it creates a new UserFile model and uploads it to the database.
-func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId uint, tx *gorm.DB) (*models.UserFile, error) {
+func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId uint, tx *gorm.DB, parentId *uint) (*models.UserFile, error) {
 	fileName := fileHeader.Filename
 	filePath := filepath.Join(userFolder, fileName)
 
 
-	exists, err := FileExists(userId, fileName, tx)
+	exists, err := FileExists(userId, fileName, tx, parentId)
 
 	if err != nil || exists {
 		tx.Rollback()
@@ -92,7 +92,7 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 		Size: fileHeader.Size,
 		Path: filePath,
 		IsTrashed: false,
-		ParentID: nil,
+		ParentID: parentId,
 		IsFavorite: false,
 	}
 
@@ -143,10 +143,11 @@ func saveFileToDisk(fileHeader *multipart.FileHeader, filePath string) error {
 // FileExists checks if a file with the given name exists for a specific user in the database.
 // It returns true if the file exists, otherwise false. If an error occurs during the database query,
 // it returns the error.
-func FileExists(userId uint, fileName string, db *gorm.DB) (bool, error) {
+func FileExists(userId uint, fileName string, db *gorm.DB, parentId *uint) (bool, error) {
 	var count int64
 
-	err := db.Model(&models.UserFile{}).Where("user_id = ? AND name = ?", userId, fileName).Count(&count).Error
+
+	err := db.Model(&models.UserFile{}).Where("user_id = ? AND name = ? AND parent_id = ?", userId, fileName, &parentId).Count(&count).Error
 
 	return count > 0, err
 
@@ -162,4 +163,22 @@ func UploadFileToDatabase(fileToUpload *models.UserFile, tx *gorm.DB) error {
 	}
 
 	return nil
+}
+
+
+func (fr *FileRepository) CreateCatalog(catalog *models.UserFile) (*models.UserFile, error) {
+
+	exists, err := FileExists(catalog.UserID, catalog.Name, fr.db, catalog.ParentID)
+
+	if err != nil || exists {
+		return nil, errors.New(constants.ErrFileAlreadyExists)
+	}
+
+	result := fr.db.Create(catalog)
+
+	if result.Error != nil {
+		return nil, errors.New(constants.ErrDBUnknown)
+	}
+
+	return catalog, nil
 }

@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/services"
 	"github.com/Suplice/Filestorix/internal/utils/constants"
 	"github.com/gin-gonic/gin"
@@ -45,8 +46,18 @@ func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
 
 func (fc *FileController) UploadFiles(c * gin.Context) {
 	userId := c.Param("userId")
+	parentId := c.PostForm("parentId")
 
-	files, err := fc.fileService.UploadFiles(c, userId)
+	tokenUserId, exists := c.Get("stringUserID")
+
+	if !exists || tokenUserId != userId {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return;
+	} 
+
+	files, err := fc.fileService.UploadFiles(c, userId, parentId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
@@ -59,6 +70,41 @@ func (fc *FileController) UploadFiles(c * gin.Context) {
 		"message": constants.SuccessUploadFiles,
 	})
 
+}
+
+func (fc *FileController) CreateCatalog(c *gin.Context) {
+	userId := c.Param("userId")
+	
+	var requestData dto.AddCatalogRequest
+
+    if err := c.ShouldBindJSON(&requestData); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": constants.ErrInvalidData})
+        return
+    }
+
+	tokenUserId, exists := c.Get("stringUserID")
+
+	if !exists || tokenUserId != userId {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return;
+	} 
+
+
+	catalog, err := fc.fileService.CreateCatalog(requestData.Name, requestData.ParentID, userId)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return;
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": 	constants.SuccessCreateCatalog,
+		"catalog":	catalog,
+	})
 
 
 }

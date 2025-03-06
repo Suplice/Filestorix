@@ -28,7 +28,7 @@ func NewFileService(_fileRepository *repositories.FileRepository, _logger *slog.
 // It converts the user ID from a string to a uint and then fetches the files
 // from the file repository.
 func (fs * FileService) FetchAllUserFiles(userId string) ([]*models.UserFile, error) {
-	numberUserId, err := convertUserIdToUint(userId)
+	numberUserId, err := convertStringToUint(userId)
 
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func (fs * FileService) FetchAllUserFiles(userId string) ([]*models.UserFile, er
 // UploadFiles handles the uploading of multiple files for a given user.
 // It parses the multipart form data from the request, validates the files,
 // and saves them to the user's designated folder.
-func (fs *FileService) UploadFiles(c *gin.Context, userId string) ([]*models.UserFile, error) {
+func (fs *FileService) UploadFiles(c *gin.Context, userId string, parentId string) ([]*models.UserFile, error) {
 	err := c.Request.ParseMultipartForm(constants.MaxFileSize)
 	if err != nil {
 		return nil, errors.New(constants.ErrExceededFileSize)
@@ -62,18 +62,31 @@ func (fs *FileService) UploadFiles(c *gin.Context, userId string) ([]*models.Use
 		return nil, errors.New(constants.ErrInvalidData)
 	}
 
-	userIDInt, err := convertUserIdToUint(userId)
+	userIDInt, err := convertStringToUint(userId)
 
 	if err != nil {
 		return nil, errors.New(constants.ErrUnauthorized)
 	}
+
+	var uintParentId *uint = nil
+
+
+	if parentId != "" {
+		parentIDInt, err := convertStringToUint(parentId)
+
+		if err != nil {
+			return nil, errors.New(constants.ErrUnexpected)
+		}
+		uintParentId = &parentIDInt
+	}
+	
 
 	userFolder := filepath.Join("/server/uploads", userId)
 	if err := os.MkdirAll(userFolder, os.ModeDir); err != nil {
 		return nil, errors.New(constants.ErrUnexpected)
 	}
 
-	uploadedFiles, err := fs.fileRepository.UploadFiles(userIDInt, files, userFolder)
+	uploadedFiles, err := fs.fileRepository.UploadFiles(userIDInt, files, userFolder, uintParentId)
 
 	if err != nil {
 		return nil, err
@@ -88,7 +101,7 @@ func (fs *FileService) UploadFiles(c *gin.Context, userId string) ([]*models.Use
 // It trims any leading or trailing whitespace from the input string,
 // then attempts to parse it as an unsigned integer (base 10, 32-bit).
 // If the parsing fails, it returns an error with a constant error message.
-func convertUserIdToUint(userId string) (uint, error) {
+func convertStringToUint(userId string) (uint, error) {
 	trimmedUserId := strings.TrimSpace(userId) 
 
 	numberUserId, err := strconv.ParseUint(trimmedUserId, 10, 32)
@@ -97,4 +110,33 @@ func convertUserIdToUint(userId string) (uint, error) {
 		return 0, errors.New(constants.ErrUnexpected)
 	}
 	return uint(numberUserId), nil
+}
+
+func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string) (*models.UserFile, error) {
+
+	UintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return nil, errors.New(constants.ErrUnexpected)
+	}
+
+	catalog := &models.UserFile{
+		UserID: UintUserId,
+		Name: name,
+		Type: "CATALOG",
+		Size: 0,
+		Path: "test",
+		IsTrashed: false,
+		ParentID: parentId,
+		IsFavorite: false,
+	}
+
+	result, err := fs.fileRepository.CreateCatalog(catalog)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
 }

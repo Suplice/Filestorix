@@ -58,7 +58,8 @@ func ValidateJWT() gin.HandlerFunc {
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": constants.ErrUnauthorized})
 		}
-
+		
+		c.Set("stringUserID", res)
 
 		c.Set("userID", userID)
 

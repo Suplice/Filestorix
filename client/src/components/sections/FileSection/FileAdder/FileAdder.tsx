@@ -1,6 +1,6 @@
 "use client";
 import FileUploader from "./FileUploader";
-import ModalPortal from "./ModalPortal";
+import ModalPortal from "../ModalPortal";
 
 const FileAdder = () => {
   return (

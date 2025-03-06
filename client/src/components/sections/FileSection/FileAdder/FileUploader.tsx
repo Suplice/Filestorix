@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useFile } from "@/hooks/use-file";
+import { useModal } from "@/hooks/use-modal";
 import { cn } from "@/lib/utils/utils";
 import { X } from "lucide-react";
 import { useState, useCallback } from "react";
@@ -14,6 +15,7 @@ type FilePreview = {
 const FileUploader = () => {
   const [files, setFiles] = useState<FilePreview[]>([]);
   const { uploadFiles } = useFile();
+  const { hideModal, modalProps } = useModal();
 
   const handleRemoveFile = (file: File) => {
     setFiles((prevFiles) => {
@@ -22,8 +24,12 @@ const FileUploader = () => {
   };
 
   const handleUploadFiles = () => {
-    uploadFiles(files.map((filePreview) => filePreview.file));
+    uploadFiles({
+      files: files.map((filePreview) => filePreview.file),
+      parentId: modalProps!.parentId,
+    });
     setFiles([]);
+    hideModal();
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {

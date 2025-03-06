@@ -1,14 +1,22 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import { fetchUserFiles, uploadFiles } from "@/lib/api/file/filesApi";
+import {
+  fetchUserFiles,
+  uploadFiles,
+  uploadCatalog,
+} from "@/lib/api/file/filesApi";
 import { setFiles } from "@/store/fileSlice";
 import { RootState } from "@/store/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/lib/utils/ApiResponses";
-import { UserFile } from "@/lib/types/file";
+import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
+import {
+  UploadCatalogRequest,
+  UploadFilesRequest,
+  UserFile,
+} from "@/lib/types/file";
 
 export const useFile = () => {
   const dispatch = useDispatch();
@@ -51,10 +59,25 @@ export const useFile = () => {
     return query.isLoading ? [] : files.filter((file) => file.isTrashed);
   }, [query.isLoading, files]);
 
-  const uploadMutation = useMutation({
-    mutationFn: (files: File[]) => uploadFiles(files, user!.ID),
+  const uploadFilesMutation = useMutation({
+    mutationFn: (data: Omit<UploadFilesRequest, "userId">) =>
+      uploadFiles({ ...data, userId: user!.ID }),
     onSuccess: (newFiles: UserFile[]) => {
       console.log(newFiles);
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
+  const uploadCatalogMutation = useMutation({
+    mutationFn: (data: Omit<UploadCatalogRequest, "userId">) =>
+      uploadCatalog({ ...data, userId: user!.ID }),
+    onSuccess: (message: string) => {
+      toast.success(getSuccessMessage(message));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
@@ -70,6 +93,7 @@ export const useFile = () => {
     recentFiles,
     trashedFiles,
     isLoading: query.isLoading,
-    uploadFiles: uploadMutation.mutate,
+    uploadCatalog: uploadCatalogMutation.mutate,
+    uploadFiles: uploadFilesMutation.mutate,
   };
 };

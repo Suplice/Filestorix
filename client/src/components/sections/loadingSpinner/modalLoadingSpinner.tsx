@@ -1,11 +1,11 @@
-import ModalPortal from "../FileSection/ModalPortal";
+import ModalWrapper from "../FileSection/ModalWrapper";
 import LoadingSpinner from "./loadingSpinner";
 
 const modalLoadingSpinner = () => {
   return (
-    <ModalPortal>
+    <ModalWrapper>
       <LoadingSpinner />
-    </ModalPortal>
+    </ModalWrapper>
   );
 };
 

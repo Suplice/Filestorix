@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
+import ModalRoot from "@/components/layout/modalRoot/modalRoot";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,7 @@ export default function RootLayout({
               <AuthProvider>
                 {children}
                 <Toaster />
-                <div id="modal-root" />
+                <ModalRoot />
               </AuthProvider>
             </ThemeProvider>
           </QueryClientProvider>

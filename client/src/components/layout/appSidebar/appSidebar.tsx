@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal";
 
 const mainGroup = [
   { title: "Main Page", url: "/drive", icon: Home },
@@ -44,16 +45,9 @@ const thirdGroup = [
   { title: "Storage", url: "/drive/storage", icon: HardDrive },
 ];
 
-interface AppSidebarProps {
-  handleOpenAddFile: () => void;
-  handleOpenAddFolder: () => void;
-}
-
-const AppSidebar: React.FC<AppSidebarProps> = ({
-  handleOpenAddFile,
-  handleOpenAddFolder,
-}) => {
+const AppSidebar = () => {
   const pathname = usePathname();
+  const { showModal } = useModal();
 
   return (
     <Sidebar
@@ -80,10 +74,18 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleOpenAddFile}>
+              <DropdownMenuItem
+                onClick={() => {
+                  showModal("addFile", { parentId: null });
+                }}
+              >
                 Add File
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleOpenAddFolder}>
+              <DropdownMenuItem
+                onClick={() => {
+                  showModal("addFolder", { parentId: null });
+                }}
+              >
                 Add Folder
               </DropdownMenuItem>
             </DropdownMenuContent>

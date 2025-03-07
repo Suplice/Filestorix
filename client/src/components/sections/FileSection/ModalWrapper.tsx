@@ -1,12 +1,11 @@
 "use client";
 import { useModal } from "@/hooks/use-modal";
-import { createPortal } from "react-dom";
 
-interface ModalPortalProps {
+interface ModalWrapperProps {
   children: React.ReactNode;
 }
 
-const ModalPortal: React.FC<ModalPortalProps> = ({ children }) => {
+const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
   const { hideModal } = useModal();
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -14,7 +13,7 @@ const ModalPortal: React.FC<ModalPortalProps> = ({ children }) => {
     hideModal();
   };
 
-  return createPortal(
+  return (
     <div
       className="w-full h-full flex items-center justify-center pointer-events-auto backdrop-brightness-[0.3]"
       onClick={handleBackdropClick}
@@ -22,9 +21,8 @@ const ModalPortal: React.FC<ModalPortalProps> = ({ children }) => {
       <div onClick={(e) => e.stopPropagation()} className="relative">
         {children}
       </div>
-    </div>,
-    document.getElementById("modal-root")!
+    </div>
   );
 };
 
-export default ModalPortal;
+export default ModalWrapper;

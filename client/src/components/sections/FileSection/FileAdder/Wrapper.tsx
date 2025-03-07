@@ -1,12 +1,12 @@
 "use client";
+import ModalWrapper from "../ModalWrapper";
 import FileUploader from "./FileUploader";
-import ModalPortal from "../ModalPortal";
 
 const FileUploaderWrapper = () => {
   return (
-    <ModalPortal>
+    <ModalWrapper>
       <FileUploader />
-    </ModalPortal>
+    </ModalWrapper>
   );
 };
 

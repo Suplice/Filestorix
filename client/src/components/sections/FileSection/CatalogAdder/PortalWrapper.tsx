@@ -1,10 +1,10 @@
 import ModalPortal from "../ModalPortal";
-import FolderUploader from "./CatalogUploader";
+import CatalogUploader from "./CatalogUploader";
 
 const CatalogUploaderWrapper = () => {
   return (
     <ModalPortal>
-      <FolderUploader />
+      <CatalogUploader />
     </ModalPortal>
   );
 };

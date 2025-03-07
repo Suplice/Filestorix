@@ -3,6 +3,7 @@ import AppSidebar from "@/components/layout/appSidebar/appSidebar";
 import SearchCommand from "@/components/layout/searchCommand/searchCommand";
 import ErrorLoadFilesFallback from "@/components/sections/FileSection/ErrorLoadFilesFallback";
 import ModalLoadingSpinner from "@/components/sections/loadingSpinner/modalLoadingSpinner";
+import ThemeModeToggle from "@/components/sections/ThemeSection/ThemeModeToggle";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useModal } from "@/hooks/use-modal";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
@@ -36,6 +37,7 @@ const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
       />
       <div className="flex flex-col w-full p-4 gap-4 bg-sidebar h-screen">
         <SearchCommand />
+        <ThemeModeToggle />
         <main className="w-full h-[calc(100%-60px)] rounded-2xl bg-card p-6">
           <QueryErrorResetBoundary>
             <ErrorBoundary

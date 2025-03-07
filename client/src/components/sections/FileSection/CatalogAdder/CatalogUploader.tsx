@@ -8,7 +8,7 @@ import { AddCatalogForm } from "@/lib/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-const FolderUploader = () => {
+const CatalogUploader = () => {
   const { uploadCatalog } = useFile();
 
   const { hideModal, modalProps } = useModal();
@@ -31,7 +31,7 @@ const FolderUploader = () => {
       onSubmit={form.handleSubmit(handleSubmit)}
       className="flex flex-col gap-6 items-center justify-center"
     >
-      <div className="p-4 border rounded-md w-full h-full dark:bg-neutral-900 transition-all max-h-96 overflow-auto flex  gap-2 flex-col ">
+      <div className="p-4 border rounded-md w-full h-full dark:bg-neutral-900 bg-accent transition-all max-h-96 overflow-auto flex  gap-2 flex-col ">
         <Label>Catalog Name</Label>
         <Input
           type="text"
@@ -46,4 +46,4 @@ const FolderUploader = () => {
   );
 };
 
-export default FolderUploader;
+export default CatalogUploader;

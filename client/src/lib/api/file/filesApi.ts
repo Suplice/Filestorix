@@ -33,6 +33,13 @@ export const fetchUserFiles = async (
   return { files: responseData.files };
 };
 
+/**
+ * Uploads files to the server.
+ *
+ * @param data - The request data containing the files to upload and optional parentId.
+ * @returns A promise that resolves to an array of UserFile objects.
+ * @throws Will throw an error if the response is not ok or if the response data does not contain files.
+ */
 export const uploadFiles = async (
   data: UploadFilesRequest
 ): Promise<UserFile[]> => {
@@ -63,6 +70,13 @@ export const uploadFiles = async (
   return responseData.files;
 };
 
+/**
+ * Uploads a catalog to the server.
+ *
+ * @param data - The request data for uploading the catalog.
+ * @returns A promise that resolves to a string message indicating the result of the upload.
+ * @throws An error if the upload fails or the response is not ok.
+ */
 export const uploadCatalog = async (
   data: UploadCatalogRequest
 ): Promise<string> => {
@@ -71,7 +85,7 @@ export const uploadCatalog = async (
     {
       method: "POST",
       credentials: "include",
-      body: JSON.stringify({ name: name, parentId: data.parentId }),
+      body: JSON.stringify({ name: data.name, parentId: data.parentId }),
     }
   );
 

@@ -1,7 +1,7 @@
 import ModalPortal from "../ModalPortal";
 import FolderUploader from "./CatalogUploader";
 
-const FolderAdder = () => {
+const CatalogUploaderWrapper = () => {
   return (
     <ModalPortal>
       <FolderUploader />
@@ -9,4 +9,4 @@ const FolderAdder = () => {
   );
 };
 
-export default FolderAdder;
+export default CatalogUploaderWrapper;

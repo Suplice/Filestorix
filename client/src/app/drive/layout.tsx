@@ -13,12 +13,12 @@ interface DriveLayoutProps {
   children: React.ReactNode;
 }
 
-const FileAdder = lazy(
-  () => import("@/components/sections/FileSection/FileAdder/FileAdder")
+const FileAdderWrapper = lazy(
+  () => import("@/components/sections/FileSection/FileAdder/PortalWrapper")
 );
 
-const FolderAdder = lazy(
-  () => import("@/components/sections/FileSection/CatalogAdder/CatalogAdder")
+const CatalogUploaderWrapper = lazy(
+  () => import("@/components/sections/FileSection/CatalogAdder/PortalWrapper")
 );
 
 const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
@@ -49,10 +49,10 @@ const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
         </main>
       </div>
       <Suspense fallback={<ModalLoadingSpinner />}>
-        {isOpen && modalType == "addFile" && <FileAdder />}
+        {isOpen && modalType == "addFile" && <FileAdderWrapper />}
       </Suspense>
       <Suspense fallback={<ModalLoadingSpinner />}>
-        {isOpen && modalType == "addFolder" && <FolderAdder />}
+        {isOpen && modalType == "addFolder" && <CatalogUploaderWrapper />}
       </Suspense>
     </SidebarProvider>
   );

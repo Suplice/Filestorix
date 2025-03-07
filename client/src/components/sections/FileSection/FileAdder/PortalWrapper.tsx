@@ -2,7 +2,7 @@
 import FileUploader from "./FileUploader";
 import ModalPortal from "../ModalPortal";
 
-const FileAdder = () => {
+const FileUploaderWrapper = () => {
   return (
     <ModalPortal>
       <FileUploader />
@@ -10,4 +10,4 @@ const FileAdder = () => {
   );
 };
 
-export default FileAdder;
+export default FileUploaderWrapper;

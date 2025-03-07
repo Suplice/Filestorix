@@ -45,14 +45,33 @@ export type signFormResult = signFormResponse & {
   ok?: boolean;
 };
 
+/**
+ * Represents the response received after attempting to add a file.
+ *
+ * @property {UserFile[]} [files] - An optional array of user files that were successfully added.
+ * @property {string} [message] - An optional message providing additional information about the response.
+ * @property {string} [error] - An optional error message if the file addition was unsuccessful.
+ */
 export type AddFileResponse = {
   files?: UserFile[];
   message?: string;
   error?: string;
 };
 
+/**
+ * Represents the form data for adding a catalog.
+ *
+ * This type is inferred from the `addCatalogSchema` using Zod's `infer` method.
+ * It ensures that the form data adheres to the structure and validation rules defined in the schema.
+ */
 export type AddCatalogForm = z.infer<typeof addCatalogSchema>;
 
+/**
+ * Represents the response received after attempting to add a catalog.
+ *
+ * @property {string} [message] - An optional message indicating the result of the operation.
+ * @property {string} [error] - An optional error message if the operation failed.
+ */
 export type AddCatalogResponse = {
   message?: string;
   error?: string;

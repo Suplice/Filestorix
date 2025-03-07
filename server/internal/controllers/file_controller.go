@@ -44,6 +44,13 @@ func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
 }
 
 
+// UploadFiles handles the uploading of files for a specific user.
+// It retrieves the userId from the URL parameters and the parentId from the form data.
+// The function checks if the tokenUserId from the context matches the userId parameter.
+// If they do not match, it returns an unauthorized error response.
+// If the IDs match, it calls the fileService's UploadFiles method to handle the file upload.
+// If the upload is successful, it returns a JSON response with the uploaded files and a success message.
+// If there is an error during the upload, it returns a bad request error response.
 func (fc *FileController) UploadFiles(c * gin.Context) {
 	userId := c.Param("userId")
 	parentId := c.PostForm("parentId")
@@ -72,6 +79,14 @@ func (fc *FileController) UploadFiles(c * gin.Context) {
 
 }
 
+
+// CreateCatalog handles the creation of a new catalog for a user.
+// It expects a JSON payload with the catalog details and a userId parameter in the URL.
+// The function performs the following steps:
+// It Binds the JSON payload to the AddCatalogRequest struct.
+// It Validates the userId from the URL against the tokenUserId from the context.
+// It Calls the fileService to create the catalog.
+// It Returns a JSON response with the created catalog or an error message.
 func (fc *FileController) CreateCatalog(c *gin.Context) {
 	userId := c.Param("userId")
 	

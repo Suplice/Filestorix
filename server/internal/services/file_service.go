@@ -112,6 +112,9 @@ func convertStringToUint(userId string) (uint, error) {
 	return uint(numberUserId), nil
 }
 
+// CreateCatalog creates a new catalog (directory) for a user.
+// It takes the catalog name, an optional parent ID, and the user ID as input parameters.
+// The function returns the created UserFile model or an error if the creation fails.
 func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string) (*models.UserFile, error) {
 
 	UintUserId, err := convertStringToUint(userId)

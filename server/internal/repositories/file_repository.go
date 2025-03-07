@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"mime/multipart"
 	"os"
@@ -146,8 +147,22 @@ func saveFileToDisk(fileHeader *multipart.FileHeader, filePath string) error {
 func FileExists(userId uint, fileName string, db *gorm.DB, parentId *uint) (bool, error) {
 	var count int64
 
+	fmt.Print("userId", userId, "fileName", fileName, "parentId", parentId)
 
-	err := db.Model(&models.UserFile{}).Where("user_id = ? AND name = ? AND parent_id = ?", userId, fileName, &parentId).Count(&count).Error
+
+	query := db.Model(&models.UserFile{}).
+    Where("user_id = ? AND name = ?", userId, fileName)
+
+	if parentId == nil {
+		query = query.Where("parent_id IS NULL")
+	} else {
+		query = query.Where("parent_id = ?", parentId)
+	}
+
+	err := query.Count(&count).Error
+
+
+	fmt.Print("count", count)
 
 	return count > 0, err
 
@@ -166,6 +181,10 @@ func UploadFileToDatabase(fileToUpload *models.UserFile, tx *gorm.DB) error {
 }
 
 
+// CreateCatalog creates a new catalog (directory) in the file repository.
+// It first checks if a catalog with the same name already exists for the user
+// in the specified parent directory. If it does, an error is returned.
+// If the catalog does not exist, it is created in the database.
 func (fr *FileRepository) CreateCatalog(catalog *models.UserFile) (*models.UserFile, error) {
 
 	exists, err := FileExists(catalog.UserID, catalog.Name, fr.db, catalog.ParentID)

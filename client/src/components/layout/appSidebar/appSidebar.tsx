@@ -76,14 +76,14 @@ const AppSidebar = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() => {
-                  showModal("addFile", { parentId: null });
+                  showModal("FileUploader", { parentId: null });
                 }}
               >
                 Add File
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  showModal("addFolder", { parentId: null });
+                  showModal("CatalogUploader", { parentId: null });
                 }}
               >
                 Add Folder

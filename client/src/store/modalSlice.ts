@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export type ModalType = "addFile" | "addFolder" | null;
+export type ModalType =
+  | "FileUploader"
+  | "CatalogUploader"
+  | "FileNameChanger"
+  | null;
 
 export type ModalProps = {
   parentId: number | null;

@@ -5,12 +5,16 @@ import { useModal } from "@/hooks/use-modal";
 import { lazy, Suspense } from "react";
 
 const FileUploader = lazy(
-  () => import("@/components/sections/FileSection/FileAdder/FileUploader")
+  () => import("@/components/sections/FileSection/FileUploader/FileUploader")
 );
 
 const CatalogUploader = lazy(
   () =>
     import("@/components/sections/FileSection/CatalogUploader/CatalogUploader")
+);
+
+const FileRenamer = lazy(
+  () => import("@/components/sections/FileSection/FileRenamer/FileRenamer")
 );
 
 const ModalRoot = () => {
@@ -19,11 +23,12 @@ const ModalRoot = () => {
   if (!isOpen) return;
 
   return (
-    <div>
+    <div id="modal-root">
       <ModalWrapper>
         <Suspense fallback={<LoadingSpinner />}>
-          {modalType == "addFile" && <FileUploader />}
-          {modalType == "addFolder" && <CatalogUploader />}
+          {modalType == "FileUploader" && <FileUploader />}
+          {modalType == "CatalogUploader" && <CatalogUploader />}
+          {modalType == "FileNameChanger" && <FileRenamer />}
         </Suspense>
       </ModalWrapper>
     </div>

@@ -8,6 +8,7 @@ type UserFile struct {
 	ID 				uint 			`gorm:"primaryKey;autoIncrement" json:"id"`
 	UserID 			uint 			`gorm:"not null;constraint:OnDelete:CASCADE" json:"userId"`
 	Name 			string 			`gorm:"size:255;not null" json:"name"`
+	Extension		string			`gorm:"size:10" json:"extension"`
 	Type 			string 			`gorm:"size:255;not null" json:"type"`
 	Size 			int64 			`gorm:"not null" json:"size"`
 	Path 			string 			`gorm:"size:255;not null" json:"path"`

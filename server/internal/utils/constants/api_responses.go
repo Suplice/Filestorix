@@ -29,6 +29,9 @@ const (
 
 	//Success message, when Catalog was created successfully
 	SuccessCreateCatalog = "SUCCES_UPLOAD_CATALOG"
+
+	//Seccess message, when file was renamed successfully
+	SuccessRenamingFile = "SUCCESS_RENAME_FILE"
 )
 
 // Api error messages

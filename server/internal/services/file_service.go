@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/models"
 	"github.com/Suplice/Filestorix/internal/repositories"
 	"github.com/Suplice/Filestorix/internal/utils/constants"
@@ -126,6 +127,7 @@ func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string)
 	catalog := &models.UserFile{
 		UserID: UintUserId,
 		Name: name,
+		Extension: "",
 		Type: "CATALOG",
 		Size: 0,
 		Path: "test",
@@ -142,4 +144,8 @@ func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string)
 
 	return result, nil
 
+}
+
+func (fs *FileService) RenameFile(data dto.RenameFileRequest) error {
+	return fs.fileRepository.RenameFile(data.FileId, data.Name)
 }

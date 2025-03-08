@@ -1,4 +1,4 @@
-import { UserFile } from "@/lib/types/file";
+import { RenameFileResult, UserFile } from "@/lib/types/file";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FileState {
@@ -22,8 +22,19 @@ const fileSlice = createSlice({
     removeFile: (state, action: PayloadAction<number>) => {
       state.files = state.files.filter((file) => file.id !== action.payload);
     },
+    renameFile: (
+      state,
+      action: PayloadAction<Omit<RenameFileResult, "message">>
+    ) => {
+      const file = state.files.find(
+        (file) => file.id === action.payload.fileId
+      );
+      if (file) {
+        file.name = action.payload.newName!;
+      }
+    },
   },
 });
 
-export const { setFiles, addFile, removeFile } = fileSlice.actions;
+export const { setFiles, addFile, removeFile, renameFile } = fileSlice.actions;
 export default fileSlice.reducer;

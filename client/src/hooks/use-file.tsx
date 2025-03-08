@@ -4,15 +4,18 @@ import {
   fetchUserFiles,
   uploadFiles,
   uploadCatalog,
+  renameFile,
 } from "@/lib/api/file/filesApi";
-import { setFiles } from "@/store/fileSlice";
+import { setFiles, renameFile as sliceFileRename } from "@/store/fileSlice";
 import { RootState } from "@/store/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
-import {
+import type {
+  RenameFileRequest,
+  RenameFileResult,
   UploadCatalogRequest,
   UploadFilesRequest,
   UserFile,
@@ -87,12 +90,27 @@ export const useFile = () => {
     },
   });
 
+  const renameFileMutation = useMutation({
+    mutationFn: (data: Omit<RenameFileRequest, "userId">) =>
+      renameFile({ ...data, userId: user!.ID }),
+    onSuccess: (result: RenameFileResult) => {
+      toast.success(getSuccessMessage(result.message));
+      dispatch(
+        sliceFileRename({ fileId: result.fileId, newName: result.newName })
+      );
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+  });
+
   return {
     files,
     favoriteFiles,
     recentFiles,
     trashedFiles,
     isLoading: query.isLoading,
+    renameFile: renameFileMutation.mutate,
     uploadCatalog: uploadCatalogMutation.mutate,
     uploadFiles: uploadFilesMutation.mutate,
   };

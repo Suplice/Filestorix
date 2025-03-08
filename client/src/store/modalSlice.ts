@@ -7,7 +7,8 @@ export type ModalType =
   | null;
 
 export type ModalProps = {
-  parentId: number | null;
+  parentId?: number | null;
+  fileId?: number;
 };
 interface ModalState {
   isOpen: boolean;

@@ -1,10 +1,16 @@
 import {
   FetchFilesResponse,
+  RenameFileRequest,
+  RenameFileResult,
   UploadCatalogRequest,
   UploadFilesRequest,
   UserFile,
 } from "@/lib/types/file";
-import { AddCatalogResponse, AddFileResponse } from "@/lib/types/forms";
+import {
+  AddCatalogResponse,
+  AddFileResponse,
+  RenameFileResponse,
+} from "@/lib/types/forms";
 
 /**
  * Fetches the files associated with a specific user.
@@ -96,4 +102,33 @@ export const uploadCatalog = async (
   }
 
   return responseData.message;
+};
+
+export const renameFile = async (
+  data: RenameFileRequest
+): Promise<RenameFileResult> => {
+  console.log(data.name, data.fileId);
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/rename/${data.userId}`,
+    {
+      method: "PUT",
+      credentials: "include",
+      body: JSON.stringify({ name: data.name, fileId: data.fileId }),
+    }
+  );
+
+  const responseData: RenameFileResponse = await response.json();
+
+  console.log(responseData);
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return {
+    newName: data.name,
+    fileId: data.fileId,
+    message: responseData.message,
+  };
 };

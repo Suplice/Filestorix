@@ -3,10 +3,12 @@ package repositories
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/Suplice/Filestorix/internal/models"
 	"github.com/Suplice/Filestorix/internal/utils/constants"
@@ -76,8 +78,12 @@ func (fr *FileRepository) UploadFiles(userId uint, files []*multipart.FileHeader
 // If the file does not exist, it creates a new UserFile model and uploads it to the database.
 func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId uint, tx *gorm.DB, parentId *uint) (*models.UserFile, error) {
 	fileName := fileHeader.Filename
+
 	filePath := filepath.Join(userFolder, fileName)
 
+	extension := filepath.Ext(fileHeader.Filename)
+	
+	name := strings.Split(filepath.Base(fileHeader.Filename), ".")[0]
 
 	exists, err := FileExists(userId, fileName, tx, parentId)
 
@@ -88,7 +94,8 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 
 	fileToUpload := &models.UserFile{
 		UserID : userId,
-		Name: fileHeader.Filename,
+		Name: name,
+		Extension: extension,
 		Type: "FILE",
 		Size: fileHeader.Size,
 		Path: filePath,
@@ -101,6 +108,12 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 		tx.Rollback()
 		return nil, err
 	}
+
+	stringFileId := fmt.Sprintf("%d", fileToUpload.ID)
+
+	filePath = filepath.Join(userFolder, stringFileId + extension)
+
+	fmt.Println("stringFileId", filePath)
 
 	if err := saveFileToDisk(fileHeader, filePath); err != nil {
 		tx.Rollback()
@@ -118,6 +131,7 @@ func saveFileToDisk(fileHeader *multipart.FileHeader, filePath string) error {
 		return errors.New(constants.ErrFileAlreadyExists)
 	}
 
+
 	src, err := fileHeader.Open()
 	if err != nil {
 		return errors.New(constants.ErrFileIsCorrupt)
@@ -132,7 +146,8 @@ func saveFileToDisk(fileHeader *multipart.FileHeader, filePath string) error {
 
 	defer dst.Close()
 
-	_, err = dst.ReadFrom(src)
+	_,err = io.Copy(dst, src)
+
 
 	if err != nil {
 		return errors.New(constants.ErrFileIsCorrupt)
@@ -200,4 +215,14 @@ func (fr *FileRepository) CreateCatalog(catalog *models.UserFile) (*models.UserF
 	}
 
 	return catalog, nil
+}
+
+func (fr *FileRepository) RenameFile(fileId uint, name string) error {
+	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("name", name)
+
+	if result.Error != nil {
+		return errors.New(result.Error.Error())
+	}
+
+	return nil
 }

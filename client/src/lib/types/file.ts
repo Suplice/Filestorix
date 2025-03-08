@@ -2,6 +2,7 @@ export type UserFile = {
   id: number;
   userId: number;
   name: string;
+  extension: string;
   type: "FILE" | "CATALOG";
   size: number;
   path: string;
@@ -27,4 +28,16 @@ export type UploadFilesRequest = {
   files: File[];
   parentId: number | null;
   userId: number;
+};
+
+export type RenameFileRequest = {
+  name: string;
+  fileId: number;
+  userId: number;
+};
+
+export type RenameFileResult = {
+  fileId?: number;
+  newName?: string;
+  message?: string;
 };

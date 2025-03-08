@@ -63,7 +63,6 @@ func ValidateJWT() gin.HandlerFunc {
 
 		c.Set("userID", userID)
 
-
 		c.Next()
 	}
 }

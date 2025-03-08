@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
 
@@ -26,10 +27,12 @@ func NewFileController(_logger *slog.Logger, _fileService *services.FileService)
 // If an error occurs while fetching the files, it responds with a 400 Bad Request status and the error message.
 // On success, it responds with a 200 OK status and the list of files.
 func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
-	userId := c.Param("userId")
+	userId, err := ValidateUserId(c)
 
-	if userId == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": constants.ErrUnauthorized})
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
@@ -52,17 +55,16 @@ func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
 // If the upload is successful, it returns a JSON response with the uploaded files and a success message.
 // If there is an error during the upload, it returns a bad request error response.
 func (fc *FileController) UploadFiles(c * gin.Context) {
-	userId := c.Param("userId")
 	parentId := c.PostForm("parentId")
 
-	tokenUserId, exists := c.Get("stringUserID")
+	userId, err := ValidateUserId(c)
 
-	if !exists || tokenUserId != userId {
+	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": constants.ErrUnauthorized,
+			"error": err.Error(),
 		})
-		return;
-	} 
+		return
+	}
 
 	files, err := fc.fileService.UploadFiles(c, userId, parentId)
 
@@ -88,24 +90,22 @@ func (fc *FileController) UploadFiles(c * gin.Context) {
 // It Calls the fileService to create the catalog.
 // It Returns a JSON response with the created catalog or an error message.
 func (fc *FileController) CreateCatalog(c *gin.Context) {
-	userId := c.Param("userId")
-	
+
+	userId, err := ValidateUserId(c)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	var requestData dto.AddCatalogRequest
 
     if err := c.ShouldBindJSON(&requestData); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": constants.ErrInvalidData})
         return
     }
-
-	tokenUserId, exists := c.Get("stringUserID")
-
-	if !exists || tokenUserId != userId {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": constants.ErrUnauthorized,
-		})
-		return;
-	} 
-
 
 	catalog, err := fc.fileService.CreateCatalog(requestData.Name, requestData.ParentID, userId)
 
@@ -122,4 +122,51 @@ func (fc *FileController) CreateCatalog(c *gin.Context) {
 	})
 
 
+}
+
+
+func (fc *FileController) RenameFile(c *gin.Context) {
+	_, err := ValidateUserId(c)
+
+	var requestData dto.RenameFileRequest
+
+	if err := c.ShouldBindJSON(&requestData); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrInvalidData,
+		})
+		return
+	}
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	err = fc.fileService.RenameFile(requestData)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success",
+	})
+}
+
+
+func ValidateUserId (c *gin.Context) (string, error) {
+	userId := c.Param("userId")
+
+	tokenUserId, exists := c.Get("stringUserID")
+
+	if !exists || tokenUserId != userId {
+		return "", errors.New(constants.ErrUnauthorized);
+	} 
+
+	return userId, nil
 }

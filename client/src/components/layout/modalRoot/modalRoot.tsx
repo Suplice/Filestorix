@@ -1,6 +1,7 @@
 "use client";
+import FileTrasher from "@/components/sections/FileSection/FileTrasher/FileTrasher";
 import ModalWrapper from "@/components/sections/FileSection/ModalWrapper";
-import LoadingSpinner from "@/components/sections/loadingSpinner/loadingSpinner";
+import LoadingSpinner from "@/components/sections/LoadingSpinner/LoadingSpinner";
 import { useModal } from "@/hooks/use-modal";
 import { lazy, Suspense } from "react";
 

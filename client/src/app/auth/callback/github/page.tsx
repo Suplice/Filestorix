@@ -1,5 +1,5 @@
 "use client";
-import LoadingSpinner from "@/components/sections/loadingSpinner/loadingSpinner";
+import LoadingSpinner from "@/components/sections/LoadingSpinner/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
 import { ErrorMessage } from "@/lib/utils/ApiResponses";
 import { useRouter, useSearchParams } from "next/navigation";

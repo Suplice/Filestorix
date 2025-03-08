@@ -6,7 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
-import ModalRoot from "@/components/layout/modalRoot/modalRoot";
+import ModalRoot from "@/components/layout/ModalRoot/ModalRoot";
 
 const queryClient = new QueryClient();
 

@@ -1,6 +1,6 @@
 "use client";
-import AppSidebar from "@/components/layout/appSidebar/appSidebar";
-import SearchCommand from "@/components/layout/searchCommand/searchCommand";
+import AppSidebar from "@/components/layout/AppSidebar/AppSidebar";
+import AppTopbar from "@/components/layout/AppTopbar/AppTopbar";
 import ErrorLoadFilesFallback from "@/components/sections/FileSection/ErrorLoadFilesFallback";
 import ThemeModeToggle from "@/components/sections/ThemeSection/ThemeModeToggle";
 import { SidebarProvider } from "@/components/ui/sidebar";

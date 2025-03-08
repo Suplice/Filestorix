@@ -1,4 +1,4 @@
-import LoadingSpinner from "@/components/sections/loadingSpinner/loadingSpinner";
+import LoadingSpinner from "@/components/sections/LoadingSpinner/LoadingSpinner";
 import { Suspense } from "react";
 
 interface GoogleAuthCallbackLayoutProps {

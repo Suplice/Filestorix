@@ -1,4 +1,6 @@
 import {
+  AddCatalogResponse,
+  AddFileResponse,
   FetchFilesResponse,
   RenameFileRequest,
   RenameFileResult,

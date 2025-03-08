@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import SigninForm from "@/components/sections/authSection/signinform";
+import SigninForm from "@/components/sections/AuthSection/Signinform";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 

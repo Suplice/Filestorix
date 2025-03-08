@@ -5,8 +5,13 @@ import {
   uploadFiles,
   uploadCatalog,
   renameFile,
+  trashFile,
 } from "@/lib/api/file/filesApi";
-import { setFiles, renameFile as sliceFileRename } from "@/store/fileSlice";
+import {
+  setFiles,
+  renameFile as sliceFileRename,
+  trashFile as sliceTrashFile,
+} from "@/store/fileSlice";
 import { RootState } from "@/store/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
@@ -16,6 +21,8 @@ import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 import type {
   RenameFileRequest,
   RenameFileResult,
+  TrashFileRequest,
+  TrashFileResult,
   UploadCatalogRequest,
   UploadFilesRequest,
   UserFile,

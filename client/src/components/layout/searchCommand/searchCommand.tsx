@@ -29,7 +29,7 @@ const SearchCommand = () => {
     : [];
 
   return (
-    <div className="relative  max-w-md ml-4 ">
+    <div className="relative  max-w-md mx-4 w-full">
       <Command className="bg-muted rounded-none border-b border-gray-600 ">
         <CommandInput
           className="w-full border-b "

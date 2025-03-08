@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +23,7 @@ const CatalogUploader = () => {
 
   const handleSubmit = (data: AddCatalogForm) => {
     console.log(data.name);
-    uploadCatalog({ name: data.name, parentId: modalProps!.parentId });
+    uploadCatalog({ name: data.name, parentId: modalProps!.parentId! });
     hideModal();
   };
 

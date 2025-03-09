@@ -22,16 +22,19 @@ const (
 	SuccessUserGoogleLogin	= "SUCCESS_GOOGLE_LOGIN"
 
 	// Success message, when user successfully logged in via github
-	SuccessUserGithubLogin = "SUCCESS_GITHUB_LOGIN"
+	SuccessUserGithubLogin 	= "SUCCESS_GITHUB_LOGIN"
 
 	// Success message, when user successfuly uploads files
-	SuccessUploadFiles = "SUCCESS_UPLOAD_FILES"
+	SuccessUploadFiles 		= "SUCCESS_UPLOAD_FILES"
 
 	//Success message, when Catalog was created successfully
-	SuccessCreateCatalog = "SUCCES_UPLOAD_CATALOG"
+	SuccessCreateCatalog 	= "SUCCES_UPLOAD_CATALOG"
 
-	//Seccess message, when file was renamed successfully
-	SuccessRenamingFile = "SUCCESS_RENAME_FILE"
+	// Success message, when file was renamed successfully
+	SuccessRenamingFile 	= "SUCCESS_RENAME_FILE"
+
+	// Success message, when trashing file is successful
+	SuccessTrashingFile 	= 	"SUCCESS_TRASH_FILE"
 )
 
 // Api error messages
@@ -82,6 +85,10 @@ const (
 	// while trying to open fileHeader
 	// or the file is broken
 	ErrFileIsCorrupt		= "FILE_CORRUPT_ERROR"
+
+	// Error message, when request file
+	// contains invalid data, f.e "fileId"
+	ErrInvalidFileData		= "INVALID_FILE_DATA"
 
 )
 

@@ -30,6 +30,7 @@ const ModalRoot = () => {
           {modalType == "FileUploader" && <FileUploader />}
           {modalType == "CatalogUploader" && <CatalogUploader />}
           {modalType == "FileNameChanger" && <FileRenamer />}
+          {modalType == "FileTrasher" && <FileTrasher />}
         </Suspense>
       </ModalWrapper>
     </div>

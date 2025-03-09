@@ -4,6 +4,7 @@ export type ModalType =
   | "FileUploader"
   | "CatalogUploader"
   | "FileNameChanger"
+  | "FileTrasher"
   | null;
 
 export type ModalProps = {

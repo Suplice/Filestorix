@@ -8,8 +8,8 @@ import {
   signInUsingGoogle,
   signUpUsingEmail,
 } from "@/lib/api/auth/auth";
-import { signFormResult, signInForm, signUpForm } from "@/lib/types/forms";
-import { fetchUserResult, User } from "@/lib/types/user";
+import { signInForm, signUpForm } from "@/lib/types/forms";
+import { fetchUserResult, signFormResult, User } from "@/lib/types/user";
 import { ErrorMessage, SuccessMessage } from "@/lib/utils/ApiResponses";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

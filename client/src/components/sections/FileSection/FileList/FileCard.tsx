@@ -52,8 +52,10 @@ const FileCard = ({ file }: { file: UserFile }) => {
             >
               Rename
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => console.log("Delete", file.id)}>
-              Delete
+            <DropdownMenuItem
+              onClick={() => showModal("FileTrasher", { fileId: file.id })}
+            >
+              Trash
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

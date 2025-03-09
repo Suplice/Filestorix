@@ -3,16 +3,15 @@ import {
   AddFileResponse,
   FetchFilesResponse,
   RenameFileRequest,
+  RenameFileResponse,
   RenameFileResult,
+  TrashFileRequest,
+  TrashFileResponse,
+  TrashFileResult,
   UploadCatalogRequest,
   UploadFilesRequest,
   UserFile,
 } from "@/lib/types/file";
-import {
-  AddCatalogResponse,
-  AddFileResponse,
-  RenameFileResponse,
-} from "@/lib/types/forms";
 
 /**
  * Fetches the files associated with a specific user.
@@ -21,11 +20,9 @@ import {
  * @returns A promise that resolves to a `FetchFilesResponse` object containing the user's files.
  * @throws An error if the fetch operation fails or the response is not ok.
  */
-export const fetchUserFiles = async (
-  userId: number
-): Promise<FetchFilesResponse> => {
+export const fetchUserFiles = async (): Promise<FetchFilesResponse> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/fetchall/${userId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/fetchall`,
     {
       method: "GET",
       credentials: "include",
@@ -61,7 +58,7 @@ export const uploadFiles = async (
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/addfile/${data.userId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/addfile`,
     {
       method: "POST",
       credentials: "include",
@@ -89,7 +86,7 @@ export const uploadCatalog = async (
   data: UploadCatalogRequest
 ): Promise<string> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/addcatalog/${data.userId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/addcatalog`,
     {
       method: "POST",
       credentials: "include",
@@ -112,7 +109,7 @@ export const renameFile = async (
   console.log(data.name, data.fileId);
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/rename/${data.userId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/rename`,
     {
       method: "PUT",
       credentials: "include",
@@ -133,4 +130,24 @@ export const renameFile = async (
     fileId: data.fileId,
     message: responseData.message,
   };
+};
+
+export const trashFile = async (
+  data: TrashFileRequest
+): Promise<TrashFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/trash/${data.fileId}`,
+    {
+      method: "PUT",
+      credentials: "include",
+    }
+  );
+
+  const responseData: TrashFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { fileId: data.fileId, message: responseData.message };
 };

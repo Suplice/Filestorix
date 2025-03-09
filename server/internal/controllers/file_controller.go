@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -27,19 +27,25 @@ func NewFileController(_logger *slog.Logger, _fileService *services.FileService)
 // If an error occurs while fetching the files, it responds with a 400 Bad Request status and the error message.
 // On success, it responds with a 200 OK status and the list of files.
 func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
-	userId, err := ValidateUserId(c)
 
-	if err != nil {
+	userId, exists := c.Get("stringUserID")
+
+	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
+			"error": constants.ErrUnauthorized,
 		})
 		return
 	}
 
-	files, err := fc.fileService.FetchAllUserFiles(userId)
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	fmt.Println("userId", stringUserId)
+
+	files, err := fc.fileService.FetchAllUserFiles(stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"files": files})
@@ -57,16 +63,19 @@ func (fc *FileController) FetchAllUserFiles(c *gin.Context) {
 func (fc *FileController) UploadFiles(c * gin.Context) {
 	parentId := c.PostForm("parentId")
 
-	userId, err := ValidateUserId(c)
+	userId, exists := c.Get("stringUserID")
 
-	if err != nil {
+	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
+			"error": constants.ErrUnauthorized,
 		})
 		return
 	}
 
-	files, err := fc.fileService.UploadFiles(c, userId, parentId)
+	stringUserId := fmt.Sprintf("%s", userId)
+
+
+	files, err := fc.fileService.UploadFiles(c, stringUserId, parentId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
@@ -91,14 +100,16 @@ func (fc *FileController) UploadFiles(c * gin.Context) {
 // It Returns a JSON response with the created catalog or an error message.
 func (fc *FileController) CreateCatalog(c *gin.Context) {
 
-	userId, err := ValidateUserId(c)
+	userId, exists := c.Get("stringUserID")
 
-	if err != nil {
+	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
+			"error": constants.ErrUnauthorized,
 		})
 		return
 	}
+
+	stringUserId := fmt.Sprintf("%s", userId)
 
 	var requestData dto.AddCatalogRequest
 
@@ -107,7 +118,7 @@ func (fc *FileController) CreateCatalog(c *gin.Context) {
         return
     }
 
-	catalog, err := fc.fileService.CreateCatalog(requestData.Name, requestData.ParentID, userId)
+	catalog, err := fc.fileService.CreateCatalog(requestData.Name, requestData.ParentID, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -126,47 +137,47 @@ func (fc *FileController) CreateCatalog(c *gin.Context) {
 
 
 func (fc *FileController) RenameFile(c *gin.Context) {
-	_, err := ValidateUserId(c)
 
 	var requestData dto.RenameFileRequest
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": constants.ErrInvalidData,
+			"error": constants.ErrInvalidFileData,
 		})
 		return
 	}
 
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	err = fc.fileService.RenameFile(requestData)
+	err := fc.fileService.RenameFile(requestData)
 
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "success",
+		"message": constants.SuccessRenamingFile,
+	})
+}
+
+func (fc *FileController) TrashFile(c *gin.Context) {
+
+	fileId := c.Param("fileId")
+
+
+	err := fc.fileService.TrashFile(fileId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessTrashingFile,
 	})
 }
 
 
-func ValidateUserId (c *gin.Context) (string, error) {
-	userId := c.Param("userId")
-
-	tokenUserId, exists := c.Get("stringUserID")
-
-	if !exists || tokenUserId != userId {
-		return "", errors.New(constants.ErrUnauthorized);
-	} 
-
-	return userId, nil
-}

@@ -82,7 +82,7 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 	filePath := filepath.Join(userFolder, fileName)
 
 	extension := filepath.Ext(fileHeader.Filename)
-	
+
 	name := strings.Split(filepath.Base(fileHeader.Filename), ".")[0]
 
 	exists, err := FileExists(userId, fileName, tx, parentId)
@@ -222,6 +222,16 @@ func (fr *FileRepository) RenameFile(fileId uint, name string) error {
 
 	if result.Error != nil {
 		return errors.New(result.Error.Error())
+	}
+
+	return nil
+}
+
+func (fr *FileRepository) TrashFile(fileId uint) error {
+	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_trashed", true)
+
+	if result.Error != nil {
+		return errors.New(constants.ErrDBUnknown)
 	}
 
 	return nil

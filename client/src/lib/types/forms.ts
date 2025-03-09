@@ -3,17 +3,10 @@ import {
   userEmailRegistrationSchema,
   userEmailLoginSchema,
 } from "../schemas/userRelatedSchemas";
-import { User } from "../types/user";
-import { UserFile } from "./file";
 import {
   addCatalogSchema,
   renameFileSchema,
 } from "../schemas/fileRelatedSchemas";
-
-type BaseResponse = {
-  error?: string;
-  message?: string;
-};
 
 /**
  * Represents the form data for user sign-up.
@@ -26,41 +19,6 @@ export type signUpForm = z.infer<typeof userEmailRegistrationSchema>;
  * This type is inferred from the `userEmailLoginSchema`.
  */
 export type signInForm = z.infer<typeof userEmailLoginSchema>;
-
-/**
- * Represents the response from a sign form submission.
- *
- * @property {User} [user] - The user object if the sign form submission is successful.
- * @property {string} [message] - An optional message providing additional information about the response.
- * @property {string} [error] - A string describing the error if the sign form submission fails.
- * @property {number} [sessionExpiresAt] - A number which describes date when auth cookie will expire
- */
-export type signFormResponse = BaseResponse & {
-  user?: User;
-};
-
-/**
- * Represents the result of a sign form operation.
- *
- * @property {boolean} ok - Indicates whether the operation was successful.
- * @property {string} [error] - An optional error message if the operation failed.
- * @property {User} [user] - An optional user object if the operation was successful.
- * @property {string} [message] - An optional message received after success
- */
-export type signFormResult = signFormResponse & {
-  ok?: boolean;
-};
-
-/**
- * Represents the response received after attempting to add a file.
- *
- * @property {UserFile[]} [files] - An optional array of user files that were successfully added.
- * @property {string} [message] - An optional message providing additional information about the response.
- * @property {string} [error] - An optional error message if the file addition was unsuccessful.
- */
-export type AddFileResponse = BaseResponse & {
-  files?: UserFile[];
-};
 
 /**
  * Represents the form data for adding a catalog.
@@ -76,8 +34,5 @@ export type AddCatalogForm = z.infer<typeof addCatalogSchema>;
  * @property {string} [message] - An optional message indicating the result of the operation.
  * @property {string} [error] - An optional error message if the operation failed.
  */
-export type AddCatalogResponse = BaseResponse;
 
 export type RenameFileForm = z.infer<typeof renameFileSchema>;
-
-export type RenameFileResponse = BaseResponse;

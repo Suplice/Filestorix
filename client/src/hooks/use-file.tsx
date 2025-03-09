@@ -37,7 +37,7 @@ export const useFile = () => {
 
   const query = useQuery({
     queryKey: ["files", user?.ID],
-    queryFn: () => fetchUserFiles(user!.ID),
+    queryFn: () => fetchUserFiles(),
     enabled: isAuthenticated,
     retry: 0,
     staleTime: 5 * 60 * 1000,
@@ -70,8 +70,7 @@ export const useFile = () => {
   }, [query.isLoading, files]);
 
   const uploadFilesMutation = useMutation({
-    mutationFn: (data: Omit<UploadFilesRequest, "userId">) =>
-      uploadFiles({ ...data, userId: user!.ID }),
+    mutationFn: (data: UploadFilesRequest) => uploadFiles(data),
     onSuccess: (newFiles: UserFile[]) => {
       console.log(newFiles);
     },
@@ -84,8 +83,7 @@ export const useFile = () => {
   });
 
   const uploadCatalogMutation = useMutation({
-    mutationFn: (data: Omit<UploadCatalogRequest, "userId">) =>
-      uploadCatalog({ ...data, userId: user!.ID }),
+    mutationFn: (data: UploadCatalogRequest) => uploadCatalog(data),
     onSuccess: (message: string) => {
       toast.success(getSuccessMessage(message));
     },
@@ -98,8 +96,7 @@ export const useFile = () => {
   });
 
   const renameFileMutation = useMutation({
-    mutationFn: (data: Omit<RenameFileRequest, "userId">) =>
-      renameFile({ ...data, userId: user!.ID }),
+    mutationFn: (data: RenameFileRequest) => renameFile(data),
     onSuccess: (result: RenameFileResult) => {
       toast.success(getSuccessMessage(result.message));
       dispatch(
@@ -109,6 +106,23 @@ export const useFile = () => {
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
+  const trashFileMutation = useMutation({
+    mutationFn: (data: TrashFileRequest) => trashFile(data),
+    onSuccess: (result: TrashFileResult) => {
+      toast.success(getSuccessMessage(result.message));
+      dispatch(sliceTrashFile({ fileId: result.fileId }));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
   });
 
   return {
@@ -117,6 +131,7 @@ export const useFile = () => {
     recentFiles,
     trashedFiles,
     isLoading: query.isLoading,
+    trashFile: trashFileMutation.mutate,
     renameFile: renameFileMutation.mutate,
     uploadCatalog: uploadCatalogMutation.mutate,
     uploadFiles: uploadFilesMutation.mutate,

@@ -1,10 +1,10 @@
+import { signInForm, signUpForm } from "@/lib/types/forms";
 import {
+  fetchUserResponse,
+  fetchUserResult,
   signFormResponse,
   signFormResult,
-  signInForm,
-  signUpForm,
-} from "@/lib/types/forms";
-import { fetchUserResponse, fetchUserResult } from "@/lib/types/user";
+} from "@/lib/types/user";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 
 /**

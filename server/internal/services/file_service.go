@@ -149,3 +149,14 @@ func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string)
 func (fs *FileService) RenameFile(data dto.RenameFileRequest) error {
 	return fs.fileRepository.RenameFile(data.FileId, data.Name)
 }
+
+func (fs *FileService) TrashFile(fileId string) error {
+
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.TrashFile(uintFileId)
+}

@@ -1,42 +1,85 @@
 "use client";
-import { useFile } from "@/hooks/use-file";
 import FileCard from "./FileCard";
+import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { UserFile, FileRoute } from "@/lib/types/file";
+import FileTableSkeleton from "./FileTableSkeleton";
+import FileRouteManager from "./FileRouteManager";
 
 interface FileTableProps {
-  section: "Recent" | "Favorite" | "Trash" | "Main";
+  files: UserFile[];
+  isLoading: boolean;
+  section: string;
 }
 
-const FileTable: React.FC<FileTableProps> = ({ section }) => {
-  const { files, isLoading, favoriteFiles, trashedFiles, recentFiles } =
-    useFile();
+const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
+  const [parentId, setParentId] = useState<number | null>(null);
+  const [route, setRoute] = useState<FileRoute[]>([
+    {
+      sectionName: section,
+      catalogId: null,
+    },
+  ]);
 
-  let filesToMap = files;
-  switch (section) {
-    case "Recent":
-      filesToMap = recentFiles;
-      break;
-    case "Favorite":
-      filesToMap = favoriteFiles;
-      break;
-    case "Trash":
-      filesToMap = trashedFiles;
-      break;
-  }
+  const handleFolderClick = (fileId: number, fileName: string) => {
+    const file = files.find((file) => file.id === fileId);
+    if (file?.type === "CATALOG") {
+      setParentId(fileId);
+      setRoute([...route, { sectionName: fileName, catalogId: fileId }]);
+    }
+  };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!filesToMap || filesToMap.length === 0) {
-    return <div>No files found</div>;
-  }
+  const handleChangeRoute = (catalogId: number | null) => {
+    setParentId(catalogId);
+    const newRouteIndex = route.findIndex(
+      (route) => route.catalogId === catalogId
+    );
+    setRoute(route.slice(0, newRouteIndex + 1));
+  };
 
   return (
-    <div className="flex flex-col gap-2 overflow-y-auto h-full px-2 no-scrollbar">
-      {filesToMap.map((file) => (
-        <FileCard key={file.id} file={file} />
-      ))}
-    </div>
+    <>
+      <FileRouteManager routes={route} handleChangeRoute={handleChangeRoute} />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[40%]">Name</TableHead>
+            <TableHead className="w-[20%]">Size</TableHead>
+            <TableHead className="w-[20%]">Type</TableHead>
+            <TableHead className="w-[20%] text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        {isLoading ? (
+          <FileTableSkeleton />
+        ) : (
+          <TableBody>
+            {files.length === 0 ? (
+              <TableRow>
+                <TableCell>No files found</TableCell>
+              </TableRow>
+            ) : (
+              files.map(
+                (file) =>
+                  file.parentId === parentId && (
+                    <FileCard
+                      file={file}
+                      key={file.id}
+                      handleFolderClick={handleFolderClick}
+                    />
+                  )
+              )
+            )}
+          </TableBody>
+        )}
+      </Table>
+    </>
   );
 };
 

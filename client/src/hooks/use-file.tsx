@@ -130,7 +130,7 @@ export const useFile = () => {
     favoriteFiles,
     recentFiles,
     trashedFiles,
-    isLoading: query.isLoading,
+    isLoading: query.isPending || query.isFetching,
     trashFile: trashFileMutation.mutate,
     renameFile: renameFileMutation.mutate,
     uploadCatalog: uploadCatalogMutation.mutate,

@@ -15,6 +15,11 @@ export type UserFile = {
   parentId: number;
 };
 
+export type FileRoute = {
+  sectionName: string;
+  catalogId: number | null;
+};
+
 export type FetchFilesResponse = {
   files?: UserFile[];
   error?: string;

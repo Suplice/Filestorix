@@ -1,5 +1,4 @@
 "use client";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,8 +10,14 @@ import { MoreVertical, FileText, Folder } from "lucide-react";
 import { UserFile } from "@/lib/types/file";
 import { useMemo } from "react";
 import { useModal } from "@/hooks/use-modal";
+import { TableCell, TableRow } from "@/components/ui/table";
 
-const FileCard = ({ file }: { file: UserFile }) => {
+interface FileCardProps {
+  handleFolderClick: (fileId: number, catalogName: string) => void;
+  file: UserFile;
+}
+
+const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
   const { showModal } = useModal();
 
   const formatSize = useMemo(() => {
@@ -24,27 +29,38 @@ const FileCard = ({ file }: { file: UserFile }) => {
   }, [file.size]);
 
   return (
-    <Card className="grid grid-cols-4 items-center gap-4 p-4 border-b">
-      <div className="flex items-center gap-2">
-        {file.type === "CATALOG" ? (
-          <Folder className="h-5 w-5 text-yellow-500" />
-        ) : (
-          <FileText className="h-5 w-5 text-blue-500" />
-        )}
-        <span>{file.name}</span>
-      </div>
-      <span>{formatSize}</span>
-      <span className="capitalize">{file.type.toLowerCase()}</span>
-      <div className="flex items-center justify-between">
-        <span>{new Date(file.createdAt).toLocaleDateString()}</span>
+    <TableRow
+      key={file.id}
+      onDoubleClick={() => handleFolderClick(file.id, file.name)}
+    >
+      <TableCell className="">
+        <div className="flex flex-row gap-3">
+          {file.type === "CATALOG" ? (
+            <Folder className="h-5 w-5 text-yellow-500" />
+          ) : (
+            <FileText className="h-5 w-5 text-blue-500" />
+          )}
+          <span
+            className="font-medium cursor-pointer"
+            onClick={() => handleFolderClick(file.id, file.name)}
+          >
+            {file.name}
+          </span>
+        </div>
+      </TableCell>
+      <TableCell>{formatSize}</TableCell>
+      <TableCell className="capitalize">{file.type.toLowerCase()}</TableCell>
+      <TableCell className="text-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
-              <MoreVertical className="h-5 w-5" />
+              <MoreVertical className="h-5 w-5 text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => console.log("Open", file.name)}>
+            <DropdownMenuItem
+              onClick={() => handleFolderClick(file.id, file.name)}
+            >
               Open
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -59,8 +75,8 @@ const FileCard = ({ file }: { file: UserFile }) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
-    </Card>
+      </TableCell>
+    </TableRow>
   );
 };
 

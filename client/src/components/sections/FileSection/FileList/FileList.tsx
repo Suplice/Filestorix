@@ -1,16 +1,30 @@
+"use client";
+import { useFile } from "@/hooks/use-file";
 import FileTable from "./FileTable";
-import FileTableHeader from "./FileTableHeader";
 
 interface FileListProps {
   section: "Recent" | "Favorite" | "Trash" | "Main";
 }
 
 const FileList: React.FC<FileListProps> = ({ section }) => {
+  const { files, isLoading, favoriteFiles, trashedFiles, recentFiles } =
+    useFile();
+
+  let filesToMap = files;
+  switch (section) {
+    case "Recent":
+      filesToMap = recentFiles;
+      break;
+    case "Favorite":
+      filesToMap = favoriteFiles;
+      break;
+    case "Trash":
+      filesToMap = trashedFiles;
+      break;
+  }
+
   return (
-    <div className="flex flex-col h-full overflow-hidden gap-4">
-      <FileTableHeader section={section} />
-      <FileTable section={section} />
-    </div>
+    <FileTable files={filesToMap} isLoading={isLoading} section={section} />
   );
 };
 

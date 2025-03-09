@@ -4,6 +4,7 @@ import ModalWrapper from "@/components/sections/FileSection/ModalWrapper";
 import LoadingSpinner from "@/components/sections/LoadingSpinner/LoadingSpinner";
 import { useModal } from "@/hooks/use-modal";
 import { lazy, Suspense } from "react";
+import SearchCommand from "../SearchCommand/SearchCommand";
 
 const FileUploader = lazy(
   () => import("@/components/sections/FileSection/FileUploader/FileUploader")
@@ -31,6 +32,7 @@ const ModalRoot = () => {
           {modalType == "CatalogUploader" && <CatalogUploader />}
           {modalType == "FileNameChanger" && <FileRenamer />}
           {modalType == "FileTrasher" && <FileTrasher />}
+          {modalType == "Searchbar" && <SearchCommand />}
         </Suspense>
       </ModalWrapper>
     </div>

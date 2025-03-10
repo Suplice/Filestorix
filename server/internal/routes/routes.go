@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// SetupAuthRoutes sets up the authentication routes for the given router.
+// SetupRoutes sets up the routes for the given router.
 // It initializes the necessary repositories, services, and controllers
 // for handling authentication-related requests.
 //
@@ -19,7 +19,7 @@ import (
 //   - router: The Gin engine instance to which the authentication routes will be added.
 //   - db: The Gorm database instance used for database operations.
 //   - logger: The slog.Logger instance used for logging.
-func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
+func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	// Setup Repositories
 	authRepository := repositories.NewAuthRepository(db, logger)
 	userRepository := repositories.NewUserRepository(db, logger)
@@ -51,5 +51,6 @@ func SetupAuthRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.POST("/addcatalog", middleware.ValidateJWT(), fileController.CreateCatalog)
 		fileRoutes.PUT("/rename", middleware.ValidateJWT(), fileController.RenameFile)
 		fileRoutes.PUT("/trash/:fileId", middleware.ValidateJWT(), fileController.TrashFile)
+		fileRoutes.GET("/getfile/:fileName", middleware.ValidateJWT(), fileController.GetFile)
 	}
 }

@@ -39,7 +39,7 @@ func NewServer(db *gorm.DB, logger *slog.Logger) *Server {
 		AllowCredentials: true,
 	}))
 
-	routes.SetupAuthRoutes(server.router, server.db, logger)
+	routes.SetupRoutes(server.router, server.db, logger)
 	
 
 	return server

@@ -71,7 +71,7 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
                     <FileCard
                       file={file}
                       key={file.id}
-                      handleFolderClick={handleFolderClick}
+                      handleClick={handleFolderClick}
                     />
                   )
               )

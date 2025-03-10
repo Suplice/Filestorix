@@ -5,11 +5,13 @@ export type ModalType =
   | "CatalogUploader"
   | "FileNameChanger"
   | "FileTrasher"
+  | "FilePreview"
   | null;
 
 export type ModalProps = {
   parentId?: number | null;
   fileId?: number;
+  fileName?: string;
 };
 interface ModalState {
   isOpen: boolean;

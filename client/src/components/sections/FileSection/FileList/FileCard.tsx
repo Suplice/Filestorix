@@ -13,11 +13,11 @@ import { useModal } from "@/hooks/use-modal";
 import { TableCell, TableRow } from "@/components/ui/table";
 
 interface FileCardProps {
-  handleFolderClick: (fileId: number, catalogName: string) => void;
+  handleClick: (fileId: number, catalogName: string) => void;
   file: UserFile;
 }
 
-const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
+const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
   const { showModal } = useModal();
 
   const formatSize = useMemo(() => {
@@ -28,10 +28,20 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
     return `${(file.size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   }, [file.size]);
 
+  const handleFileClick = () => {
+    showModal("FilePreview", { fileName: file.id + file.extension });
+  };
+
   return (
     <TableRow
       key={file.id}
-      onDoubleClick={() => handleFolderClick(file.id, file.name)}
+      onDoubleClick={() => {
+        if (file.type === "CATALOG") {
+          handleClick(file.id, file.name);
+        } else {
+          handleFileClick();
+        }
+      }}
     >
       <TableCell className="">
         <div className="flex flex-row gap-3">
@@ -42,7 +52,13 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
           )}
           <span
             className="font-medium cursor-pointer"
-            onClick={() => handleFolderClick(file.id, file.name)}
+            onClick={() => {
+              if (file.type === "CATALOG") {
+                handleClick(file.id, file.name);
+              } else {
+                handleFileClick();
+              }
+            }}
           >
             {file.name}
           </span>
@@ -59,7 +75,13 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
-              onClick={() => handleFolderClick(file.id, file.name)}
+              onClick={() => {
+                if (file.type === "CATALOG") {
+                  handleClick(file.id, file.name);
+                } else {
+                  handleFileClick();
+                }
+              }}
             >
               Open
             </DropdownMenuItem>

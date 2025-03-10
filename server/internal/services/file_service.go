@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -159,4 +160,20 @@ func (fs *FileService) TrashFile(fileId string) error {
 	}
 
 	return fs.fileRepository.TrashFile(uintFileId)
+}
+
+func (fs *FileService) GetFile(fileId string, userId string) (string, error) {
+
+	safeFileId := path.Base(fileId)
+	safeUserId := path.Base(userId)
+
+
+	filePath := filepath.Join("/server/uploads", safeUserId, safeFileId)
+
+
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		return "", errors.New("File does not exist")
+	}
+
+	return filePath, nil
 }

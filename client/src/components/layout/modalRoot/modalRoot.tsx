@@ -1,10 +1,8 @@
 "use client";
-import FileTrasher from "@/components/sections/FileSection/FileTrasher/FileTrasher";
 import ModalWrapper from "@/components/sections/FileSection/ModalWrapper";
 import LoadingSpinner from "@/components/sections/LoadingSpinner/LoadingSpinner";
 import { useModal } from "@/hooks/use-modal";
 import { lazy, Suspense } from "react";
-import SearchCommand from "../SearchCommand/SearchCommand";
 
 const FileUploader = lazy(
   () => import("@/components/sections/FileSection/FileUploader/FileUploader")
@@ -17,6 +15,14 @@ const CatalogUploader = lazy(
 
 const FileRenamer = lazy(
   () => import("@/components/sections/FileSection/FileRenamer/FileRenamer")
+);
+
+const FileTrasher = lazy(
+  () => import("@/components/sections/FileSection/FileTrasher/FileTrasher")
+);
+
+const FilePreview = lazy(
+  () => import("@/components/sections/FileSection/FilePreview/FilePreview")
 );
 
 const ModalRoot = () => {
@@ -32,7 +38,7 @@ const ModalRoot = () => {
           {modalType == "CatalogUploader" && <CatalogUploader />}
           {modalType == "FileNameChanger" && <FileRenamer />}
           {modalType == "FileTrasher" && <FileTrasher />}
-          {modalType == "Searchbar" && <SearchCommand />}
+          {modalType == "FilePreview" && <FilePreview />}
         </Suspense>
       </ModalWrapper>
     </div>

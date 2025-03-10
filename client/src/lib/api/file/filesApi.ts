@@ -151,3 +151,21 @@ export const trashFile = async (
 
   return { fileId: data.fileId, message: responseData.message };
 };
+
+export const getFile = async (fileName: string): Promise<Blob> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/getfile/${fileName}`,
+    {
+      credentials: "include",
+      method: "GET",
+    }
+  );
+
+  if (!response.ok) {
+    const responseData = await response.json();
+    throw new Error(responseData.error || "Failed to fetch file");
+  }
+
+  const blob = await response.blob();
+  return blob;
+};

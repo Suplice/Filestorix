@@ -34,7 +34,10 @@ const (
 	SuccessRenamingFile 	= "SUCCESS_RENAME_FILE"
 
 	// Success message, when trashing file is successful
-	SuccessTrashingFile 	= 	"SUCCESS_TRASH_FILE"
+	SuccessTrashingFile 	= "SUCCESS_TRASH_FILE"
+
+	// Success message, when deleting file is successful
+	SuccessDeletingFile		= "SUCCESS_DELETE_FILE"	
 )
 
 // Api error messages
@@ -93,6 +96,9 @@ const (
 	// Error message, when requested file
 	// does not exist on server side
 	ErrFileDoesNotExist 	= "FILE_NOT_EXIST"
+
+	// Error message, when deleting file fails
+	ErrDeletingFile			= "ERROR_DELETE_FILE"
 
 )
 

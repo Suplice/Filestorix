@@ -241,3 +241,13 @@ func (fr *FileRepository) TrashFile(fileId uint) error {
 
 	return nil
 }
+
+func (fr *FileRepository) DeleteFile(fileId uint) error {
+	result := fr.db.Where("id = ?", fileId).Delete(&models.UserFile{})
+
+	if result.Error != nil {
+		return errors.New(constants.ErrDeletingFile)
+	}
+
+	return nil
+}

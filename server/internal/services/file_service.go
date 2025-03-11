@@ -186,3 +186,13 @@ func (fs *FileService) GetFile(fileId string, userId string) (string, error) {
 
 	return filePath, nil
 }
+
+func (fs *FileService) DeleteFile(fileId string) error {
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.DeleteFile(uintFileId)
+}

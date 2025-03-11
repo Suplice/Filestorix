@@ -202,7 +202,7 @@ export const deleteFile = async (
     `${process.env.NEXT_PUBLIC_API_URL}/files/delete/${data.fileId}`,
     {
       credentials: "include",
-      method: "POST",
+      method: "DELETE",
     }
   );
 

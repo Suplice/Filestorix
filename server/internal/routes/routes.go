@@ -52,5 +52,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.PUT("/rename", middleware.ValidateJWT(), fileController.RenameFile)
 		fileRoutes.PUT("/trash/:fileId", middleware.ValidateJWT(), fileController.TrashFile)
 		fileRoutes.GET("/getfile/:fileName", middleware.ValidateJWT(), fileController.GetFile)
+		fileRoutes.DELETE("/delete/:fileId", middleware.ValidateJWT(), fileController.DeleteFile)
 	}
 }

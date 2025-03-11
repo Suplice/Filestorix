@@ -222,3 +222,20 @@ func (fc *FileController) GetFile(c *gin.Context) {
 
 	c.File(filePath)
 }
+
+func (fc *FileController) DeleteFile(c *gin.Context) {
+	fileId := c.Param("fileId")
+
+	err := fc.fileService.DeleteFile(fileId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessDeletingFile,
+	})
+}

@@ -217,6 +217,8 @@ func (fr *FileRepository) CreateCatalog(catalog *models.UserFile) (*models.UserF
 	return catalog, nil
 }
 
+// RenameFile updates the name of a file in the database identified by the given fileId.
+// It returns an error if the update operation fails.
 func (fr *FileRepository) RenameFile(fileId uint, name string) error {
 	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("name", name)
 
@@ -227,6 +229,9 @@ func (fr *FileRepository) RenameFile(fileId uint, name string) error {
 	return nil
 }
 
+// TrashFile marks a file as trashed in the database by setting the "is_trashed" field to true.
+// It takes a fileId as a parameter, which is the unique identifier of the file to be trashed.
+// If the operation is successful, it returns nil. Otherwise, it returns an error indicating the failure.
 func (fr *FileRepository) TrashFile(fileId uint) error {
 	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_trashed", true)
 

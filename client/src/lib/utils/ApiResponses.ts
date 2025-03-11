@@ -13,6 +13,7 @@ export enum ErrorMessage {
   FAILED_SAVING_FILES = "An error occured while trying to save files",
   FILE_ALREADY_EXISTS = "A file with the same name already exists on your disk. Please rename the file and try again.",
   FILE_CORRUPT_ERROR = "Saving file failed, one of your files might be corrupt, please try again.",
+  FILE_NOT_EXIST = "The file you tried to open does not exist, please reload or try again.",
 }
 
 export enum SuccessMessage {

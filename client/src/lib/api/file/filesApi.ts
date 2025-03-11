@@ -103,6 +103,14 @@ export const uploadCatalog = async (
   return responseData.message;
 };
 
+/**
+ * Renames a file by sending a PUT request to the server.
+ *
+ * @param data - An object containing the new name and the file ID.
+ * @returns A promise that resolves to an object containing the new name, file ID, and a message from the server.
+ * @throws An error if the response is not ok or if there is no message in the response data.
+ *
+ */
 export const renameFile = async (
   data: RenameFileRequest
 ): Promise<RenameFileResult> => {
@@ -132,6 +140,13 @@ export const renameFile = async (
   };
 };
 
+/**
+ * Moves a file to the trash.
+ *
+ * @param data - The request data containing the file ID to be trashed.
+ * @returns A promise that resolves to the result of the trash operation, including the file ID and a message.
+ * @throws An error if the response is not ok or if there is no message in the response data.
+ */
 export const trashFile = async (
   data: TrashFileRequest
 ): Promise<TrashFileResult> => {
@@ -152,6 +167,13 @@ export const trashFile = async (
   return { fileId: data.fileId, message: responseData.message };
 };
 
+/**
+ * Fetches a file from the server and returns it as a Blob.
+ *
+ * @param fileName - The name of the file to fetch.
+ * @returns A promise that resolves to a Blob containing the file data.
+ * @throws An error if the fetch operation fails or the server returns a non-OK status.
+ */
 export const getFile = async (fileName: string): Promise<Blob> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/files/getfile/${fileName}`,

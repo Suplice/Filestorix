@@ -147,10 +147,16 @@ func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string)
 
 }
 
+// RenameFile renames a file identified by the given FileId to the new name provided in the RenameFileRequest.
+// It delegates the renaming operation to the fileRepository.
 func (fs *FileService) RenameFile(data dto.RenameFileRequest) error {
 	return fs.fileRepository.RenameFile(data.FileId, data.Name)
 }
 
+// TrashFile moves the specified file to the trash.
+// It takes a fileId as a string, converts it to an unsigned integer,
+// and then calls the file repository to trash the file.
+// If the fileId is invalid and cannot be converted, it returns an error.
 func (fs *FileService) TrashFile(fileId string) error {
 
 	uintFileId, err := convertStringToUint(fileId)
@@ -162,6 +168,9 @@ func (fs *FileService) TrashFile(fileId string) error {
 	return fs.fileRepository.TrashFile(uintFileId)
 }
 
+// GetFile retrieves the file path for a given file ID and user ID.
+// It ensures that the file ID and user ID are safe by using the base name of the paths.
+// If the file does not exist, it returns an error indicating that the file does not exist.
 func (fs *FileService) GetFile(fileId string, userId string) (string, error) {
 
 	safeFileId := path.Base(fileId)
@@ -172,7 +181,7 @@ func (fs *FileService) GetFile(fileId string, userId string) (string, error) {
 
 
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return "", errors.New("File does not exist")
+		return "", errors.New(constants.ErrFileDoesNotExist)
 	}
 
 	return filePath, nil

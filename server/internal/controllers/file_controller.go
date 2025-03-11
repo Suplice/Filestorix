@@ -136,6 +136,11 @@ func (fc *FileController) CreateCatalog(c *gin.Context) {
 }
 
 
+// RenameFile handles the renaming of a file based on the provided JSON request data.
+// It binds the JSON request to a RenameFileRequest DTO and calls the file service to rename the file.
+// If the JSON binding fails, it responds with an unauthorized status and an error message.
+// If the renaming operation fails, it responds with a bad request status and the error message.
+// On success, it responds with an OK status and a success message.
 func (fc *FileController) RenameFile(c *gin.Context) {
 
 	var requestData dto.RenameFileRequest
@@ -161,6 +166,10 @@ func (fc *FileController) RenameFile(c *gin.Context) {
 	})
 }
 
+// TrashFile handles the request to move a file to the trash.
+// It retrieves the file ID from the URL parameters and calls the TrashFile method
+// of the file service. If an error occurs, it responds with a bad request status
+// and the error message. Otherwise, it responds with a success message.
 func (fc *FileController) TrashFile(c *gin.Context) {
 
 	fileId := c.Param("fileId")
@@ -182,6 +191,11 @@ func (fc *FileController) TrashFile(c *gin.Context) {
 
 
 
+// GetFile handles the HTTP request to retrieve a file based on the provided file name.
+// It expects a "fileName" parameter in the URL and a "stringUserID" in the context.
+// If the "stringUserID" is not found, it responds with an unauthorized status.
+// If the file retrieval fails, it responds with a bad request status and the error message.
+// On success, it serves the requested file to the client.
 func (fc *FileController) GetFile(c *gin.Context) {
 	fileName := c.Param("fileName")
 

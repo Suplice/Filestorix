@@ -61,13 +61,6 @@ export type AddCatalogResponse = BaseResponse;
 
 export type RenameFileResponse = BaseResponse;
 
-/**
- * Represents the response received after attempting to add a file.
- *
- * @property {UserFile[]} [files] - An optional array of user files that were successfully added.
- * @property {string} [message] - An optional message providing additional information about the response.
- * @property {string} [error] - An optional error message if the file addition was unsuccessful.
- */
 export type AddFileResponse = BaseResponse & {
   files?: UserFile[];
 };

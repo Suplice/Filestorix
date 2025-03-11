@@ -90,6 +90,10 @@ const (
 	// contains invalid data, f.e "fileId"
 	ErrInvalidFileData		= "INVALID_FILE_DATA"
 
+	// Error message, when requested file
+	// does not exist on server side
+	ErrFileDoesNotExist 	= "FILE_NOT_EXIST"
+
 )
 
 // ParseDBError parses the provided database error based on the given context.

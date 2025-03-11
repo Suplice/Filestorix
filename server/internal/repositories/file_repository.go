@@ -242,12 +242,78 @@ func (fr *FileRepository) TrashFile(fileId uint) error {
 	return nil
 }
 
-func (fr *FileRepository) DeleteFile(fileId uint) error {
+func (fr *FileRepository) DeleteFile(fileId uint, userId string, extension string) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		return errors.New(constants.ErrUnexpected)
+	}
+
 	result := fr.db.Where("id = ?", fileId).Delete(&models.UserFile{})
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(constants.ErrDeletingFile)
 	}
 
+	err := DeleteFileFromDisk(fileId, userId, extension)
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
 	return nil
+}
+
+func DeleteFileFromDisk(fileId uint, userId string, extension string) error {
+	// Convert fileId to string
+	stringFileId := fmt.Sprintf("%d", fileId)
+
+	// Define the directory where your files are located
+	dirPath := "/server/uploads/"
+
+	// Create the pattern to match any file starting with fileId (with any extension)
+	pattern := filepath.Join(dirPath, userId, stringFileId + extension) // Matches anything starting with fileId
+
+	// Use Glob to find all matching files
+	files, err := filepath.Glob(pattern)
+	if err != nil {
+		return errors.New(constants.ErrDeletingFile)
+	}
+
+	// If no files are found
+	if len(files) == 0 {
+		return nil
+	}
+
+	// Loop through the files and remove them
+	for _, file := range files {
+		err := os.Remove(file)
+		if err != nil {
+			fmt.Printf("Error deleting file %s: %v\n", file, err)
+			return errors.New(constants.ErrDeletingFile)
+		} else {
+			fmt.Printf("File %s deleted successfully\n", file)
+		}
+	}
+	return nil
+}
+
+
+func (fr *FileRepository) GetFile(fileId string) (*models.UserFile, error) {
+	var file *models.UserFile
+
+
+	result := fr.db.Where("id = ?", fileId).First(&file)
+	
+	if result.Error != nil {
+		return nil, errors.New(constants.ErrUnauthorized)
+	}
+
+	return file, nil
+
 }

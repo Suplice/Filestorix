@@ -55,6 +55,10 @@ export const useFile = () => {
     }
   }, [query.data, query.error, dispatch]);
 
+  const baseFiles = useMemo(() => {
+    return query.isLoading ? [] : files.filter((file) => !file.isTrashed);
+  }, [query.isLoading, files]);
+
   const favoriteFiles = useMemo(() => {
     return query.isLoading ? [] : files.filter((file) => file.isFavorite);
   }, [query.isLoading, files]);
@@ -142,7 +146,7 @@ export const useFile = () => {
   });
 
   return {
-    files,
+    files: baseFiles,
     favoriteFiles,
     recentFiles,
     trashedFiles,

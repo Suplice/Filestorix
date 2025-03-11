@@ -74,7 +74,7 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
             ) : (
               files.map(
                 (file) =>
-                  file.parentId === parentId && (
+                  (file.parentId === parentId || section === "Trash") && (
                     <FileCard
                       file={file}
                       key={file.id}

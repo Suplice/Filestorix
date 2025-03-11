@@ -226,7 +226,17 @@ func (fc *FileController) GetFile(c *gin.Context) {
 func (fc *FileController) DeleteFile(c *gin.Context) {
 	fileId := c.Param("fileId")
 
-	err := fc.fileService.DeleteFile(fileId)
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	err := fc.fileService.DeleteFile(fileId, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

@@ -90,7 +90,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
           </span>
         </div>
       </TableCell>
-      <TableCell>{formatSize}</TableCell>
+      <TableCell>{file.type === "CATALOG" ? "" : formatSize}</TableCell>
       <TableCell className="capitalize">
         {file.extension.toUpperCase().substring(1)}
       </TableCell>
@@ -125,7 +125,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
                   : showModal("FileTrasher", { fileId: file.id });
               }}
             >
-              Trash
+              {file.isTrashed ? "Delete" : "Trash"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

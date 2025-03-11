@@ -187,12 +187,20 @@ func (fs *FileService) GetFile(fileId string, userId string) (string, error) {
 	return filePath, nil
 }
 
-func (fs *FileService) DeleteFile(fileId string) error {
+func (fs *FileService) DeleteFile(fileId string, userId string) error {
 	uintFileId, err := convertStringToUint(fileId)
 
 	if err != nil {
 		return errors.New(constants.ErrInvalidFileData)
 	}
 
-	return fs.fileRepository.DeleteFile(uintFileId)
+	file, err := fs.fileRepository.GetFile(fileId)
+
+	if err != nil {
+		return err
+	}
+
+
+
+	return fs.fileRepository.DeleteFile(uintFileId, userId, file.Extension)
 }

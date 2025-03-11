@@ -25,6 +25,10 @@ const FilePreview = lazy(
   () => import("@/components/sections/FileSection/FilePreview/FilePreview")
 );
 
+const FileRemover = lazy(
+  () => import("@/components/sections/FileSection/FileRemover/FileRemover")
+);
+
 const ModalRoot = () => {
   const { isOpen, modalType } = useModal();
 
@@ -39,6 +43,7 @@ const ModalRoot = () => {
           {modalType == "FileNameChanger" && <FileRenamer />}
           {modalType == "FileTrasher" && <FileTrasher />}
           {modalType == "FilePreview" && <FilePreview />}
+          {modalType == "FileRemover" && <FileRemover />}
         </Suspense>
       </ModalWrapper>
     </div>

@@ -51,12 +51,18 @@ export type TrashFileRequest = {
   fileId: number;
 };
 
+export type DeleteFileRequest = TrashFileRequest;
+
 export type TrashFileResult = {
   fileId: number;
   message: string;
 };
 
+export type DeleteFileResult = TrashFileResult;
+
 export type TrashFileResponse = BaseResponse;
+
+export type DeleteFileResponse = BaseResponse;
 
 export type AddCatalogResponse = BaseResponse;
 

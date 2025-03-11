@@ -92,7 +92,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
       </TableCell>
       <TableCell>{formatSize}</TableCell>
       <TableCell className="capitalize">
-        {file.extension.substring(1).toLowerCase()}
+        {file.extension.toUpperCase().substring(1)}
       </TableCell>
       <TableCell className="text-right">
         <DropdownMenu>
@@ -119,7 +119,11 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
               Rename
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => showModal("FileTrasher", { fileId: file.id })}
+              onClick={() => {
+                return file.isTrashed
+                  ? showModal("FileRemover", { fileId: file.id })
+                  : showModal("FileTrasher", { fileId: file.id });
+              }}
             >
               Trash
             </DropdownMenuItem>

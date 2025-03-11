@@ -6,6 +6,7 @@ import {
   uploadCatalog,
   renameFile,
   trashFile,
+  deleteFile,
 } from "@/lib/api/file/filesApi";
 import {
   setFiles,
@@ -19,6 +20,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 import type {
+  DeleteFileRequest,
+  DeleteFileResult,
   RenameFileRequest,
   RenameFileResult,
   TrashFileRequest,
@@ -125,12 +128,26 @@ export const useFile = () => {
     },
   });
 
+  const removeFileMutation = useMutation({
+    mutationFn: (data: DeleteFileRequest) => deleteFile(data),
+    onSuccess: (result: DeleteFileResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
   return {
     files,
     favoriteFiles,
     recentFiles,
     trashedFiles,
     isLoading: query.isPending || query.isFetching,
+    removeFile: removeFileMutation.mutate,
     trashFile: trashFileMutation.mutate,
     renameFile: renameFileMutation.mutate,
     uploadCatalog: uploadCatalogMutation.mutate,

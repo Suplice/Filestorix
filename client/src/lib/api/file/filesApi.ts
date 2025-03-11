@@ -1,6 +1,9 @@
 import {
   AddCatalogResponse,
   AddFileResponse,
+  DeleteFileRequest,
+  DeleteFileResponse,
+  DeleteFileResult,
   FetchFilesResponse,
   RenameFileRequest,
   RenameFileResponse,
@@ -190,4 +193,24 @@ export const getFile = async (fileName: string): Promise<Blob> => {
 
   const blob = await response.blob();
   return blob;
+};
+
+export const deleteFile = async (
+  data: DeleteFileRequest
+): Promise<DeleteFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/delete/${data.fileId}`,
+    {
+      credentials: "include",
+      method: "POST",
+    }
+  );
+
+  const responseData: DeleteFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { fileId: data.fileId, message: responseData.message };
 };

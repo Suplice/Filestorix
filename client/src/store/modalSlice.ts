@@ -6,6 +6,7 @@ export type ModalType =
   | "FileNameChanger"
   | "FileTrasher"
   | "FilePreview"
+  | "FileRemover"
   | null;
 
 export type ModalProps = {

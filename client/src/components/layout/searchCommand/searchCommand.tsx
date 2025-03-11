@@ -14,13 +14,15 @@ import { DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useFile } from "@/hooks/use-file";
 import { FileIcon } from "lucide-react";
+import { useEffect } from "react";
+import { useModal } from "@/hooks/use-modal";
 
 export function SearchCommand() {
   const [open, setOpen] = React.useState(false);
   const { files } = useFile();
+  const { showModal } = useModal();
 
-  // Obsługa skrótu ⌘J lub Ctrl+J
-  React.useEffect(() => {
+  useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -58,7 +60,15 @@ export function SearchCommand() {
             {files.map((file) => (
               <CommandItem
                 key={file.id}
+                data-id={file.id}
+                data-name={file.name}
                 className="cursor-pointer flex items-center gap-2"
+                onSelect={() => {
+                  setOpen(false);
+                  showModal("FilePreview", {
+                    fileName: file.id + file.extension,
+                  });
+                }}
               >
                 <FileIcon className="w-4 h-4" />
                 <span>{file.name}</span>

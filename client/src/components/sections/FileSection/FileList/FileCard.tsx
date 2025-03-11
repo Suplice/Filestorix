@@ -6,11 +6,36 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, FileText, Folder } from "lucide-react";
-import { UserFile } from "@/lib/types/file";
+import { FileIconMap, UserFile } from "@/lib/types/file";
 import { useMemo } from "react";
 import { useModal } from "@/hooks/use-modal";
 import { TableCell, TableRow } from "@/components/ui/table";
+
+import {
+  FileText,
+  FileImage,
+  File,
+  FileSpreadsheet,
+  FileArchive,
+  FileCode,
+  Folder,
+  MoreVertical,
+} from "lucide-react";
+
+const fileIcons: FileIconMap = {
+  ".xlsx": { icon: FileSpreadsheet, color: "text-green-500" },
+  ".csv": { icon: FileSpreadsheet, color: "text-green-500" },
+  ".pdf": { icon: File, color: "text-red-500" },
+  ".png": { icon: FileImage, color: "text-blue-500" },
+  ".jpg": { icon: FileImage, color: "text-blue-500" },
+  ".jpeg": { icon: FileImage, color: "text-blue-500" },
+  ".txt": { icon: FileText, color: "text-gray-500" },
+  ".zip": { icon: FileArchive, color: "text-yellow-500" },
+  ".rar": { icon: FileArchive, color: "text-yellow-500" },
+  ".json": { icon: FileCode, color: "text-purple-500" },
+  ".xml": { icon: FileCode, color: "text-purple-500" },
+  "": { icon: Folder, color: "text-yellow-500" },
+};
 
 interface FileCardProps {
   handleClick: (fileId: number, catalogName: string) => void;
@@ -32,6 +57,11 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
     showModal("FilePreview", { fileName: file.id + file.extension });
   };
 
+  const { icon: Icon, color } = fileIcons[file.extension] || {
+    icon: File,
+    color: "text-muted-foreground",
+  };
+
   return (
     <TableRow
       key={file.id}
@@ -45,11 +75,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
     >
       <TableCell className="">
         <div className="flex flex-row gap-3">
-          {file.type === "CATALOG" ? (
-            <Folder className="h-5 w-5 text-yellow-500" />
-          ) : (
-            <FileText className="h-5 w-5 text-blue-500" />
-          )}
+          <Icon className={`h-5 w-5 ${color}`} />
           <span
             className="font-medium cursor-pointer"
             onClick={() => {
@@ -65,7 +91,9 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
         </div>
       </TableCell>
       <TableCell>{formatSize}</TableCell>
-      <TableCell className="capitalize">{file.type.toLowerCase()}</TableCell>
+      <TableCell className="capitalize">
+        {file.extension.substring(1).toLowerCase()}
+      </TableCell>
       <TableCell className="text-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

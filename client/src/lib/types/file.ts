@@ -1,3 +1,4 @@
+import { LucideIcon } from "lucide-react";
 import { BaseResponse } from "./common";
 
 export type UserFile = {
@@ -63,4 +64,11 @@ export type RenameFileResponse = BaseResponse;
 
 export type AddFileResponse = BaseResponse & {
   files?: UserFile[];
+};
+
+export type FileIconMap = {
+  [key: string]: {
+    icon: LucideIcon;
+    color: string;
+  };
 };

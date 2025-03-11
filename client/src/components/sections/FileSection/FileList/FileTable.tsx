@@ -12,6 +12,7 @@ import {
 import { UserFile, FileRoute } from "@/lib/types/file";
 import FileTableSkeleton from "./FileTableSkeleton";
 import FileRouteManager from "./FileRouteManager";
+import CreateButton from "./CreateButton";
 
 interface FileTableProps {
   files: UserFile[];
@@ -46,7 +47,13 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
 
   return (
     <>
-      <FileRouteManager routes={route} handleChangeRoute={handleChangeRoute} />
+      <div className="w-full flex flex-row justify-between mb-4">
+        <FileRouteManager
+          routes={route}
+          handleChangeRoute={handleChangeRoute}
+        />
+        <CreateButton parentId={parentId} />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

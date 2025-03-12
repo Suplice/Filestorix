@@ -38,8 +38,16 @@ const (
 
 	// Success message, when deleting file is successful
 	SuccessDeletingFile		= "SUCCESS_DELETE_FILE"	
-)
 
+	// Success message, when trashing catalog is successful
+	SuccessTrashingCatalog	= "SUCCESS_TRASH_CATALOG"
+	
+	// Success message, when deleting catalog is successful
+	SuccessDeleteCatalog 	= "SUCCESS_DELETE_CATALOG"
+
+	// Success message, when restoring file is successful
+	SuccessRestoreFile		= "SUCCESS_RESTORE_FILE"
+)
 // Api error messages
 const (
 	// Error message, when user does not exist in database
@@ -99,6 +107,16 @@ const (
 
 	// Error message, when deleting file fails
 	ErrDeletingFile			= "ERROR_DELETE_FILE"
+
+	// Error message, when provided catalog does not
+	// exist or it's data is incorrect
+	ErrInvalidCatalogData	= "INVALID_CATALOG_DATA"
+
+	// Error message, when deleting catalog fails
+	ErrDeleteCatalog		= "ERROR_DELETING_CATALOG"
+
+	// Error message, when restoring file fails
+	ErrRestoreFile			= "ERROR_RESTORING_FILE"
 
 )
 

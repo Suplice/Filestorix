@@ -49,9 +49,12 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.GET("/fetchall", middleware.ValidateJWT(), fileController.FetchAllUserFiles)
 		fileRoutes.POST("/addfile", middleware.ValidateJWT(), fileController.UploadFiles)
 		fileRoutes.POST("/addcatalog", middleware.ValidateJWT(), fileController.CreateCatalog)
-		fileRoutes.PUT("/rename", middleware.ValidateJWT(), fileController.RenameFile)
-		fileRoutes.PUT("/trash/:fileId", middleware.ValidateJWT(), fileController.TrashFile)
+		fileRoutes.PATCH("/rename", middleware.ValidateJWT(), fileController.RenameFile)
+		fileRoutes.PATCH("/trash/:fileId", middleware.ValidateJWT(), fileController.TrashFile)
 		fileRoutes.GET("/getfile/:fileName", middleware.ValidateJWT(), fileController.GetFile)
 		fileRoutes.DELETE("/delete/:fileId", middleware.ValidateJWT(), fileController.DeleteFile)
+		fileRoutes.PATCH("/trashcatalog/:catalogId", middleware.ValidateJWT(), fileController.TrashCatalog)
+		fileRoutes.DELETE("/deletecatalog/:catalogId", middleware.ValidateJWT(), fileController.DeleteCatalog)
+		fileRoutes.PATCH("/restore/:fileId/:parentId", middleware.ValidateJWT(), fileController.RestoreFile)
 	}
 }

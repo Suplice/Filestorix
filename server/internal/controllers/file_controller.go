@@ -249,3 +249,77 @@ func (fc *FileController) DeleteFile(c *gin.Context) {
 		"message": constants.SuccessDeletingFile,
 	})
 }
+
+func (fc *FileController) TrashCatalog(c *gin.Context) {
+	catalogId := c.Param("catalogId")
+
+	if catalogId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrInvalidCatalogData,
+		})
+		return;
+	}
+
+	err := fc.fileService.TrashCatalog(catalogId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return;
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessTrashingCatalog,
+	})
+}
+
+func (fc *FileController) DeleteCatalog(c *gin.Context) {
+	catalogId := c.Param("catalogId")
+
+	if catalogId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrInvalidCatalogData,
+		})
+		return
+	}
+
+	err := fc.fileService.DeleteCatalog(catalogId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusBadRequest, gin.H{
+		"message": constants.SuccessDeleteCatalog,
+	})
+
+} 
+
+func (fc *FileController) RestoreFile(c *gin.Context) {
+	fileId := c.Param("fileId")
+	parentId := c.Param("parentId")
+
+	if fileId == "" || parentId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrInvalidFileData,
+		})
+		return
+	}
+
+	err := fc.fileService.RestoreFile(fileId, parentId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessRestoreFile,
+	})
+}

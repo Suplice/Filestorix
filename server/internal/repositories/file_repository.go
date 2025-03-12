@@ -250,7 +250,7 @@ func (fr *FileRepository) DeleteFile(fileId uint, userId string, extension strin
 		return errors.New(constants.ErrUnexpected)
 	}
 
-	result := fr.db.Where("id = ?", fileId).Delete(&models.UserFile{})
+	result := tx.Where("id = ?", fileId).Delete(&models.UserFile{})
 
 	if result.Error != nil {
 		tx.Rollback()
@@ -270,27 +270,21 @@ func (fr *FileRepository) DeleteFile(fileId uint, userId string, extension strin
 }
 
 func DeleteFileFromDisk(fileId uint, userId string, extension string) error {
-	// Convert fileId to string
 	stringFileId := fmt.Sprintf("%d", fileId)
 
-	// Define the directory where your files are located
 	dirPath := "/server/uploads/"
 
-	// Create the pattern to match any file starting with fileId (with any extension)
-	pattern := filepath.Join(dirPath, userId, stringFileId + extension) // Matches anything starting with fileId
+	pattern := filepath.Join(dirPath, userId, stringFileId + extension) 
 
-	// Use Glob to find all matching files
 	files, err := filepath.Glob(pattern)
 	if err != nil {
 		return errors.New(constants.ErrDeletingFile)
 	}
 
-	// If no files are found
 	if len(files) == 0 {
 		return nil
 	}
 
-	// Loop through the files and remove them
 	for _, file := range files {
 		err := os.Remove(file)
 		if err != nil {
@@ -315,5 +309,119 @@ func (fr *FileRepository) GetFile(fileId string) (*models.UserFile, error) {
 	}
 
 	return file, nil
+
+}
+
+func (fr *FileRepository) TrashCatalog(catalogId string) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	catalogResult := tx.Model(&models.UserFile{}).Where("id = ?", catalogId).Update("is_trashed", true)
+
+	if catalogResult.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	fileResult := tx.Model(&models.UserFile{}).Where("parent_id = ?", catalogId).Update("is_trashed", true)
+
+	if fileResult.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	tx.Commit()
+
+	return nil
+	
+
+}
+
+func (fr *FileRepository) DeleteCatalog(catalogId string) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	fileResult := tx.Model(&models.UserFile{}).Where("parent_id = ?", catalogId).Update("parent_id", nil)
+
+	if fileResult.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrDeleteCatalog)
+	}
+
+	result := tx.Where("id = ?", catalogId).Delete(&models.UserFile{})
+
+	if result.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrDeleteCatalog)
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
+func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
+	var file *models.UserFile
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Where("id = ?", fileId).First(&file)
+
+	if result.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	fileResult := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_trashed", false)
+
+	if fileResult.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrRestoreFile)
+	}
+
+	currentParentId := file.ParentID
+
+
+	for currentParentId != nil  {
+
+		var parentFile models.UserFile
+
+		result = tx.Where("id = ?", currentParentId).First(&parentFile)
+
+		if result.Error != nil {
+			tx.Rollback()
+			fmt.Println("error", result.Error.Error())
+			return errors.New(constants.ErrRestoreFile)
+		}
+
+		result = tx.Model(&models.UserFile{}).Where("id = ?", parentFile.ID).Update("is_trashed", false)
+
+		if result.Error != nil {
+			tx.Rollback()
+			fmt.Println("error", result.Error.Error())
+			return errors.New(constants.ErrRestoreFile)
+		}
+
+		currentParentId = parentFile.ParentID
+	}
+
+	tx.Commit()
+
+	return nil
 
 }

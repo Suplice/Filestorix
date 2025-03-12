@@ -204,3 +204,15 @@ func (fs *FileService) DeleteFile(fileId string, userId string) error {
 
 	return fs.fileRepository.DeleteFile(uintFileId, userId, file.Extension)
 }
+
+func (fs *FileService) TrashCatalog(catalogId string) error {
+	return fs.fileRepository.TrashCatalog(catalogId)
+}
+
+func (fs *FileService) DeleteCatalog(catalogId string) error {
+	return fs.fileRepository.DeleteCatalog(catalogId);
+}
+
+func (fs *FileService) RestoreFile(fileId string, parentId string) error {
+	return fs.fileRepository.RestoreFile(fileId, parentId)
+}

@@ -24,6 +24,26 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
 }) => {
   const { showModal } = useModal();
 
+  const handleTrashOrDelete = () => {
+    if (file.type === "CATALOG") {
+      if (file.isTrashed) {
+        showModal("CatalogRemover", { fileId: file.id });
+      } else {
+        showModal("CatalogTrasher", { fileId: file.id });
+      }
+    } else {
+      if (file.isTrashed) {
+        showModal("FileRemover", { fileId: file.id });
+      } else {
+        showModal("FileTrasher", { fileId: file.id });
+      }
+    }
+  };
+
+  const handleRestore = () => {
+    showModal("FileRestorer", { fileId: file.id, parentId: file.parentId });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,15 +66,12 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         >
           Rename
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() =>
-            file.isTrashed
-              ? showModal("FileRemover", { fileId: file.id })
-              : showModal("FileTrasher", { fileId: file.id })
-          }
-        >
+        <DropdownMenuItem onClick={handleTrashOrDelete}>
           {file.isTrashed ? "Delete" : "Trash"}
         </DropdownMenuItem>
+        {file.isTrashed && (
+          <DropdownMenuItem onClick={handleRestore}>Restore</DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

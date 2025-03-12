@@ -1,6 +1,9 @@
 import {
   AddCatalogResponse,
   AddFileResponse,
+  DeleteCatalogRequest,
+  DeleteCatalogResponse,
+  DeleteCatalogResult,
   DeleteFileRequest,
   DeleteFileResponse,
   DeleteFileResult,
@@ -8,6 +11,12 @@ import {
   RenameFileRequest,
   RenameFileResponse,
   RenameFileResult,
+  RestoreFileRequest,
+  RestoreFileResponse,
+  RestoreFileResult,
+  TrashCatalogRequest,
+  TrashCatalogResponse,
+  TrashCatalogResult,
   TrashFileRequest,
   TrashFileResponse,
   TrashFileResult,
@@ -107,7 +116,7 @@ export const uploadCatalog = async (
 };
 
 /**
- * Renames a file by sending a PUT request to the server.
+ * Renames a file by sending a PATCH request to the server.
  *
  * @param data - An object containing the new name and the file ID.
  * @returns A promise that resolves to an object containing the new name, file ID, and a message from the server.
@@ -122,7 +131,7 @@ export const renameFile = async (
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/files/rename`,
     {
-      method: "PUT",
+      method: "PATCH",
       credentials: "include",
       body: JSON.stringify({ name: data.name, fileId: data.fileId }),
     }
@@ -156,7 +165,7 @@ export const trashFile = async (
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/files/trash/${data.fileId}`,
     {
-      method: "PUT",
+      method: "PATCH",
       credentials: "include",
     }
   );
@@ -213,4 +222,64 @@ export const deleteFile = async (
   }
 
   return { fileId: data.fileId, message: responseData.message };
+};
+
+export const trashCatalog = async (
+  data: TrashCatalogRequest
+): Promise<TrashCatalogResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/trashcatalog/${data.fileId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const responseData: TrashCatalogResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
+};
+
+export const deleteCatalog = async (
+  data: DeleteCatalogRequest
+): Promise<DeleteCatalogResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/deletecatalog/${data.fileId}`,
+    {
+      credentials: "include",
+      method: "DELETE",
+    }
+  );
+
+  const responseData: DeleteCatalogResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
+};
+
+export const restoreFile = async (
+  data: RestoreFileRequest
+): Promise<RestoreFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/restore/${data.fileId}/${data.parentId}`,
+    {
+      credentials: "include",
+      method: "PATCH",
+    }
+  );
+
+  const responseData: RestoreFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
 };

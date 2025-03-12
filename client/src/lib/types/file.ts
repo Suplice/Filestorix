@@ -68,6 +68,29 @@ export type AddCatalogResponse = BaseResponse;
 
 export type RenameFileResponse = BaseResponse;
 
+export type TrashCatalogRequest = TrashFileRequest;
+
+export type TrashCatalogResult = {
+  message: string;
+};
+
+export type TrashCatalogResponse = BaseResponse;
+
+export type DeleteCatalogResult = TrashCatalogResult;
+
+export type DeleteCatalogResponse = BaseResponse;
+
+export type DeleteCatalogRequest = TrashCatalogRequest;
+
+export type RestoreFileRequest = {
+  fileId: number;
+  parentId: number;
+};
+
+export type RestoreFileResult = TrashCatalogResult;
+
+export type RestoreFileResponse = BaseResponse;
+
 export type AddFileResponse = BaseResponse & {
   files?: UserFile[];
 };

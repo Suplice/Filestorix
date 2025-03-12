@@ -7,6 +7,9 @@ import {
   renameFile,
   trashFile,
   deleteFile,
+  trashCatalog,
+  deleteCatalog,
+  restoreFile,
 } from "@/lib/api/file/filesApi";
 import {
   setFiles,
@@ -20,10 +23,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 import type {
+  DeleteCatalogRequest,
+  DeleteCatalogResult,
   DeleteFileRequest,
   DeleteFileResult,
   RenameFileRequest,
   RenameFileResult,
+  RestoreFileRequest,
+  TrashCatalogRequest,
+  TrashCatalogResult,
   TrashFileRequest,
   TrashFileResult,
   UploadCatalogRequest,
@@ -145,12 +153,54 @@ export const useFile = () => {
     },
   });
 
+  const trashCatalogMutation = useMutation({
+    mutationFn: (data: TrashCatalogRequest) => trashCatalog(data),
+    onSuccess: (result: TrashCatalogResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
+  const deleteCatalogMutation = useMutation({
+    mutationFn: (data: DeleteCatalogRequest) => deleteCatalog(data),
+    onSuccess: (result: DeleteCatalogResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
+  const restoreFileMutation = useMutation({
+    mutationFn: (data: RestoreFileRequest) => restoreFile(data),
+    onSuccess: (result: DeleteCatalogResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
   return {
     files: baseFiles,
     favoriteFiles,
     recentFiles,
     trashedFiles,
     isLoading: query.isPending || query.isFetching,
+    restoreFile: restoreFileMutation.mutate,
+    deleteCatalog: deleteCatalogMutation.mutate,
+    trashCatalog: trashCatalogMutation.mutate,
     removeFile: removeFileMutation.mutate,
     trashFile: trashFileMutation.mutate,
     renameFile: renameFileMutation.mutate,

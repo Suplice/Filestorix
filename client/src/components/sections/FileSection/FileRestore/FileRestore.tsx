@@ -3,13 +3,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useFile } from "@/hooks/use-file";
 import { useModal } from "@/hooks/use-modal";
 
-const FileRemover = () => {
-  const { removeFile } = useFile();
+const FileRestore = () => {
+  const { restoreFile } = useFile();
 
   const { hideModal, modalProps } = useModal();
 
-  const handleRemove = () => {
-    removeFile({ fileId: modalProps!.fileId! });
+  const handleRestore = () => {
+    restoreFile({
+      fileId: modalProps!.fileId!,
+      parentId: modalProps!.parentId!,
+    });
     hideModal();
   };
 
@@ -18,14 +21,18 @@ const FileRemover = () => {
       <CardContent className="space-y-4">
         <div>
           <h1 className="text-lg font-semibold text-foreground">
-            Are you sure you want to Delete this file?
+            Are you sure you want to restore this file?
           </h1>
           <p className="text-md font-bold text-muted-foreground">
-            This action is irreversible
+            It will be restored within it&apos;s original catalog if it exists.
+          </p>
+          <p className="text-md font-bold text-muted-foreground">
+            If original catalog was deleted it will be restored within drive
+            root.
           </p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleRemove} variant="destructive">
+          <Button onClick={handleRestore} variant="destructive">
             Remove
           </Button>
           <Button onClick={hideModal} variant="outline">
@@ -37,4 +44,4 @@ const FileRemover = () => {
   );
 };
 
-export default FileRemover;
+export default FileRestore;

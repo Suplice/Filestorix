@@ -29,6 +29,20 @@ const FileRemover = lazy(
   () => import("@/components/sections/FileSection/FileRemover/FileRemover")
 );
 
+const CatalogTrasher = lazy(
+  () =>
+    import("@/components/sections/FileSection/CatalogTrasher/CatalogTrasher")
+);
+
+const CatalogRemover = lazy(
+  () =>
+    import("@/components/sections/FileSection/CatalogRemover/CatalogRemover")
+);
+
+const FileRestore = lazy(
+  () => import("@/components/sections/FileSection/FileRestore/FileRestore")
+);
+
 const ModalRoot = () => {
   const { isOpen, modalType } = useModal();
 
@@ -44,6 +58,9 @@ const ModalRoot = () => {
           {modalType == "FileTrasher" && <FileTrasher />}
           {modalType == "FilePreview" && <FilePreview />}
           {modalType == "FileRemover" && <FileRemover />}
+          {modalType == "CatalogRemover" && <CatalogRemover />}
+          {modalType == "CatalogTrasher" && <CatalogTrasher />}
+          {modalType == "FileRestorer" && <FileRestore />}
         </Suspense>
       </ModalWrapper>
     </div>

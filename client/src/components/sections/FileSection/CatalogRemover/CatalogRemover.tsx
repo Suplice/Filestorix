@@ -3,13 +3,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useFile } from "@/hooks/use-file";
 import { useModal } from "@/hooks/use-modal";
 
-const FileRemover = () => {
-  const { removeFile } = useFile();
+const CatalogRemover = () => {
+  const { deleteCatalog } = useFile();
 
   const { hideModal, modalProps } = useModal();
 
   const handleRemove = () => {
-    removeFile({ fileId: modalProps!.fileId! });
+    deleteCatalog({ fileId: modalProps!.fileId! });
     hideModal();
   };
 
@@ -18,10 +18,14 @@ const FileRemover = () => {
       <CardContent className="space-y-4">
         <div>
           <h1 className="text-lg font-semibold text-foreground">
-            Are you sure you want to Delete this file?
+            Are you sure you want to Delete this catalog?
           </h1>
           <p className="text-md font-bold text-muted-foreground">
             This action is irreversible
+          </p>
+          <p className="text-md font-bold text-muted-foreground">
+            All trashed files that were contained within this catalog will be
+            available in root directory.
           </p>
         </div>
         <div className="flex justify-end gap-2">
@@ -37,4 +41,4 @@ const FileRemover = () => {
   );
 };
 
-export default FileRemover;
+export default CatalogRemover;

@@ -1,15 +1,18 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFile } from "@/hooks/use-file";
 import { useModal } from "@/hooks/use-modal";
 
-const FileRemover = () => {
-  const { removeFile } = useFile();
+const CatalogTrasher = () => {
+  const { trashCatalog } = useFile();
 
   const { hideModal, modalProps } = useModal();
 
-  const handleRemove = () => {
-    removeFile({ fileId: modalProps!.fileId! });
+  const handleTrash = () => {
+    console.log("elo");
+    trashCatalog({ fileId: modalProps!.fileId! });
     hideModal();
   };
 
@@ -18,15 +21,18 @@ const FileRemover = () => {
       <CardContent className="space-y-4">
         <div>
           <h1 className="text-lg font-semibold text-foreground">
-            Are you sure you want to Delete this file?
+            Are you sure you want to trash this catalog?
           </h1>
-          <p className="text-md font-bold text-muted-foreground">
-            This action is irreversible
+          <p className="text-sm text-muted-foreground">
+            All files inside of catalog will be trashed too.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Later you can reverse this action in the Trash section.
           </p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleRemove} variant="destructive">
-            Remove
+          <Button onClick={handleTrash} variant="destructive">
+            Trash
           </Button>
           <Button onClick={hideModal} variant="outline">
             Cancel
@@ -37,4 +43,4 @@ const FileRemover = () => {
   );
 };
 
-export default FileRemover;
+export default CatalogTrasher;

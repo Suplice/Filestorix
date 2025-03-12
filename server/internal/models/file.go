@@ -15,10 +15,10 @@ type UserFile struct {
 	ModifiedAt 		time.Time 		`gorm:"autoUpdateTime" json:"modifiedAt"`
 	CreatedAt 		time.Time 		`gorm:"autoCreateTime" json:"createdAt"`
 	IsTrashed 		bool 			`gorm:"not null" json:"isTrashed"`
-	ParentID 		*uint 			`json:"parentId"`
+	ParentID 		*uint 			`gorm:"constraint:OnDelete:SET NULL;" json:"parentId"`
 	IsFavorite		bool			`gorm:"not null;default:false" json:"isFavorite"`
 
 	User 			User 			`gorm:"foreignKey:UserID" json:"-"`
-	File 			*UserFile 		`gorm:"foreignKey:ParentID" json:"-"`
+	Children    	[]UserFile 		`gorm:"foreignKey:ParentID" json:"-"` 
 
 }

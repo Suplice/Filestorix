@@ -204,6 +204,13 @@ export const getFile = async (fileName: string): Promise<Blob> => {
   return blob;
 };
 
+/**
+ * Sends a request to delete a file from the server.
+ *
+ * @param data - An object containing the fileId of the file to be deleted.
+ * @returns A promise that resolves to an object containing the fileId and a success message.
+ * @throws An error if the deletion fails or the server returns a non-OK status.
+ */
 export const deleteFile = async (
   data: DeleteFileRequest
 ): Promise<DeleteFileResult> => {
@@ -224,6 +231,13 @@ export const deleteFile = async (
   return { fileId: data.fileId, message: responseData.message };
 };
 
+/**
+ * Sends a request to move a catalog (folder) and its contents to trash on the server.
+ *
+ * @param data - An object containing the fileId representing the catalog to be trashed.
+ * @returns A promise that resolves to an object containing a success message.
+ * @throws An error if the trashing operation fails or the server returns a non-OK status.
+ */
 export const trashCatalog = async (
   data: TrashCatalogRequest
 ): Promise<TrashCatalogResult> => {
@@ -244,6 +258,13 @@ export const trashCatalog = async (
   return { message: responseData.message };
 };
 
+/**
+ * Sends a request to permanently delete a catalog (folder) from the server.
+ *
+ * @param data - An object containing the fileId representing the catalog to be deleted.
+ * @returns A promise that resolves to an object containing a success message.
+ * @throws An error if the deletion operation fails or the server returns a non-OK status.
+ */
 export const deleteCatalog = async (
   data: DeleteCatalogRequest
 ): Promise<DeleteCatalogResult> => {
@@ -264,6 +285,13 @@ export const deleteCatalog = async (
   return { message: responseData.message };
 };
 
+/**
+ * Sends a request to restore a previously trashed file and its parent catalog structure.
+ *
+ * @param data - An object containing the fileId of the file to restore and its parentId.
+ * @returns A promise that resolves to an object containing a success message.
+ * @throws An error if the restoration operation fails or the server returns a non-OK status.
+ */
 export const restoreFile = async (
   data: RestoreFileRequest
 ): Promise<RestoreFileResult> => {

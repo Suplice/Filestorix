@@ -223,6 +223,11 @@ func (fc *FileController) GetFile(c *gin.Context) {
 	c.File(filePath)
 }
 
+// DeleteFile handles the HTTP request to delete a file both from the database and disk.
+// It expects a "fileId" parameter in the URL and a "stringUserID" value in the context for authorization.
+// If the user is unauthorized, it responds with an HTTP 401 status and an appropriate error message.
+// If deletion fails at any point, it responds with HTTP 400 and the error message.
+// On success, it responds with HTTP 200 and a success message confirming the deletion.
 func (fc *FileController) DeleteFile(c *gin.Context) {
 	fileId := c.Param("fileId")
 
@@ -250,6 +255,11 @@ func (fc *FileController) DeleteFile(c *gin.Context) {
 	})
 }
 
+// TrashCatalog handles the HTTP request to mark a catalog (folder) and all its contents as trashed.
+// It expects a "catalogId" parameter in the URL to identify the catalog to be trashed.
+// If the catalog ID is missing, it responds with HTTP 400 and an appropriate error message.
+// If the trashing operation fails, it responds with HTTP 400 and the error message.
+// On success, it responds with HTTP 200 and a success message confirming the catalog was trashed.
 func (fc *FileController) TrashCatalog(c *gin.Context) {
 	catalogId := c.Param("catalogId")
 
@@ -274,6 +284,11 @@ func (fc *FileController) TrashCatalog(c *gin.Context) {
 	})
 }
 
+// DeleteCatalog handles the HTTP request to permanently delete a catalog (folder) from the database.
+// It expects a "catalogId" parameter in the URL to identify the catalog to be deleted.
+// If the catalog ID is missing, it responds with HTTP 400 and an appropriate error message.
+// If the deletion operation fails, it responds with HTTP 400 and the error message.
+// On success, it responds with HTTP 200 and a success message confirming the deletion of the catalog.
 func (fc *FileController) DeleteCatalog(c *gin.Context) {
 	catalogId := c.Param("catalogId")
 
@@ -299,6 +314,11 @@ func (fc *FileController) DeleteCatalog(c *gin.Context) {
 
 } 
 
+// RestoreFile handles the HTTP request to restore a previously trashed file and its parent catalog structure.
+// It expects "fileId" and "parentId" parameters in the URL to identify the file to be restored and its parent folder.
+// If any of the required parameters are missing, it responds with HTTP 400 and an appropriate error message.
+// If the restore operation fails, it responds with HTTP 400 and the error message.
+// On success, it responds with HTTP 200 and a success message confirming the restoration of the file.
 func (fc *FileController) RestoreFile(c *gin.Context) {
 	fileId := c.Param("fileId")
 	parentId := c.Param("parentId")

@@ -187,6 +187,12 @@ func (fs *FileService) GetFile(fileId string, userId string) (string, error) {
 	return filePath, nil
 }
 
+
+// DeleteFile deletes a file both from the database and from disk.
+// It takes fileId and userId as parameters, where fileId identifies the file to be deleted,
+// and userId is used to locate the file on disk.
+// If the file is successfully deleted from both database and disk, it returns nil.
+// If there is an error during any step of the process, it returns an appropriate error.
 func (fs *FileService) DeleteFile(fileId string, userId string) error {
 	uintFileId, err := convertStringToUint(fileId)
 
@@ -205,14 +211,24 @@ func (fs *FileService) DeleteFile(fileId string, userId string) error {
 	return fs.fileRepository.DeleteFile(uintFileId, userId, file.Extension)
 }
 
+// TrashCatalog marks a catalog (folder) and all of its nested contents as trashed in the database.
+// It takes catalogId as a parameter, which is the unique identifier of the catalog to be trashed.
+// If the operation is successful, it returns nil. Otherwise, it returns an error indicating the failure.
 func (fs *FileService) TrashCatalog(catalogId string) error {
 	return fs.fileRepository.TrashCatalog(catalogId)
 }
 
+// DeleteCatalog permanently deletes a catalog (folder) from the database.
+// Before deletion, it ensures that all child elements are detached properly to avoid orphaned records.
+// It takes catalogId as a parameter, which is the unique identifier of the catalog to delete.
+// If the operation is successful, it returns nil. Otherwise, it returns an error indicating the failure.
 func (fs *FileService) DeleteCatalog(catalogId string) error {
 	return fs.fileRepository.DeleteCatalog(catalogId);
 }
 
+// RestoreFile restores a file from the trash and ensures that all its parent catalogs are also restored if needed.
+// It takes fileId as a parameter to identify which file to restore, and parentId for potential future use (currently not used directly).
+// Returns nil if the file and its parent structure are restored successfully, or an error otherwise.
 func (fs *FileService) RestoreFile(fileId string, parentId string) error {
 	return fs.fileRepository.RestoreFile(fileId, parentId)
 }

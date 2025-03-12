@@ -63,14 +63,23 @@ export const useFile = () => {
     }
   }, [query.data, query.error, dispatch]);
 
+  /**
+   * List of all user files that are not trashed.
+   */
   const baseFiles = useMemo(() => {
     return query.isLoading ? [] : files.filter((file) => !file.isTrashed);
   }, [query.isLoading, files]);
 
+  /**
+   * List of user's favorite files.
+   */
   const favoriteFiles = useMemo(() => {
     return query.isLoading ? [] : files.filter((file) => file.isFavorite);
   }, [query.isLoading, files]);
 
+  /**
+   * List of user's recently created or modified files, sorted by creation date descending.
+   */
   const recentFiles = useMemo(() => {
     return query.isLoading
       ? []
@@ -80,10 +89,18 @@ export const useFile = () => {
         );
   }, [query.isLoading, files]);
 
+  /**
+   * List of user's trashed files (files in the trash bin).
+   */
   const trashedFiles = useMemo(() => {
     return query.isLoading ? [] : files.filter((file) => file.isTrashed);
   }, [query.isLoading, files]);
 
+  /**
+   * Uploads one or multiple files to the server.
+   *
+   * @param data - An object containing the files and target catalog/folder ID.
+   */
   const uploadFilesMutation = useMutation({
     mutationFn: (data: UploadFilesRequest) => uploadFiles(data),
     onSuccess: (newFiles: UserFile[]) => {
@@ -97,6 +114,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Creates a new catalog (folder) on the server.
+   *
+   * @param data - An object containing the catalog name and optional parent catalog ID.
+   */
   const uploadCatalogMutation = useMutation({
     mutationFn: (data: UploadCatalogRequest) => uploadCatalog(data),
     onSuccess: (message: string) => {
@@ -110,6 +132,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Renames an existing file or catalog.
+   *
+   * @param data - An object containing the file ID and the new name.
+   */
   const renameFileMutation = useMutation({
     mutationFn: (data: RenameFileRequest) => renameFile(data),
     onSuccess: (result: RenameFileResult) => {
@@ -126,6 +153,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Moves a file to trash (soft-delete).
+   *
+   * @param data - An object containing the file ID to be trashed.
+   */
   const trashFileMutation = useMutation({
     mutationFn: (data: TrashFileRequest) => trashFile(data),
     onSuccess: (result: TrashFileResult) => {
@@ -140,6 +172,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Permanently deletes a file from the server.
+   *
+   * @param data - An object containing the file ID to be deleted.
+   */
   const removeFileMutation = useMutation({
     mutationFn: (data: DeleteFileRequest) => deleteFile(data),
     onSuccess: (result: DeleteFileResult) => {
@@ -153,6 +190,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Moves a catalog (folder) to trash (soft-delete).
+   *
+   * @param data - An object containing the catalog ID to be trashed.
+   */
   const trashCatalogMutation = useMutation({
     mutationFn: (data: TrashCatalogRequest) => trashCatalog(data),
     onSuccess: (result: TrashCatalogResult) => {
@@ -166,6 +208,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Permanently deletes a catalog (folder) from the server.
+   *
+   * @param data - An object containing the catalog ID to be deleted.
+   */
   const deleteCatalogMutation = useMutation({
     mutationFn: (data: DeleteCatalogRequest) => deleteCatalog(data),
     onSuccess: (result: DeleteCatalogResult) => {
@@ -179,6 +226,11 @@ export const useFile = () => {
     },
   });
 
+  /**
+   * Restores a previously trashed file and moves it back to its original or specified parent catalog.
+   *
+   * @param data - An object containing the file ID and the parent ID where the file should be restored.
+   */
   const restoreFileMutation = useMutation({
     mutationFn: (data: RestoreFileRequest) => restoreFile(data),
     onSuccess: (result: DeleteCatalogResult) => {

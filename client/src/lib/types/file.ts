@@ -1,6 +1,11 @@
 import { LucideIcon } from "lucide-react";
 import { BaseResponse } from "./common";
 
+/* --------------------------- File & Catalog Types -------------------------- */
+
+/**
+ * Represents a user file or catalog (folder) stored in the system.
+ */
 export type UserFile = {
   id: number;
   userId: number;
@@ -16,85 +21,168 @@ export type UserFile = {
   parentId: number;
 };
 
+/**
+ * Represents the current file path/route inside the catalog structure.
+ */
 export type FileRoute = {
   sectionName: string;
   catalogId: number | null;
 };
 
+/* ------------------------------- API Responses ------------------------------ */
+
+/**
+ * API response for fetching user files.
+ */
 export type FetchFilesResponse = {
   files?: UserFile[];
   error?: string;
 };
 
+/**
+ * API response after adding (uploading) a file.
+ */
+export type AddFileResponse = BaseResponse & {
+  files?: UserFile[];
+};
+
+/**
+ * API response after adding (creating) a catalog.
+ */
+export type AddCatalogResponse = BaseResponse;
+
+/**
+ * API response after renaming a file or catalog.
+ */
+export type RenameFileResponse = BaseResponse;
+
+/**
+ * API response after trashing (moving to trash) a file.
+ */
+export type TrashFileResponse = BaseResponse;
+
+/**
+ * API response after permanently deleting a file.
+ */
+export type DeleteFileResponse = BaseResponse;
+
+/**
+ * API response after trashing (moving to trash) a catalog.
+ */
+export type TrashCatalogResponse = BaseResponse;
+
+/**
+ * API response after permanently deleting a catalog.
+ */
+export type DeleteCatalogResponse = BaseResponse;
+
+/**
+ * API response after restoring a file from trash.
+ */
+export type RestoreFileResponse = BaseResponse;
+
+/* ----------------------------- API Requests ------------------------------ */
+
+/**
+ * Request to upload (create) a new catalog (folder).
+ */
 export type UploadCatalogRequest = {
   name: string;
   parentId: number | null;
 };
 
+/**
+ * Request to upload files.
+ */
 export type UploadFilesRequest = {
   files: File[];
   parentId: number | null;
 };
 
+/**
+ * Request to rename a file or catalog.
+ */
 export type RenameFileRequest = {
   name: string;
   fileId: number;
 };
 
+/**
+ * Request to trash (move to trash) a file.
+ */
+export type TrashFileRequest = {
+  fileId: number;
+};
+
+/**
+ * Request to delete a file permanently (uses same structure as TrashFileRequest).
+ */
+export type DeleteFileRequest = TrashFileRequest;
+
+/**
+ * Request to trash (move to trash) a catalog.
+ */
+export type TrashCatalogRequest = TrashFileRequest;
+
+/**
+ * Request to delete a catalog permanently (uses same structure as TrashCatalogRequest).
+ */
+export type DeleteCatalogRequest = TrashCatalogRequest;
+
+/**
+ * Request to restore a file from trash.
+ */
+export type RestoreFileRequest = {
+  fileId: number;
+  parentId: number;
+};
+
+/* ----------------------------- API Results ------------------------------ */
+
+/**
+ * Result after renaming a file or catalog.
+ */
 export type RenameFileResult = {
   fileId?: number;
   newName?: string;
   message?: string;
 };
 
-export type TrashFileRequest = {
-  fileId: number;
-};
-
-export type DeleteFileRequest = TrashFileRequest;
-
+/**
+ * Result after trashing a file.
+ */
 export type TrashFileResult = {
   fileId: number;
   message: string;
 };
 
+/**
+ * Result after deleting a file permanently (same as TrashFileResult).
+ */
 export type DeleteFileResult = TrashFileResult;
 
-export type TrashFileResponse = BaseResponse;
-
-export type DeleteFileResponse = BaseResponse;
-
-export type AddCatalogResponse = BaseResponse;
-
-export type RenameFileResponse = BaseResponse;
-
-export type TrashCatalogRequest = TrashFileRequest;
-
+/**
+ * Result after trashing a catalog.
+ */
 export type TrashCatalogResult = {
   message: string;
 };
 
-export type TrashCatalogResponse = BaseResponse;
-
+/**
+ * Result after deleting a catalog permanently (same as TrashCatalogResult).
+ */
 export type DeleteCatalogResult = TrashCatalogResult;
 
-export type DeleteCatalogResponse = BaseResponse;
-
-export type DeleteCatalogRequest = TrashCatalogRequest;
-
-export type RestoreFileRequest = {
-  fileId: number;
-  parentId: number;
-};
-
+/**
+ * Result after restoring a file from trash (same as TrashCatalogResult).
+ */
 export type RestoreFileResult = TrashCatalogResult;
 
-export type RestoreFileResponse = BaseResponse;
+/* ---------------------------- Icon Mapping ---------------------------- */
 
-export type AddFileResponse = BaseResponse & {
-  files?: UserFile[];
-};
-
+/**
+ * A mapping of file extensions to icons and their colors.
+ */
 export type FileIconMap = {
   [key: string]: {
     icon: LucideIcon;

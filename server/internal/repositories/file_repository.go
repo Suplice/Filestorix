@@ -242,6 +242,10 @@ func (fr *FileRepository) TrashFile(fileId uint) error {
 	return nil
 }
 
+// DeleteFile permanently deletes a file record from the database and removes the corresponding file from disk.
+// It takes fileId, userId, and extension as parameters, which identify the file and its location on disk.
+// The operation is wrapped in a transaction to ensure consistency between the database and filesystem.
+// Returns nil if successful, or an error if any step of deletion fails.
 func (fr *FileRepository) DeleteFile(fileId uint, userId string, extension string) error {
 
 	tx := fr.db.Begin()
@@ -269,6 +273,9 @@ func (fr *FileRepository) DeleteFile(fileId uint, userId string, extension strin
 	return nil
 }
 
+// DeleteFileFromDisk removes a file from the disk based on fileId, userId, and extension.
+// It searches for files matching the pattern and attempts to delete them.
+// Returns nil if successful or if no matching files are found, otherwise returns an error.
 func DeleteFileFromDisk(fileId uint, userId string, extension string) error {
 	stringFileId := fmt.Sprintf("%d", fileId)
 
@@ -297,7 +304,9 @@ func DeleteFileFromDisk(fileId uint, userId string, extension string) error {
 	return nil
 }
 
-
+// GetFile retrieves a file record from the database by its fileId.
+// It takes a fileId as a string and returns a pointer to UserFile if found, otherwise an error.
+// Returns an error if the file does not exist or if there is a database issue.
 func (fr *FileRepository) GetFile(fileId string) (*models.UserFile, error) {
 	var file *models.UserFile
 
@@ -312,6 +321,10 @@ func (fr *FileRepository) GetFile(fileId string) (*models.UserFile, error) {
 
 }
 
+// TrashCatalog marks a catalog (folder) and all of its children (recursively) as trashed in the database.
+// It takes catalogId as a parameter, which is the unique identifier of the catalog to be trashed.
+// The operation is wrapped in a transaction to ensure that either all related records are updated or none.
+// Returns nil if successful, or an error if any step fails.
 func (fr *FileRepository) TrashCatalog(catalogId string) error {
 	tx := fr.db.Begin()
 	if tx.Error != nil {
@@ -343,6 +356,9 @@ func (fr *FileRepository) TrashCatalog(catalogId string) error {
 }
 
 
+// trashChildrenRecursively marks all child files and catalogs of a given parentId as trashed recursively.
+// It is an internal helper function used by TrashCatalog to handle nested structures.
+// Returns nil if successful, or an error if any child update fails.
 func (fr *FileRepository) trashChildrenRecursively(tx *gorm.DB, parentId uint) error {
 	var children []models.UserFile
 	if err := tx.Where("parent_id = ?", parentId).Find(&children).Error; err != nil {
@@ -364,6 +380,11 @@ func (fr *FileRepository) trashChildrenRecursively(tx *gorm.DB, parentId uint) e
 	return nil
 }
 
+// DeleteCatalog permanently deletes a catalog (folder) record from the database.
+// Before deletion, it sets the parent_id of all children to null to prevent orphan references.
+// The operation is wrapped in a transaction to maintain data integrity.
+// Takes catalogId as a parameter, which is the ID of the catalog to delete.
+// Returns nil if successful, or an error if any operation fails.
 func (fr *FileRepository) DeleteCatalog(catalogId string) error {
 
 	tx := fr.db.Begin()
@@ -392,6 +413,11 @@ func (fr *FileRepository) DeleteCatalog(catalogId string) error {
 	return nil
 }
 
+// RestoreFile restores a file from the trash by setting its "is_trashed" field to false.
+// Additionally, it restores all parent directories of that file (recursively up) if they are also trashed.
+// It takes fileId and parentId as parameters. parentId is not directly used but can be kept for possible future use.
+// The operation is wrapped in a transaction to ensure atomicity.
+// Returns nil if successful, or an error if any operation fails.
 func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
 	var file *models.UserFile
 

@@ -1,4 +1,7 @@
+/**
+ * Base structure for API responses, including optional message and error.
+ */
 export type BaseResponse = {
-  error?: string;
   message?: string;
+  error?: string;
 };

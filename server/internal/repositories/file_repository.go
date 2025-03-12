@@ -313,33 +313,55 @@ func (fr *FileRepository) GetFile(fileId string) (*models.UserFile, error) {
 }
 
 func (fr *FileRepository) TrashCatalog(catalogId string) error {
-
 	tx := fr.db.Begin()
-
 	if tx.Error != nil {
-		tx.Rollback()
-		return errors.New(constants.ErrUnexpected)
+		return tx.Error
 	}
 
-	catalogResult := tx.Model(&models.UserFile{}).Where("id = ?", catalogId).Update("is_trashed", true)
 
-	if catalogResult.Error != nil {
+	var catalog models.UserFile
+	if err := tx.Where("id = ?", catalogId).First(&catalog).Error; err != nil {
 		tx.Rollback()
-		return errors.New(constants.ErrUnexpected)
+		return err
 	}
 
-	fileResult := tx.Model(&models.UserFile{}).Where("parent_id = ?", catalogId).Update("is_trashed", true)
 
-	if fileResult.Error != nil {
+	if err := tx.Model(&models.UserFile{}).Where("id = ?", catalog.ID).Update("is_trashed", true).Error; err != nil {
 		tx.Rollback()
-		return errors.New(constants.ErrUnexpected)
+		return err
+	}
+
+
+	if err := fr.trashChildrenRecursively(tx, catalog.ID); err != nil {
+		tx.Rollback()
+		return err
 	}
 
 	tx.Commit()
 
 	return nil
-	
+}
 
+
+func (fr *FileRepository) trashChildrenRecursively(tx *gorm.DB, parentId uint) error {
+	var children []models.UserFile
+	if err := tx.Where("parent_id = ?", parentId).Find(&children).Error; err != nil {
+		return err
+	}
+
+	for _, child := range children {
+
+		if err := tx.Model(&models.UserFile{}).Where("id = ?", child.ID).Update("is_trashed", true).Error; err != nil {
+			return err
+		}
+		if child.Type == "CATALOG" {
+			if err := fr.trashChildrenRecursively(tx, child.ID); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 func (fr *FileRepository) DeleteCatalog(catalogId string) error {

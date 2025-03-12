@@ -14,6 +14,10 @@ export enum ErrorMessage {
   FILE_ALREADY_EXISTS = "A file with the same name already exists on your disk. Please rename the file and try again.",
   FILE_CORRUPT_ERROR = "Saving file failed, one of your files might be corrupt, please try again.",
   FILE_NOT_EXIST = "The file you tried to open does not exist, please reload or try again.",
+  ERROR_DELETE_FILE = "An error occured while trying to delete file, please try again.",
+  INVALID_CATALOG_DATA = "An error occured while trying to perform action on this catalog, please try again.",
+  ERROR_DELETING_CATALOG = "An error occured while trying to delete catalog, please try again.",
+  ERROR_RESTORING_FILE = "An error occured while trying to restore file, please try again.",
 }
 
 export enum SuccessMessage {
@@ -25,6 +29,11 @@ export enum SuccessMessage {
   SUCCESS_UPLOAD_FILES = "Uploaded files successfully!",
   SUCCESS_UPLOAD_CATALOG = "Successfully created new catalog!",
   SUCCESS_RENAME_FILE = "Successfully renamed file!",
+  SUCCESS_TRASH_FILE = "Successfully trashed file!",
+  SUCCESS_DELETE_FILE = "Successfully deleted file!",
+  SUCCESS_TRASH_CATALOG = "Successfully trashed catalog!",
+  SUCCESS_DELETE_CATALOG = "Successfully deleted catalog!",
+  SUCCESS_RESTORE_FILE = "Successfully restored file(s)!",
 }
 
 export const getErrorMessage = (errorCode?: string): string => {

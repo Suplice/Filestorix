@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // używaj shadcn, jeśli masz zainstalowane
+} from "@/components/ui/dropdown-menu";
 import { Plus, FolderPlus, FilePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

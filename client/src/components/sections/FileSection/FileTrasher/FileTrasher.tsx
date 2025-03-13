@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useFile } from "@/hooks/use-file";
+import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 
 const FileTrasher = () => {
-  const { trashFile } = useFile();
+  const { trashFile, trashFileLoading } = useFileActions();
 
   const { hideModal, modalProps } = useModal();
 
@@ -28,10 +28,18 @@ const FileTrasher = () => {
           </p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleTrash} variant="destructive">
-            Trash
+          <Button
+            onClick={handleTrash}
+            variant="destructive"
+            disabled={trashFileLoading}
+          >
+            {trashFileLoading ? "Trashing..." : "Trash"}
           </Button>
-          <Button onClick={hideModal} variant="outline">
+          <Button
+            onClick={hideModal}
+            variant="outline"
+            disabled={trashFileLoading}
+          >
             Cancel
           </Button>
         </div>

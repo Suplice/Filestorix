@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useFile } from "@/hooks/use-file";
+import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 
 const CatalogRemover = () => {
-  const { deleteCatalog } = useFile();
+  const { deleteCatalog, deleteCatalogLoading } = useFileActions();
 
   const { hideModal, modalProps } = useModal();
 
@@ -29,10 +29,18 @@ const CatalogRemover = () => {
           </p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleRemove} variant="destructive">
-            Remove
+          <Button
+            onClick={handleRemove}
+            variant="destructive"
+            disabled={deleteCatalogLoading}
+          >
+            {deleteCatalogLoading ? "Removing..." : "Remove"}
           </Button>
-          <Button onClick={hideModal} variant="outline">
+          <Button
+            onClick={hideModal}
+            variant="outline"
+            disabled={deleteCatalogLoading}
+          >
             Cancel
           </Button>
         </div>

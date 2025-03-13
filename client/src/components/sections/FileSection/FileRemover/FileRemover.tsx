@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useFile } from "@/hooks/use-file";
+import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 
 const FileRemover = () => {
-  const { removeFile } = useFile();
+  const { removeFile, removeFileLoading } = useFileActions();
 
   const { hideModal, modalProps } = useModal();
 
@@ -25,10 +25,18 @@ const FileRemover = () => {
           </p>
         </div>
         <div className="flex justify-end gap-2">
-          <Button onClick={handleRemove} variant="destructive">
-            Remove
+          <Button
+            onClick={handleRemove}
+            variant="destructive"
+            disabled={removeFileLoading}
+          >
+            {removeFileLoading ? "Removing..." : "Remove"}
           </Button>
-          <Button onClick={hideModal} variant="outline">
+          <Button
+            onClick={hideModal}
+            variant="outline"
+            disabled={removeFileLoading}
+          >
             Cancel
           </Button>
         </div>

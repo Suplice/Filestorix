@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFile } from "@/hooks/use-file";
+import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 import { renameFileSchema } from "@/lib/schemas/fileRelatedSchemas";
 import { RenameFileForm } from "@/lib/types/forms";
@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 const FileRenamer = () => {
-  const { renameFile } = useFile();
+  const { renameFile, renameFileLoading } = useFileActions();
 
   const { hideModal, modalProps } = useModal();
 
@@ -42,7 +42,9 @@ const FileRenamer = () => {
         <p className="text-red-500">{form.formState.errors.name?.message}</p>
       </div>
 
-      <Button type="submit"> Rename File </Button>
+      <Button type="submit" disabled={renameFileLoading}>
+        {renameFileLoading ? "Renaming..." : "Rename File"}
+      </Button>
     </form>
   );
 };

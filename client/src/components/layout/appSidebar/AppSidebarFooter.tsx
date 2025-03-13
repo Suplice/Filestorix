@@ -11,10 +11,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
+import { useModal } from "@/hooks/use-modal";
 import { User2, ChevronUp, Settings, LogOut } from "lucide-react";
 
 const AppSidebarFooter = () => {
-  const { user } = useAuth();
+  const { user, handleLogout } = useAuth();
+  const { showModal } = useModal();
 
   return (
     <SidebarFooter className="p-4 border-t border-gray-200 dark:border-gray-800">
@@ -29,11 +31,16 @@ const AppSidebarFooter = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="start" className="w-full">
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  console.log("test");
+                  showModal("Settings", {});
+                }}
+              >
                 <Settings className="h-4 w-4 mr-2" />
                 <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="h-4 w-4 mr-2" />
                 <span>Sign out</span>
               </DropdownMenuItem>

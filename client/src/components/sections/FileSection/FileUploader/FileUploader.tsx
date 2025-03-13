@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useFile } from "@/hooks/use-file";
+import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 import { cn } from "@/lib/utils/utils";
 import { X } from "lucide-react";
@@ -14,7 +14,7 @@ type FilePreview = {
 
 const FileUploader = () => {
   const [files, setFiles] = useState<FilePreview[]>([]);
-  const { uploadFiles } = useFile();
+  const { uploadFiles } = useFileActions();
   const { hideModal, modalProps } = useModal();
 
   const handleRemoveFile = (file: File) => {

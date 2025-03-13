@@ -12,21 +12,12 @@ import {
   removeFavoriteFile,
 } from "@/lib/api/file/filesApi";
 import {
-  UploadFilesRequest,
   UserFile,
-  UploadCatalogRequest,
-  RenameFileRequest,
   RenameFileResult,
-  TrashFileRequest,
   TrashFileResult,
-  DeleteFileRequest,
   DeleteFileResult,
-  TrashCatalogRequest,
   TrashCatalogResult,
-  DeleteCatalogRequest,
   DeleteCatalogResult,
-  RestoreFileRequest,
-  FavoriteFileRequest,
   FavoriteFileResult,
 } from "@/lib/types/file";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
@@ -51,7 +42,7 @@ const useFileActions = () => {
    * @param data - An object containing the files and target catalog/folder ID.
    */
   const uploadFilesMutation = useMutation({
-    mutationFn: (data: UploadFilesRequest) => uploadFiles(data),
+    mutationFn: uploadFiles,
     onSuccess: (newFiles: UserFile[]) => {
       console.log(newFiles);
     },
@@ -69,7 +60,7 @@ const useFileActions = () => {
    * @param data - An object containing the catalog name and optional parent catalog ID.
    */
   const uploadCatalogMutation = useMutation({
-    mutationFn: (data: UploadCatalogRequest) => uploadCatalog(data),
+    mutationFn: uploadCatalog,
     onSuccess: (message: string) => {
       toast.success(getSuccessMessage(message));
     },
@@ -87,7 +78,7 @@ const useFileActions = () => {
    * @param data - An object containing the file ID and the new name.
    */
   const renameFileMutation = useMutation({
-    mutationFn: (data: RenameFileRequest) => renameFile(data),
+    mutationFn: renameFile,
     onSuccess: (result: RenameFileResult) => {
       toast.success(getSuccessMessage(result.message));
       dispatch(
@@ -108,7 +99,7 @@ const useFileActions = () => {
    * @param data - An object containing the file ID to be trashed.
    */
   const trashFileMutation = useMutation({
-    mutationFn: (data: TrashFileRequest) => trashFile(data),
+    mutationFn: trashFile,
     onSuccess: (result: TrashFileResult) => {
       toast.success(getSuccessMessage(result.message));
       dispatch(sliceTrashFile({ fileId: result.fileId }));
@@ -127,7 +118,7 @@ const useFileActions = () => {
    * @param data - An object containing the file ID to be deleted.
    */
   const removeFileMutation = useMutation({
-    mutationFn: (data: DeleteFileRequest) => deleteFile(data),
+    mutationFn: deleteFile,
     onSuccess: (result: DeleteFileResult) => {
       toast.success(getSuccessMessage(result.message));
     },
@@ -145,7 +136,7 @@ const useFileActions = () => {
    * @param data - An object containing the catalog ID to be trashed.
    */
   const trashCatalogMutation = useMutation({
-    mutationFn: (data: TrashCatalogRequest) => trashCatalog(data),
+    mutationFn: trashCatalog,
     onSuccess: (result: TrashCatalogResult) => {
       toast.success(getSuccessMessage(result.message));
     },
@@ -163,7 +154,7 @@ const useFileActions = () => {
    * @param data - An object containing the catalog ID to be deleted.
    */
   const deleteCatalogMutation = useMutation({
-    mutationFn: (data: DeleteCatalogRequest) => deleteCatalog(data),
+    mutationFn: deleteCatalog,
     onSuccess: (result: DeleteCatalogResult) => {
       toast.success(getSuccessMessage(result.message));
     },
@@ -181,7 +172,7 @@ const useFileActions = () => {
    * @param data - An object containing the file ID and the parent ID where the file should be restored.
    */
   const restoreFileMutation = useMutation({
-    mutationFn: (data: RestoreFileRequest) => restoreFile(data),
+    mutationFn: restoreFile,
     onSuccess: (result: DeleteCatalogResult) => {
       toast.success(getSuccessMessage(result.message));
     },
@@ -194,7 +185,7 @@ const useFileActions = () => {
   });
 
   const addFavoriteFileMutation = useMutation({
-    mutationFn: (data: FavoriteFileRequest) => addFavoriteFile(data),
+    mutationFn: addFavoriteFile,
     onSuccess: (result: FavoriteFileResult) => {
       toast.success(getSuccessMessage(result.message));
     },
@@ -207,7 +198,7 @@ const useFileActions = () => {
   });
 
   const removeFavoriteFileMutation = useMutation({
-    mutationFn: (data: FavoriteFileRequest) => removeFavoriteFile(data),
+    mutationFn: removeFavoriteFile,
     onSuccess: (result: FavoriteFileResult) => {
       toast.success(getSuccessMessage(result.message));
     },

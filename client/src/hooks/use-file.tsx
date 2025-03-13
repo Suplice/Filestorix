@@ -17,7 +17,7 @@ export const useFile = () => {
 
   const query = useQuery({
     queryKey: ["files", user?.ID],
-    queryFn: () => fetchUserFiles(),
+    queryFn: fetchUserFiles,
     enabled: isAuthenticated,
     retry: 0,
     staleTime: 5 * 60 * 1000,

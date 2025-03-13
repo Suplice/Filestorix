@@ -18,6 +18,8 @@ export enum ErrorMessage {
   INVALID_CATALOG_DATA = "An error occured while trying to perform action on this catalog, please try again.",
   ERROR_DELETING_CATALOG = "An error occured while trying to delete catalog, please try again.",
   ERROR_RESTORING_FILE = "An error occured while trying to restore file, please try again.",
+  ERROR_REMOVE_FAVORITE = "An error occured while trying to remove file from favorite files, please try again.",
+  ERROR_ADD_FAVORITE = "An error occured while trying to mark file as favorite, please try again.",
 }
 
 export enum SuccessMessage {
@@ -34,6 +36,8 @@ export enum SuccessMessage {
   SUCCESS_TRASH_CATALOG = "Successfully trashed catalog!",
   SUCCESS_DELETE_CATALOG = "Successfully deleted catalog!",
   SUCCESS_RESTORE_FILE = "Successfully restored file(s)!",
+  SUCCESS_REMOVE_FAVORITE = "Successfully removed file from favorites!",
+  SUCCESS_ADD_FAVORITE = "Successfully marked file as favorite!",
 }
 
 export const getErrorMessage = (errorCode?: string): string => {

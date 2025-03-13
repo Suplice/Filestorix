@@ -47,6 +47,14 @@ const (
 
 	// Success message, when restoring file is successful
 	SuccessRestoreFile		= "SUCCESS_RESTORE_FILE"
+
+	// Success message, when removing file from favorites
+	// is successful
+	SuccessRemoveFavorite	= "SUCCESS_REMOVE_FAVORITE"
+
+	// Success message, when adding file to favorites
+	// is successful
+	SuccessAddFavorite		= "SUCCESS_ADD_FAVORITE"
 )
 // Api error messages
 const (
@@ -117,6 +125,14 @@ const (
 
 	// Error message, when restoring file fails
 	ErrRestoreFile			= "ERROR_RESTORING_FILE"
+
+	// Error message, when removing file from favorite files
+	// fails
+	ErrRemoveFavorite		= "ERROR_REMOVE_FAVORITE"
+
+	// Error message, when adding file to favorite files
+	// fails
+	ErrAddFavorite			= "ERROR_ADD_FAVORITE"
 
 )
 

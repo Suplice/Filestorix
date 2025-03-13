@@ -56,5 +56,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.PATCH("/trashcatalog/:catalogId", middleware.ValidateJWT(), fileController.TrashCatalog)
 		fileRoutes.DELETE("/deletecatalog/:catalogId", middleware.ValidateJWT(), fileController.DeleteCatalog)
 		fileRoutes.PATCH("/restore/:fileId/:parentId", middleware.ValidateJWT(), fileController.RestoreFile)
+		fileRoutes.PATCH("/removefavorite/:fileId", middleware.ValidateJWT(), fileController.RemoveFavorite)
+		fileRoutes.PATCH("/addfavorite/:fileId", middleware.ValidateJWT(), fileController.AddFavorite)
 	}
 }

@@ -473,3 +473,23 @@ func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
 	return nil
 
 }
+
+func (fr *FileRepository) RemoveFavorite(fileId string) error {
+	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_favorite", false)
+
+	if result.Error != nil {
+		return errors.New(constants.ErrRemoveFavorite)
+	}
+
+	return nil
+}
+
+func (fr *FileRepository) AddFavorite(fileId string) error {
+	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_favorite", true)
+
+	if result.Error != nil {
+		return errors.New(constants.ErrAddFavorite)
+	}
+
+	return nil
+}

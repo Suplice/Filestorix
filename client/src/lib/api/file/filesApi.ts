@@ -7,6 +7,9 @@ import {
   DeleteFileRequest,
   DeleteFileResponse,
   DeleteFileResult,
+  FavoriteFileRequest,
+  FavoriteFileResponse,
+  FavoriteFileResult,
   FetchFilesResponse,
   RenameFileRequest,
   RenameFileResponse,
@@ -304,6 +307,46 @@ export const restoreFile = async (
   );
 
   const responseData: RestoreFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
+};
+
+export const addFavoriteFile = async (
+  data: FavoriteFileRequest
+): Promise<FavoriteFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/addfavorite/${data.fileId}`,
+    {
+      credentials: "include",
+      method: "PATCH",
+    }
+  );
+
+  const responseData: FavoriteFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
+};
+
+export const removeFavoriteFile = async (
+  data: FavoriteFileRequest
+): Promise<FavoriteFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/removefavorite/${data.fileId}`,
+    {
+      credentials: "include",
+      method: "PATCH",
+    }
+  );
+
+  const responseData: FavoriteFileResponse = await response.json();
 
   if (!response.ok || !responseData.message) {
     throw new Error(responseData.error);

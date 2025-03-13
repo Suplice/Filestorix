@@ -18,9 +18,15 @@ interface FileTableProps {
   files: UserFile[];
   isLoading: boolean;
   section: string;
+  allowCatalogs: boolean;
 }
 
-const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
+const FileTable: React.FC<FileTableProps> = ({
+  files,
+  isLoading,
+  section,
+  allowCatalogs,
+}) => {
   const [parentId, setParentId] = useState<number | null>(null);
   const [route, setRoute] = useState<FileRoute[]>([
     {
@@ -30,6 +36,8 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
   ]);
 
   const handleFolderClick = (fileId: number, fileName: string) => {
+    if (!allowCatalogs) return;
+
     const file = files.find((file) => file.id === fileId);
     if (file?.type === "CATALOG") {
       setParentId(fileId);
@@ -45,6 +53,14 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
     setRoute(route.slice(0, newRouteIndex + 1));
   };
 
+  const visibleFiles = files.filter((file) => {
+    if (!allowCatalogs && file.type === "CATALOG") return false;
+
+    if (allowCatalogs) return file.parentId === parentId;
+
+    return true;
+  });
+
   return (
     <>
       <div className="w-full flex flex-row justify-between mb-4">
@@ -52,7 +68,7 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
           routes={route}
           handleChangeRoute={handleChangeRoute}
         />
-        <CreateButton parentId={parentId} />
+        {section !== "Trash" && <CreateButton parentId={parentId} />}
       </div>
       <Table>
         <TableHeader>
@@ -72,16 +88,13 @@ const FileTable: React.FC<FileTableProps> = ({ files, isLoading, section }) => {
                 <TableCell>No files found</TableCell>
               </TableRow>
             ) : (
-              files.map(
-                (file) =>
-                  (file.parentId === parentId || section === "Trash") && (
-                    <FileCard
-                      file={file}
-                      key={file.id}
-                      handleClick={handleFolderClick}
-                    />
-                  )
-              )
+              visibleFiles.map((file) => (
+                <FileCard
+                  file={file}
+                  key={file.id}
+                  handleClick={handleFolderClick}
+                />
+              ))
             )}
           </TableBody>
         )}

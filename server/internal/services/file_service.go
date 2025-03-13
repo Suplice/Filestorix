@@ -232,3 +232,11 @@ func (fs *FileService) DeleteCatalog(catalogId string) error {
 func (fs *FileService) RestoreFile(fileId string, parentId string) error {
 	return fs.fileRepository.RestoreFile(fileId, parentId)
 }
+
+func (fs *FileService) RemoveFavorite(fileId string) error {
+	return fs.fileRepository.RemoveFavorite(fileId);
+}
+
+func (fs *FileService) AddFavorite(fileId string) error {
+	return fs.fileRepository.AddFavorite(fileId);
+}

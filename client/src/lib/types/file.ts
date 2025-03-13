@@ -81,6 +81,11 @@ export type DeleteCatalogResponse = BaseResponse;
  */
 export type RestoreFileResponse = BaseResponse;
 
+/**
+ * API response after adding file to favorite files or removing file from favorite files.
+ */
+export type FavoriteFileResponse = BaseResponse;
+
 /* ----------------------------- API Requests ------------------------------ */
 
 /**
@@ -137,6 +142,11 @@ export type RestoreFileRequest = {
   parentId: number;
 };
 
+/**
+ * Request to set a file as favorite or remove file from being favorite.
+ */
+export type FavoriteFileRequest = TrashFileRequest;
+
 /* ----------------------------- API Results ------------------------------ */
 
 /**
@@ -177,6 +187,11 @@ export type DeleteCatalogResult = TrashCatalogResult;
  * Result after restoring a file from trash (same as TrashCatalogResult).
  */
 export type RestoreFileResult = TrashCatalogResult;
+
+/**
+ * Result after setting file as favorite or removing file from being favorite.
+ */
+export type FavoriteFileResult = TrashCatalogResult;
 
 /* ---------------------------- Icon Mapping ---------------------------- */
 

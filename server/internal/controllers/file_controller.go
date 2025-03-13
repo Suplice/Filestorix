@@ -343,3 +343,53 @@ func (fc *FileController) RestoreFile(c *gin.Context) {
 		"message": constants.SuccessRestoreFile,
 	})
 }
+
+func (fc *FileController) RemoveFavorite(c *gin.Context) {
+	fileId := c.Param("fileId")
+
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	err := fc.fileService.RemoveFavorite(fileId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrRemoveFavorite,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessRemoveFavorite,
+	})
+
+}
+
+func (fc *FileController) AddFavorite(c *gin.Context) {
+	fileId := c.Param("fileId")
+
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	err := fc.fileService.AddFavorite(fileId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessAddFavorite,
+	})
+
+}

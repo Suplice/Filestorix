@@ -24,15 +24,18 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	authRepository := repositories.NewAuthRepository(db, logger)
 	userRepository := repositories.NewUserRepository(db, logger)
 	fileRepository := repositories.NewFileRepository(db, logger)
+	settingRepository := repositories.NewSettingRepository(db, logger)
 
 	// Setup Services
 	userService := services.NewUserService(userRepository, logger)
 	authService := services.NewAuthService(logger, userService, authRepository)
 	fileService := services.NewFileService(fileRepository, logger)
+	settingService := services.NewSettingService(settingRepository, logger)
 
 	// Setup Controllers
 	authController := controllers.NewAuthController(logger, authService)
 	fileController := controllers.NewFileController(logger, fileService)
+	settingController := controllers.NewSettingsController(logger, settingService)
 
 	authRoutes := router.Group("/auth") 
 	{
@@ -58,5 +61,10 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.PATCH("/restore/:fileId/:parentId", middleware.ValidateJWT(), fileController.RestoreFile)
 		fileRoutes.PATCH("/removefavorite/:fileId", middleware.ValidateJWT(), fileController.RemoveFavorite)
 		fileRoutes.PATCH("/addfavorite/:fileId", middleware.ValidateJWT(), fileController.AddFavorite)
+	}
+
+	settingRoutes := router.Group("/settings")
+	{
+		settingRoutes.GET("/all", middleware.ValidateJWT(), settingController.GetAllUserSettings)
 	}
 }

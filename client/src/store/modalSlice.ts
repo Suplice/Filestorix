@@ -10,6 +10,7 @@ export type ModalType =
   | "CatalogRemover"
   | "CatalogTrasher"
   | "FileRestorer"
+  | "Settings"
   | null;
 
 export type ModalProps = {

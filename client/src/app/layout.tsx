@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <Provider store={store}>
           <QueryClientProvider client={queryClient}>
-            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <ThemeProvider attribute="class" enableSystem>
               <AuthProvider>
                 {children}
                 <Toaster />

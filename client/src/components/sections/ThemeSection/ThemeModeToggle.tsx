@@ -1,17 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 
 const ThemeModeToggle = () => {
-  const { setTheme, theme } = useTheme();
+  const { showModal } = useModal();
 
   return (
     <Button
       variant="outline"
       size="icon"
       onClick={() => {
-        setTheme(theme === "dark" ? "white" : "dark");
+        showModal("Settings", {});
       }}
     >
       <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

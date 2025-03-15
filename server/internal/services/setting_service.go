@@ -1,10 +1,13 @@
 package services
 
 import (
+	"errors"
 	"log/slog"
 
+	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/models"
 	"github.com/Suplice/Filestorix/internal/repositories"
+	"github.com/Suplice/Filestorix/internal/utils/constants"
 )
 
 type SettingService struct {
@@ -18,4 +21,20 @@ func NewSettingService(_settingRepository *repositories.SettingRepository, _logg
 
 func (ss *SettingService) GetAllUserSettings(userId string) ([]*models.Settings, error) {
 	return ss.settingRepository.GetAllUserSettings(userId)
+}
+
+func (ss *SettingService) UpdateSettingsForUser(userId string, settings []dto.UserSetting) error {
+
+	keySet := make(map[string]bool)
+
+    for _, setting := range settings {
+        if _, exists := keySet[setting.SettingKey]; exists {
+            return errors.New(constants.ErrSettingsSameKeys)
+        }
+        keySet[setting.SettingKey] = true
+    }
+
+
+
+	return ss.settingRepository.UpdateSettingsForUser(userId, settings)
 }

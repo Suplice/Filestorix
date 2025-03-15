@@ -60,7 +60,8 @@ export const updateSettings = async (
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/settings/update`,
     {
-      method: "POST",
+      method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(settings),
     }

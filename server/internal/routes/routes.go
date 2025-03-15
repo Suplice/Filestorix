@@ -66,5 +66,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	settingRoutes := router.Group("/settings")
 	{
 		settingRoutes.GET("/all", middleware.ValidateJWT(), settingController.GetAllUserSettings)
+		settingRoutes.PUT("/update", middleware.ValidateJWT(), settingController.UpdateSettingsForUser)
 	}
 }

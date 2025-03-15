@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/services"
 	"github.com/Suplice/Filestorix/internal/utils/constants"
 	"github.com/gin-gonic/gin"
@@ -44,4 +45,40 @@ func (sc *SettingController) GetAllUserSettings(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"settings": settings,
 	})
+}
+
+func (sc *SettingController) UpdateSettingsForUser(c *gin.Context) {
+	var settings []dto.UserSetting
+
+	if err := c.ShouldBindJSON(&settings); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	userId, exists := c.Get("userID")
+
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%d", userId)
+
+	err := sc.settingService.UpdateSettingsForUser(stringUserId, settings)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessUpdateSettings,
+	})
+
 }

@@ -10,29 +10,33 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useFile } from "@/hooks/use-file";
 import { FileIcon } from "lucide-react";
-import { useEffect } from "react";
 import { useModal } from "@/hooks/use-modal";
+import { DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
+import useSettings from "@/hooks/use-settings";
 
 export function SearchCommand() {
-  const [open, setOpen] = React.useState(false);
   const { files } = useFile();
   const { showModal } = useModal();
+  const [open, setOpen] = useState(false);
+  const { settings, isPending } = useSettings();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+      if (
+        e.key === settings.shortcuts.openSearchBox &&
+        (e.metaKey || e.ctrlKey)
+      ) {
         e.preventDefault();
         setOpen((open) => !open);
       }
     };
-
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [settings.shortcuts.openSearchBox]);
 
   return (
     <>
@@ -42,9 +46,12 @@ export function SearchCommand() {
       >
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">Press to search</span>
-          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-            <span className="text-xs">⌘</span>J
-          </kbd>
+          {!isPending && (
+            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+              <span className="text-xs">⌘</span>
+              {settings.shortcuts.openSearchBox}
+            </kbd>
+          )}
         </div>
       </div>
 

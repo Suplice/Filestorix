@@ -1,9 +1,12 @@
 package repositories
 
 import (
+	"errors"
 	"log/slog"
 
+	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/models"
+	"github.com/Suplice/Filestorix/internal/utils/constants"
 	"gorm.io/gorm"
 )
 
@@ -26,4 +29,25 @@ func (sr *SettingRepository) GetAllUserSettings(userId string) ([]*models.Settin
 	}
 	return settings, nil
 
+}
+
+func (sr *SettingRepository) UpdateSettingsForUser(userId string, settings []dto.UserSetting) error {
+
+	tx := sr.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUpdateSettings)
+		
+	}
+
+	for _, setting := range settings {
+		if err := tx.Model(&models.Settings{}).Where("user_id = ? AND setting_key = ?", userId, setting.SettingKey).Update("setting_value", setting.SettingValue).Error; err != nil {
+			tx.Rollback()
+			return errors.New(constants.ErrUpdateSettings)
+		}
+	}
+
+	tx.Commit()
+	return nil
 }

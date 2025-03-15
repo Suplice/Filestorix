@@ -12,6 +12,7 @@ import useSettings from "@/hooks/use-settings";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { SettingRecord } from "@/lib/types/settings";
+import { toast } from "sonner";
 
 const SettingsModal = () => {
   const { hideModal } = useModal();
@@ -33,14 +34,26 @@ const SettingsModal = () => {
     const settingsToUpdate: SettingRecord[] = [
       { setting_key: "theme", setting_value: localTheme },
       {
-        setting_key: "shortcut_openSearchBox",
+        setting_key: "openSearchBox",
         setting_value: localShortcuts.openSearchBox,
       },
       {
-        setting_key: "shortcut_toggleHiddenFiles",
+        setting_key: "toggleHiddenFiles",
         setting_value: localShortcuts.toggleHiddenFiles,
       },
     ];
+
+    const settingsMap = new Set<string>();
+
+    for (const setting of settingsToUpdate) {
+      if (settingsMap.has(setting.setting_value)) {
+        toast.error("One value can't be associated with multiple settings.");
+        return;
+      }
+      settingsMap.add(setting.setting_value);
+    }
+
+    console.log(settingsMap);
 
     updateSettings(settingsToUpdate);
     hideModal();
@@ -57,7 +70,12 @@ const SettingsModal = () => {
 
         <div className="space-y-2">
           <label className="font-semibold">Theme</label>
-          <Select value={localTheme} onValueChange={() => setLocalTheme}>
+          <Select
+            value={localTheme}
+            onValueChange={(value: "light" | "dark" | "system") =>
+              setLocalTheme(value)
+            }
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select theme" />
             </SelectTrigger>

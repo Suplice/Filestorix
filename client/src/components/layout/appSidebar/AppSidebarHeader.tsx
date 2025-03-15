@@ -1,13 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar";
-import { useModal } from "@/hooks/use-modal";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@radix-ui/react-dropdown-menu";
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar";
+import { useModal } from "@/hooks/use-modal";
+
 import { Plus } from "lucide-react";
 import Link from "next/link";
 

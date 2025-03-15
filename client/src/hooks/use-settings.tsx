@@ -15,7 +15,7 @@ const useSettings = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state: RootState) => state.settings);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch, isPending, isFetching } = useQuery({
     queryKey: ["settings", user?.ID],
     queryFn: fetchSettings,
     enabled: isAuthenticated,
@@ -47,6 +47,8 @@ const useSettings = () => {
   return {
     settings: settings,
     loading: isLoading,
+    isFetching: isFetching,
+    isPending: isPending,
     error,
     refresh: refetch,
     updateSettings: settingsMutation.mutate,

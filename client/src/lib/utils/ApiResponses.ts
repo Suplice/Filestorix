@@ -20,6 +20,8 @@ export enum ErrorMessage {
   ERROR_RESTORING_FILE = "An error occured while trying to restore file, please try again.",
   ERROR_REMOVE_FAVORITE = "An error occured while trying to remove file from favorite files, please try again.",
   ERROR_ADD_FAVORITE = "An error occured while trying to mark file as favorite, please try again.",
+  ERROR_UPDATE_SETTINGS = "An error occured while trying to update settings, please try again.",
+  ERROR_SAME_SETTING_KEYS = "One value can't be associated with multiple settings.",
 }
 
 export enum SuccessMessage {
@@ -38,6 +40,7 @@ export enum SuccessMessage {
   SUCCESS_RESTORE_FILE = "Successfully restored file(s)!",
   SUCCESS_REMOVE_FAVORITE = "Successfully removed file from favorites!",
   SUCCESS_ADD_FAVORITE = "Successfully marked file as favorite!",
+  SUCCESS_UPDATE_SETTINGS = "Successfully updated settings!",
 }
 
 export const getErrorMessage = (errorCode?: string): string => {

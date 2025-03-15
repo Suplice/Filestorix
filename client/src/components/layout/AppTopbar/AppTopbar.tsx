@@ -1,5 +1,5 @@
 import ThemeModeToggle from "@/components/sections/ThemeSection/ThemeModeToggle";
-import SearchCommand from "../SearchCommand/SearchCommand";
+import SearchCommand from "../SearchCommand/searchCommand";
 
 const AppTopbar = () => {
   return (

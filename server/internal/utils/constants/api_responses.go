@@ -55,6 +55,9 @@ const (
 	// Success message, when adding file to favorites
 	// is successful
 	SuccessAddFavorite		= "SUCCESS_ADD_FAVORITE"
+
+	// Success message, when updating settings was successful
+	SuccessUpdateSettings 	= "SUCCESS_UPDATE_SETTINGS"
 )
 // Api error messages
 const (
@@ -133,6 +136,12 @@ const (
 	// Error message, when adding file to favorite files
 	// fails
 	ErrAddFavorite			= "ERROR_ADD_FAVORITE"
+
+	// Error message, when updating settings fails
+	ErrUpdateSettings		= "ERROR_UPDATE_SETTINGS"
+
+	// Error message, when two settings have same value
+	ErrSettingsSameKeys		= "ERROR_SAME_SETTING_KEYS"
 
 )
 

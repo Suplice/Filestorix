@@ -19,6 +19,7 @@ export type UserFile = {
   isTrashed: boolean;
   isFavorite: boolean;
   parentId: number;
+  isHidden: boolean;
 };
 
 /**
@@ -86,6 +87,11 @@ export type RestoreFileResponse = BaseResponse;
  */
 export type FavoriteFileResponse = BaseResponse;
 
+/**
+ * API response after setting or removing file from being hidden.
+ */
+export type HideFileResponse = BaseResponse;
+
 /* ----------------------------- API Requests ------------------------------ */
 
 /**
@@ -147,6 +153,13 @@ export type RestoreFileRequest = {
  */
 export type FavoriteFileRequest = TrashFileRequest;
 
+/**
+ * Request to set a file as hidden or remove file from being hidden.
+ */
+export type HideFileRequest = {
+  fileId: number;
+};
+
 /* ----------------------------- API Results ------------------------------ */
 
 /**
@@ -192,6 +205,11 @@ export type RestoreFileResult = TrashCatalogResult;
  * Result after setting file as favorite or removing file from being favorite.
  */
 export type FavoriteFileResult = TrashCatalogResult;
+
+/**
+ * Result after setting file as hidden or removing file from being hidden.
+ */
+export type HideFileResult = TrashCatalogResult;
 
 /* ---------------------------- Icon Mapping ---------------------------- */
 

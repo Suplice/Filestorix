@@ -22,6 +22,8 @@ export enum ErrorMessage {
   ERROR_ADD_FAVORITE = "An error occured while trying to mark file as favorite, please try again.",
   ERROR_UPDATE_SETTINGS = "An error occured while trying to update settings, please try again.",
   ERROR_SAME_SETTING_KEYS = "One value can't be associated with multiple settings.",
+  ERROR_HIDE_FILE = "An error occured while trying to set file as hidden, please try again.",
+  ERROR_REVEAL_FILE = "An error occured while trying to reveal file, please try again.",
 }
 
 export enum SuccessMessage {
@@ -41,6 +43,8 @@ export enum SuccessMessage {
   SUCCESS_REMOVE_FAVORITE = "Successfully removed file from favorites!",
   SUCCESS_ADD_FAVORITE = "Successfully marked file as favorite!",
   SUCCESS_UPDATE_SETTINGS = "Successfully updated settings!",
+  SUCCESS_HIDE_FILE = "File was hidden successfully!",
+  SUCCESS_REVEAL_FILE = "File was revealed successfully!",
 }
 
 export const getErrorMessage = (errorCode?: string): string => {

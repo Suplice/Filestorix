@@ -19,6 +19,9 @@ const SettingsModal = () => {
   const { updateSettings, updating, settings, loading } = useSettings();
 
   const [localTheme, setLocalTheme] = useState(settings.theme);
+  const [localHiddenFiles, setLocalHiddenFiles] = useState(
+    settings.showHiddenFiles
+  );
   const [localShortcuts, setLocalShortcuts] = useState({
     ...settings.shortcuts,
   });
@@ -33,6 +36,10 @@ const SettingsModal = () => {
 
     const settingsToUpdate: SettingRecord[] = [
       { setting_key: "theme", setting_value: localTheme },
+      {
+        setting_key: "showHiddenFiles",
+        setting_value: localHiddenFiles ? "true" : "false",
+      },
       {
         setting_key: "openSearchBox",
         setting_value: localShortcuts.openSearchBox,
@@ -53,7 +60,7 @@ const SettingsModal = () => {
       settingsMap.add(setting.setting_value);
     }
 
-    console.log(settingsMap);
+    console.log(settingsToUpdate);
 
     updateSettings(settingsToUpdate);
     hideModal();
@@ -83,6 +90,24 @@ const SettingsModal = () => {
               <SelectItem value="light">Light</SelectItem>
               <SelectItem value="dark">Dark</SelectItem>
               <SelectItem value="system">System</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="font-semibold">Enable show hidden files</label>
+          <Select
+            value={localHiddenFiles ? "True" : "False"}
+            onValueChange={(value: "True" | "False") =>
+              setLocalHiddenFiles(value === "True" ? true : false)
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select theme" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="True">True</SelectItem>
+              <SelectItem value="False">False</SelectItem>
             </SelectContent>
           </Select>
         </div>

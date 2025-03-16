@@ -61,6 +61,8 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.PATCH("/restore/:fileId/:parentId", middleware.ValidateJWT(), fileController.RestoreFile)
 		fileRoutes.PATCH("/removefavorite/:fileId", middleware.ValidateJWT(), fileController.RemoveFavorite)
 		fileRoutes.PATCH("/addfavorite/:fileId", middleware.ValidateJWT(), fileController.AddFavorite)
+		fileRoutes.PATCH("/hide/:fileId", middleware.ValidateJWT(), fileController.HideFile)
+		fileRoutes.PATCH("/reveal/:fileId", middleware.ValidateJWT(), fileController.RevealFile)
 	}
 
 	settingRoutes := router.Group("/settings")

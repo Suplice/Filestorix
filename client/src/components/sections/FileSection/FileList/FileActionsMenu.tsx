@@ -25,7 +25,8 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
 }) => {
   const { showModal } = useModal();
 
-  const { addFavoriteFile, removeFavoriteFile } = useFileActions();
+  const { addFavoriteFile, removeFavoriteFile, hideFile, revealFile } =
+    useFileActions();
 
   const handleTrashOrDelete = () => {
     if (file.type === "CATALOG") {
@@ -55,6 +56,14 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
     }
   };
 
+  const handleHide = () => {
+    if (file.isHidden) {
+      revealFile({ fileId: file.id });
+    } else {
+      hideFile({ fileId: file.id });
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -80,13 +89,18 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
                 {file.isFavorite ? "Unfavorite" : "Favorite"}
               </DropdownMenuItem>
             )}
-
             <DropdownMenuItem
               onClick={() => showModal("FileNameChanger", { fileId: file.id })}
             >
               Rename
             </DropdownMenuItem>
           </>
+        )}
+
+        {file.type !== "CATALOG" && (
+          <DropdownMenuItem onClick={handleHide}>
+            {file.isHidden ? "Reveal" : "Hide"}
+          </DropdownMenuItem>
         )}
 
         <DropdownMenuItem onClick={handleTrashOrDelete}>

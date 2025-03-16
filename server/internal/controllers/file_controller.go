@@ -393,3 +393,51 @@ func (fc *FileController) AddFavorite(c *gin.Context) {
 	})
 
 }
+
+func (fc *FileController) HideFile(c *gin.Context) {
+	fileId := c.Param("fileId")
+
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	err := fc.fileService.HideFile(fileId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessHideFile,
+	})
+}
+
+func (fc *FileController) RevealFile(c *gin.Context) {
+	fileId := c.Param("fileId")
+
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	err := fc.fileService.RevealFile(fileId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessRevealFile,
+	})
+}

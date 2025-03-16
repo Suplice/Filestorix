@@ -58,6 +58,12 @@ const (
 
 	// Success message, when updating settings was successful
 	SuccessUpdateSettings 	= "SUCCESS_UPDATE_SETTINGS"
+
+	// Success message, when hiding file is successful
+	SuccessHideFile			= "SUCCESS_HIDE_FILE"
+
+	// Success message, when revealing file is successful
+	SuccessRevealFile		= "SUCCESS_REVEAL_FILE"
 )
 // Api error messages
 const (
@@ -142,6 +148,12 @@ const (
 
 	// Error message, when two settings have same value
 	ErrSettingsSameKeys		= "ERROR_SAME_SETTING_KEYS"
+
+	// Error message, when hiding file has failed
+	ErrHideFile				= "ERROR_HIDING_FILE"
+
+	// Error message, when revealing file has failed
+	ErrRevealFile			= "ERROR_REVEAL_FILE"
 
 )
 

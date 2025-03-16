@@ -11,6 +11,9 @@ import {
   FavoriteFileResponse,
   FavoriteFileResult,
   FetchFilesResponse,
+  HideFileRequest,
+  HideFileResponse,
+  HideFileResult,
   RenameFileRequest,
   RenameFileResponse,
   RenameFileResult,
@@ -347,6 +350,46 @@ export const removeFavoriteFile = async (
   );
 
   const responseData: FavoriteFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
+};
+
+export const hideFile = async (
+  data: HideFileRequest
+): Promise<HideFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/hide/${data.fileId}`,
+    {
+      credentials: "include",
+      method: "PATCH",
+    }
+  );
+
+  const responseData: HideFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return { message: responseData.message };
+};
+
+export const revealFile = async (
+  data: HideFileRequest
+): Promise<HideFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/reveal/${data.fileId}`,
+    {
+      credentials: "include",
+      method: "PATCH",
+    }
+  );
+
+  const responseData: HideFileResponse = await response.json();
 
   if (!response.ok || !responseData.message) {
     throw new Error(responseData.error);

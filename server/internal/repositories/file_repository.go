@@ -493,3 +493,23 @@ func (fr *FileRepository) AddFavorite(fileId string) error {
 
 	return nil
 }
+
+func (fr *FileRepository) HideFile(fileId string) error {
+	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_hidden", true)
+
+	if result.Error != nil {
+		return errors.New(constants.ErrHideFile)
+	}
+
+	return nil
+}
+
+func (fr *FileRepository) RevealFile(fileId string) error {
+	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_hidden", false)
+
+	if result.Error != nil {
+		return errors.New(constants.ErrRevealFile)
+	}
+
+	return nil
+}

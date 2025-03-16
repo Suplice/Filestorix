@@ -17,6 +17,7 @@ type UserFile struct {
 	IsTrashed 		bool 			`gorm:"not null" json:"isTrashed"`
 	ParentID 		*uint 			`gorm:"constraint:OnDelete:SET NULL;" json:"parentId"`
 	IsFavorite		bool			`gorm:"not null;default:false" json:"isFavorite"`
+	IsHidden		bool			`gorm:"not null;default:false" json:"isHidden"`
 
 	User 			User 			`gorm:"foreignKey:UserID" json:"-"`
 	Children    	[]UserFile 		`gorm:"foreignKey:ParentID" json:"-"` 

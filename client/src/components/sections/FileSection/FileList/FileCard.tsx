@@ -40,7 +40,9 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
         <div className="flex flex-row gap-3 items-center">
           <FileIcon extension={file.extension} />
           <span
-            className="font-medium cursor-pointer"
+            className={`font-medium cursor-pointer ${
+              file.isHidden ? "text-gray-500" : ""
+            }`}
             onClick={() =>
               file.type === "CATALOG"
                 ? handleClick(file.id, file.name)

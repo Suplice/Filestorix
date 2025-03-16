@@ -10,6 +10,8 @@ import {
   trashFile,
   addFavoriteFile,
   removeFavoriteFile,
+  hideFile,
+  revealFile,
 } from "@/lib/api/file/filesApi";
 import {
   UserFile,
@@ -19,6 +21,7 @@ import {
   TrashCatalogResult,
   DeleteCatalogResult,
   FavoriteFileResult,
+  HideFileResult,
 } from "@/lib/types/file";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -210,6 +213,32 @@ const useFileActions = () => {
     },
   });
 
+  const hideFileMutation = useMutation({
+    mutationFn: hideFile,
+    onSuccess: (result: HideFileResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
+  const revealFileMutation = useMutation({
+    mutationFn: revealFile,
+    onSuccess: (result: HideFileResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
+    },
+  });
+
   return {
     restoreFile: restoreFileMutation.mutate,
     deleteCatalog: deleteCatalogMutation.mutate,
@@ -221,6 +250,8 @@ const useFileActions = () => {
     uploadFiles: uploadFilesMutation.mutate,
     addFavoriteFile: addFavoriteFileMutation.mutate,
     removeFavoriteFile: removeFavoriteFileMutation.mutate,
+    hideFile: hideFileMutation.mutate,
+    revealFile: revealFileMutation.mutate,
     removeFavoriteFileLoading: removeFavoriteFileMutation.isPending,
     addFavoriteFileLoading: addFavoriteFileMutation.isPending,
     restoreFileLoading: restoreFileMutation.isPending,

@@ -223,7 +223,7 @@ func (fs *FileService) TrashCatalog(catalogId string) error {
 // It takes catalogId as a parameter, which is the unique identifier of the catalog to delete.
 // If the operation is successful, it returns nil. Otherwise, it returns an error indicating the failure.
 func (fs *FileService) DeleteCatalog(catalogId string) error {
-	return fs.fileRepository.DeleteCatalog(catalogId);
+	return fs.fileRepository.DeleteCatalog(catalogId)
 }
 
 // RestoreFile restores a file from the trash and ensures that all its parent catalogs are also restored if needed.
@@ -234,9 +234,17 @@ func (fs *FileService) RestoreFile(fileId string, parentId string) error {
 }
 
 func (fs *FileService) RemoveFavorite(fileId string) error {
-	return fs.fileRepository.RemoveFavorite(fileId);
+	return fs.fileRepository.RemoveFavorite(fileId)
 }
 
 func (fs *FileService) AddFavorite(fileId string) error {
-	return fs.fileRepository.AddFavorite(fileId);
+	return fs.fileRepository.AddFavorite(fileId)
+}
+
+func (fs *FileService) HideFile(fileId string) error {
+	return fs.fileRepository.HideFile(fileId)
+}
+
+func (fs *FileService) RevealFile(fileId string) error {
+	return fs.fileRepository.RevealFile(fileId)
 }

@@ -8,12 +8,15 @@ import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/utils/ApiResponses";
+import useSettings from "./use-settings";
 
 export const useFile = () => {
   const dispatch = useDispatch();
   const files = useSelector((state: RootState) => state.file.files);
 
   const { user, isAuthenticated } = useAuth();
+
+  const { settings } = useSettings();
 
   const query = useQuery({
     queryKey: ["files", user?.ID],
@@ -32,12 +35,18 @@ export const useFile = () => {
     }
   }, [query.data, query.error, dispatch]);
 
+  const hideBasedFiles = settings.showHiddenFiles
+    ? files
+    : files.filter((file) => !file.isHidden);
+
   /**
    * List of all user files that are not trashed.
    */
   const baseFiles = useMemo(() => {
-    return query.isLoading ? [] : files.filter((file) => !file.isTrashed);
-  }, [query.isLoading, files]);
+    return query.isLoading
+      ? []
+      : hideBasedFiles.filter((file) => !file.isTrashed);
+  }, [query.isLoading, hideBasedFiles]);
 
   /**
    * List of user's favorite files.
@@ -45,8 +54,8 @@ export const useFile = () => {
   const favoriteFiles = useMemo(() => {
     return query.isLoading
       ? []
-      : files.filter((file) => file.isFavorite && !file.isTrashed);
-  }, [query.isLoading, files]);
+      : hideBasedFiles.filter((file) => file.isFavorite && !file.isTrashed);
+  }, [query.isLoading, hideBasedFiles]);
 
   /**
    * List of user's recently created or modified files, sorted by creation date descending.
@@ -54,18 +63,20 @@ export const useFile = () => {
   const recentFiles = useMemo(() => {
     return query.isLoading
       ? []
-      : [...files].sort(
+      : [...hideBasedFiles].sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
-  }, [query.isLoading, files]);
+  }, [query.isLoading, hideBasedFiles]);
 
   /**
    * List of user's trashed files (files in the trash bin).
    */
   const trashedFiles = useMemo(() => {
-    return query.isLoading ? [] : files.filter((file) => file.isTrashed);
-  }, [query.isLoading, files]);
+    return query.isLoading
+      ? []
+      : hideBasedFiles.filter((file) => file.isTrashed);
+  }, [query.isLoading, hideBasedFiles]);
 
   return {
     files: baseFiles,

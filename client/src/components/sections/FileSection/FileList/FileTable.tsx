@@ -13,6 +13,7 @@ import { UserFile, FileRoute } from "@/lib/types/file";
 import FileTableSkeleton from "./FileTableSkeleton";
 import FileRouteManager from "./FileRouteManager";
 import CreateButton from "./CreateButton";
+import FileMainGallery from "../FileMainGallery/FileMainGallery";
 
 interface FileTableProps {
   files: UserFile[];
@@ -70,6 +71,11 @@ const FileTable: React.FC<FileTableProps> = ({
         />
         {section !== "Trash" && <CreateButton parentId={parentId} />}
       </div>
+      {section === "Main" && (
+        <FileMainGallery
+          files={files.filter((file) => file.type !== "CATALOG").slice(0, 10)}
+        />
+      )}
       <Table>
         <TableHeader>
           <TableRow>

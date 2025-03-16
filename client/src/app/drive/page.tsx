@@ -1,9 +1,7 @@
+import FileList from "@/components/sections/FileSection/FileList/FileList";
+
 const Drive = () => {
-  return (
-    <div>
-      <h1>Drive</h1>
-    </div>
-  );
+  return <FileList section="Main" />;
 };
 
 export default Drive;

@@ -16,9 +16,9 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
   return (
     <div
       className="w-full h-full flex items-center justify-center pointer-events-auto backdrop-brightness-[0.3]"
-      onClick={handleBackdropClick}
+      onMouseDown={handleBackdropClick}
     >
-      <div onClick={(e) => e.stopPropagation()} className="relative">
+      <div onMouseDown={(e) => e.stopPropagation()} className="relative">
         {children}
       </div>
     </div>

@@ -71,7 +71,7 @@ const FileTable: React.FC<FileTableProps> = ({
         />
         {section !== "Trash" && <CreateButton parentId={parentId} />}
       </div>
-      {section === "Main" && (
+      {section === "Main" && files.length > 0 && (
         <FileMainGallery
           files={files.filter((file) => file.type !== "CATALOG").slice(0, 10)}
         />

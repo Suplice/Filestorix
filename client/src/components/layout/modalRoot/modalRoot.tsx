@@ -44,7 +44,7 @@ const FileRestore = lazy(
 );
 
 const SettingsModal = lazy(
-  () => import("@/components/sections/settingsSection/SettingsModal")
+  () => import("@/components/sections/SettingsSection/SettingsModal")
 );
 
 const ModalRoot = () => {

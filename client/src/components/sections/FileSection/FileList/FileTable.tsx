@@ -1,5 +1,4 @@
 "use client";
-import FileCard from "./FileCard";
 import { useState } from "react";
 import {
   Table,
@@ -11,9 +10,26 @@ import {
 } from "@/components/ui/table";
 import { UserFile, FileRoute } from "@/lib/types/file";
 import FileTableSkeleton from "./FileTableSkeleton";
-import FileRouteManager from "./FileRouteManager";
-import CreateButton from "./CreateButton";
-import FileMainGallery from "../FileMainGallery/FileMainGallery";
+import dynamic from "next/dynamic";
+
+const FileRouteManager = dynamic(
+  () => import("@/components/sections/FileSection/FileList/FileRouteManager"),
+  { ssr: false }
+);
+const CreateButton = dynamic(
+  () => import("@/components/sections/FileSection/FileList/CreateButton"),
+  { ssr: false }
+);
+const FileMainGallery = dynamic(
+  () =>
+    import("@/components/sections/FileSection/FileMainGallery/FileMainGallery"),
+  { ssr: false }
+);
+
+const FileCard = dynamic(
+  () => import("@/components/sections/FileSection/FileList/FileCard"),
+  { ssr: false }
+);
 
 interface FileTableProps {
   files: UserFile[];

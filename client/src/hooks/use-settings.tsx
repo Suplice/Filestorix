@@ -1,3 +1,4 @@
+"use client";
 import { useAuth } from "@/context/AuthContext";
 import { fetchSettings, updateSettings } from "@/lib/api/settings/settingsApi";
 import { UpdateSettingsResult } from "@/lib/types/settings";

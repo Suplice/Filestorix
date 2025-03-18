@@ -1,10 +1,18 @@
 "use client";
-import AppSidebar from "@/components/layout/AppSidebar/AppSidebar";
-import AppTopbar from "@/components/layout/AppTopbar/AppTopbar";
 import ErrorLoadFilesFallback from "@/components/sections/FileSection/ErrorLoadFilesFallback";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 import { ErrorBoundary } from "react-error-boundary";
+
+const AppSidebar = dynamic(
+  () => import("@/components/layout/AppSidebar/AppSidebar"),
+  { ssr: false }
+);
+const AppTopbar = dynamic(
+  () => import("@/components/layout/AppTopbar/AppTopbar"),
+  { ssr: false }
+);
 
 interface DriveLayoutProps {
   children: React.ReactNode;

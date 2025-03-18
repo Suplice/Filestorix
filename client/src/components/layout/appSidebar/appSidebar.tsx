@@ -1,5 +1,3 @@
-"use client";
-
 import { Sidebar, SidebarContent } from "../../ui/sidebar";
 import AppSidebarBody from "./AppSidebarBody";
 import AppSidebarHeader from "./AppSidebarHeader";

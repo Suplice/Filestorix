@@ -1,3 +1,4 @@
+"use client";
 import { UserFile } from "@/lib/types/file";
 import { useModal } from "@/hooks/use-modal";
 import {

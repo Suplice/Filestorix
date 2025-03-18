@@ -77,6 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error(error);
       removeCredentials();
+      router.push("/auth/signin");
     }
   };
 

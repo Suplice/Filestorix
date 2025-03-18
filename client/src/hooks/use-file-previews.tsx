@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { getFile } from "@/lib/api/file/filesApi";
 import { UserFile } from "@/lib/types/file";

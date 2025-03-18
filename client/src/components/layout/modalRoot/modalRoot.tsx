@@ -47,6 +47,10 @@ const SettingsModal = lazy(
   () => import("@/components/sections/SettingsSection/SettingsModal")
 );
 
+const FileDetails = lazy(
+  () => import("@/components/sections/FileSection/FileDetails/FileDetails")
+);
+
 const ModalRoot = () => {
   const { isOpen, modalType } = useModal();
 
@@ -66,6 +70,7 @@ const ModalRoot = () => {
           {modalType == "CatalogTrasher" && <CatalogTrasher />}
           {modalType == "FileRestorer" && <FileRestore />}
           {modalType == "Settings" && <SettingsModal />}
+          {modalType == "Details" && <FileDetails />}
         </Suspense>
       </ModalWrapper>
     </div>

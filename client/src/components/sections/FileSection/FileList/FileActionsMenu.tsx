@@ -64,6 +64,10 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
     }
   };
 
+  const handleOpenFileDetails = () => {
+    showModal("Details", { fileId: file.id });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -109,6 +113,10 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         {file.isTrashed && (
           <DropdownMenuItem onClick={handleRestore}>Restore</DropdownMenuItem>
         )}
+
+        <DropdownMenuItem onClick={handleOpenFileDetails}>
+          Details
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

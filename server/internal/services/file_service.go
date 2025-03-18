@@ -149,15 +149,23 @@ func (fs *FileService) CreateCatalog(name string, parentId *uint, userId string)
 
 // RenameFile renames a file identified by the given FileId to the new name provided in the RenameFileRequest.
 // It delegates the renaming operation to the fileRepository.
-func (fs *FileService) RenameFile(data dto.RenameFileRequest) error {
-	return fs.fileRepository.RenameFile(data.FileId, data.Name)
+func (fs *FileService) RenameFile(data dto.RenameFileRequest, userId string) error {
+
+	UintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrUnexpected)
+	}
+
+
+	return fs.fileRepository.RenameFile(data.FileId, data.Name, UintUserId)
 }
 
 // TrashFile moves the specified file to the trash.
 // It takes a fileId as a string, converts it to an unsigned integer,
 // and then calls the file repository to trash the file.
 // If the fileId is invalid and cannot be converted, it returns an error.
-func (fs *FileService) TrashFile(fileId string) error {
+func (fs *FileService) TrashFile(fileId string, userId string) error {
 
 	uintFileId, err := convertStringToUint(fileId)
 
@@ -165,7 +173,13 @@ func (fs *FileService) TrashFile(fileId string) error {
 		return errors.New(constants.ErrInvalidFileData)
 	}
 
-	return fs.fileRepository.TrashFile(uintFileId)
+	uintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.TrashFile(uintFileId, uintUserId)
 }
 
 // GetFile retrieves the file path for a given file ID and user ID.
@@ -233,18 +247,70 @@ func (fs *FileService) RestoreFile(fileId string, parentId string) error {
 	return fs.fileRepository.RestoreFile(fileId, parentId)
 }
 
-func (fs *FileService) RemoveFavorite(fileId string) error {
-	return fs.fileRepository.RemoveFavorite(fileId)
+func (fs *FileService) RemoveFavorite(fileId string, userId string) error {
+
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	uintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.RemoveFavorite(uintFileId, uintUserId)
 }
 
-func (fs *FileService) AddFavorite(fileId string) error {
-	return fs.fileRepository.AddFavorite(fileId)
+func (fs *FileService) AddFavorite(fileId string, userId string) error {
+
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	uintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.AddFavorite(uintFileId, uintUserId)
 }
 
-func (fs *FileService) HideFile(fileId string) error {
-	return fs.fileRepository.HideFile(fileId)
+func (fs *FileService) HideFile(fileId string, userId string) error {
+
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	uintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.HideFile(uintFileId, uintUserId)
 }
 
-func (fs *FileService) RevealFile(fileId string) error {
-	return fs.fileRepository.RevealFile(fileId)
+func (fs *FileService) RevealFile(fileId string, userId string) error {
+
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	uintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	return fs.fileRepository.RevealFile(uintFileId, uintUserId)
 }

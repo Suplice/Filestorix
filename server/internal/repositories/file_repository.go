@@ -120,6 +120,11 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 		return nil, err
 	}
 
+	if err := CreateActivityLog(tx, userId, &fileToUpload.ID, "UPLOAD", "Uploaded file to drive."); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
 	return fileToUpload, nil
 }
 
@@ -192,6 +197,8 @@ func UploadFileToDatabase(fileToUpload *models.UserFile, tx *gorm.DB) error {
 		return errors.New(constants.ErrDBUnknown)
 	}
 
+	tx.Model(&models.ActivityLog{})
+
 	return nil
 }
 
@@ -202,29 +209,63 @@ func UploadFileToDatabase(fileToUpload *models.UserFile, tx *gorm.DB) error {
 // If the catalog does not exist, it is created in the database.
 func (fr *FileRepository) CreateCatalog(catalog *models.UserFile) (*models.UserFile, error) {
 
+
 	exists, err := FileExists(catalog.UserID, catalog.Name, fr.db, catalog.ParentID)
 
 	if err != nil || exists {
 		return nil, errors.New(constants.ErrFileAlreadyExists)
 	}
 
-	result := fr.db.Create(catalog)
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		return nil, errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Create(catalog)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return nil, errors.New(constants.ErrDBUnknown)
 	}
+
+	err = CreateActivityLog(tx, catalog.UserID, &catalog.ID, "CREATE", "Created catalog")
+
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	tx.Commit()
 
 	return catalog, nil
 }
 
 // RenameFile updates the name of a file in the database identified by the given fileId.
 // It returns an error if the update operation fails.
-func (fr *FileRepository) RenameFile(fileId uint, name string) error {
-	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("name", name)
+func (fr *FileRepository) RenameFile(fileId uint, name string, userId uint) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("name", name)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(result.Error.Error())
 	}
+
+	err := CreateActivityLog(tx, userId, &fileId, "RENAME", fmt.Sprintf("Renamed file to %s", name))
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
 
 	return nil
 }
@@ -232,12 +273,29 @@ func (fr *FileRepository) RenameFile(fileId uint, name string) error {
 // TrashFile marks a file as trashed in the database by setting the "is_trashed" field to true.
 // It takes a fileId as a parameter, which is the unique identifier of the file to be trashed.
 // If the operation is successful, it returns nil. Otherwise, it returns an error indicating the failure.
-func (fr *FileRepository) TrashFile(fileId uint) error {
-	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_trashed", true)
+func (fr *FileRepository) TrashFile(fileId uint, userId uint) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_trashed", true)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(constants.ErrDBUnknown)
 	}
+
+	err := CreateActivityLog(tx, userId, &fileId, "TRASH", "File was trashed")
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
 
 	return nil
 }
@@ -344,6 +402,11 @@ func (fr *FileRepository) TrashCatalog(catalogId string) error {
 		return err
 	}
 
+	if err := CreateActivityLog(tx, catalog.UserID, &catalog.ID, "TRASH", "Catalog was trashed."); err != nil {
+		tx.Rollback()
+		return err
+	}
+
 
 	if err := fr.trashChildrenRecursively(tx, catalog.ID); err != nil {
 		tx.Rollback()
@@ -370,8 +433,19 @@ func (fr *FileRepository) trashChildrenRecursively(tx *gorm.DB, parentId uint) e
 		if err := tx.Model(&models.UserFile{}).Where("id = ?", child.ID).Update("is_trashed", true).Error; err != nil {
 			return err
 		}
+
 		if child.Type == "CATALOG" {
+			if err := CreateActivityLog(tx, child.UserID, &child.ID, "TRASH", "Catalog was trashed"); err != nil {
+				tx.Rollback()
+				return err
+			}
+
 			if err := fr.trashChildrenRecursively(tx, child.ID); err != nil {
+				return err
+			}
+		} else {
+			if err := CreateActivityLog(tx, child.UserID, &child.ID, "TRASH", "File was trashed"); err != nil {
+				tx.Rollback()
 				return err
 			}
 		}
@@ -442,6 +516,20 @@ func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
 		return errors.New(constants.ErrRestoreFile)
 	}
 
+	if file.Type == "CATALOG" {
+		if err := CreateActivityLog(tx, file.UserID, &file.ID, "RESTORE", "Catalog restored successfully"); err != nil {
+			tx.Rollback()
+			return err
+		}
+	} else {
+		if err := CreateActivityLog(tx, file.UserID, &file.ID, "RESTORE", "File restored successfully"); err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	
+
 	currentParentId := file.ParentID
 
 
@@ -465,6 +553,11 @@ func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
 			return errors.New(constants.ErrRestoreFile)
 		}
 
+		if err := CreateActivityLog(tx, file.UserID, &file.ID, "RESTORE", "Catalog restored successfully"); err != nil {
+			tx.Rollback()
+			return err
+		}
+
 		currentParentId = parentFile.ParentID
 	}
 
@@ -474,41 +567,121 @@ func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
 
 }
 
-func (fr *FileRepository) RemoveFavorite(fileId string) error {
-	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_favorite", false)
+func (fr *FileRepository) RemoveFavorite(fileId uint, userId uint) error {
+
+	tx := fr.db.Begin()
+
+
+	if tx.Error != nil {
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_favorite", false)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(constants.ErrRemoveFavorite)
 	}
 
+
+	if err := CreateActivityLog(tx, userId, &fileId, "FAVORITE", "Removed favorite mark from file"); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+
+	tx.Commit()
 	return nil
 }
 
-func (fr *FileRepository) AddFavorite(fileId string) error {
-	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_favorite", true)
+func (fr *FileRepository) AddFavorite(fileId uint, userId uint) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_favorite", true)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(constants.ErrAddFavorite)
 	}
 
+	if err := CreateActivityLog(tx, userId, &fileId, "FAVORITE", "Marked file as favorite"); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
 	return nil
 }
 
-func (fr *FileRepository) HideFile(fileId string) error {
-	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_hidden", true)
+func (fr *FileRepository) HideFile(fileId uint, userId uint) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_hidden", true)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(constants.ErrHideFile)
 	}
 
+	if err := CreateActivityLog(tx, userId, &fileId, "HIDE", "Marked file as hidden"); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
 	return nil
 }
 
-func (fr *FileRepository) RevealFile(fileId string) error {
-	result := fr.db.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_hidden", false)
+func (fr *FileRepository) RevealFile(fileId uint, userId uint) error {
+
+	tx := fr.db.Begin()
+
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("is_hidden", false)
 
 	if result.Error != nil {
+		tx.Rollback()
 		return errors.New(constants.ErrRevealFile)
+	}
+
+	if err := CreateActivityLog(tx, userId, &fileId, "REVEAL", "Revealed file from being hidden"); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
+
+func CreateActivityLog(tx *gorm.DB, userId uint, fileId *uint, action, details string ) error {
+	activityLog := models.ActivityLog {
+		UserID: userId,
+		FileID: fileId,
+		Action: action,
+		Details: details,
+	}
+
+	if err := tx.Create(&activityLog).Error; err != nil {
+		return errors.New(constants.ErrUnexpected)
 	}
 
 	return nil

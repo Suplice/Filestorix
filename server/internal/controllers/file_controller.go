@@ -152,7 +152,17 @@ func (fc *FileController) RenameFile(c *gin.Context) {
 		return
 	}
 
-	err := fc.fileService.RenameFile(requestData)
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	err := fc.fileService.RenameFile(requestData, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -174,8 +184,18 @@ func (fc *FileController) TrashFile(c *gin.Context) {
 
 	fileId := c.Param("fileId")
 
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
 
-	err := fc.fileService.TrashFile(fileId)
+	stringUserId := fmt.Sprintf("%s", userId)
+
+
+	err := fc.fileService.TrashFile(fileId, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -353,8 +373,18 @@ func (fc *FileController) RemoveFavorite(c *gin.Context) {
 		})
 		return
 	}
+	
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
 
-	err := fc.fileService.RemoveFavorite(fileId)
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	err := fc.fileService.RemoveFavorite(fileId, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -379,7 +409,17 @@ func (fc *FileController) AddFavorite(c *gin.Context) {
 		return
 	}
 
-	err := fc.fileService.AddFavorite(fileId)
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	err := fc.fileService.AddFavorite(fileId, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -404,7 +444,17 @@ func (fc *FileController) HideFile(c *gin.Context) {
 		return
 	}
 
-	err := fc.fileService.HideFile(fileId)
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	err := fc.fileService.HideFile(fileId, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -428,7 +478,17 @@ func (fc *FileController) RevealFile(c *gin.Context) {
 		return
 	}
 
-	err := fc.fileService.RevealFile(fileId)
+	userId, exists := c.Get("stringUserID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%s", userId)
+
+	err := fc.fileService.RevealFile(fileId, stringUserId)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

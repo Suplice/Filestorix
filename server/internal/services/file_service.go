@@ -314,3 +314,7 @@ func (fs *FileService) RevealFile(fileId string, userId string) error {
 
 	return fs.fileRepository.RevealFile(uintFileId, uintUserId)
 }
+
+func (fs *FileService) GetActivityLogForFile(fileId string, userId string) ([]models.ActivityLog, error) {
+	return fs.fileRepository.GetActivityLogForFile(fileId, userId)
+}

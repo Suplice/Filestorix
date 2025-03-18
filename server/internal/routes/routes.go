@@ -63,6 +63,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.PATCH("/addfavorite/:fileId", middleware.ValidateJWT(), fileController.AddFavorite)
 		fileRoutes.PATCH("/hide/:fileId", middleware.ValidateJWT(), fileController.HideFile)
 		fileRoutes.PATCH("/reveal/:fileId", middleware.ValidateJWT(), fileController.RevealFile)
+		fileRoutes.GET("/activitylog/:fileId", middleware.ValidateJWT(), fileController.GetActivityLogForFile)
 	}
 
 	settingRoutes := router.Group("/settings")

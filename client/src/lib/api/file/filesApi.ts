@@ -1,3 +1,4 @@
+import { ActivityLog, FetchActivityLogResponse } from "@/lib/types/activityLog";
 import {
   AddCatalogResponse,
   AddFileResponse,
@@ -396,4 +397,24 @@ export const revealFile = async (
   }
 
   return { message: responseData.message };
+};
+
+export const fetchFileActivityList = async (
+  fileId: number
+): Promise<ActivityLog[]> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/activitylog/${fileId}`,
+    {
+      credentials: "include",
+      method: "GET",
+    }
+  );
+
+  const responseData: FetchActivityLogResponse = await response.json();
+
+  if (!response.ok || !responseData.logs) {
+    throw new Error(responseData.error);
+  }
+
+  return responseData.logs;
 };

@@ -501,3 +501,30 @@ func (fc *FileController) RevealFile(c *gin.Context) {
 		"message": constants.SuccessRevealFile,
 	})
 }
+
+func (fc *FileController) GetActivityLogForFile(c *gin.Context) {
+	fileId := c.Param("fileId")
+
+	if fileId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	userId := c.GetString("stringUserID")
+
+	logs, err := fc.fileService.GetActivityLogForFile(fileId, userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+
+	c.JSON(http.StatusOK, gin.H{
+		"logs": logs,
+	})
+}

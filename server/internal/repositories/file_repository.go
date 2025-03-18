@@ -686,3 +686,17 @@ func CreateActivityLog(tx *gorm.DB, userId uint, fileId *uint, action, details s
 
 	return nil
 }
+
+func (fr *FileRepository) GetActivityLogForFile(fileId string, userId string)([]models.ActivityLog, error) {
+	var logs []models.ActivityLog
+
+	result := fr.db.Where("file_id = ? AND user_id = ?", fileId, userId).Find(&logs)
+
+	if result.Error != nil {
+		return nil, errors.New(constants.ErrUnexpected)
+	}
+
+	return logs, nil
+
+
+}

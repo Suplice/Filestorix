@@ -41,14 +41,14 @@ const AppSidebarHeader = () => {
                 showModal("FileUploader", { parentId: null });
               }}
             >
-              Add File
+              Upload Files
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 showModal("CatalogUploader", { parentId: null });
               }}
             >
-              Add Folder
+              Create Folder
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

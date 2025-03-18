@@ -37,14 +37,14 @@ const CreateButton: React.FC<CreateButtonProps> = ({ parentId }) => {
           className="flex items-center gap-2 px-2 py-2 cursor-pointer"
         >
           <FilePlus className="w-4 h-4 text-muted-foreground" />
-          <span>Add File</span>
+          <span>Upload Files</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => showModal("CatalogUploader", { parentId })}
           className="flex items-center gap-2 px-2 py-2 cursor-pointer"
         >
           <FolderPlus className="w-4 h-4 text-muted-foreground" />
-          <span>Add Folder</span>
+          <span>Create Folder</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

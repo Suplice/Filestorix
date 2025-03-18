@@ -71,8 +71,14 @@ export default {
   },
   plugins: [
     plugin,
-    function ({ addUtilities }) {
-      const newUtilities = {
+    function ({
+      addUtilities,
+    }: {
+      addUtilities: (
+        utilities: Record<string, { [key: string]: string }>
+      ) => void;
+    }) {
+      const newUtilities: Record<string, { [key: string]: string }> = {
         ".no-scrollbar::-webkit-scrollbar": {
           display: "none",
         },

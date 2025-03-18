@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
@@ -86,6 +87,8 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
           Open
         </DropdownMenuItem>
 
+        <DropdownMenuSeparator />
+
         {!file.isTrashed && (
           <>
             {file.type !== "CATALOG" && (
@@ -107,12 +110,18 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
           </DropdownMenuItem>
         )}
 
-        <DropdownMenuItem onClick={handleTrashOrDelete}>
-          {file.isTrashed ? "Delete" : "Trash"}
-        </DropdownMenuItem>
         {file.isTrashed && (
           <DropdownMenuItem onClick={handleRestore}>Restore</DropdownMenuItem>
         )}
+
+        <DropdownMenuItem
+          onClick={handleTrashOrDelete}
+          className="text-red-500"
+        >
+          {file.isTrashed ? "Delete" : "Trash"}
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={handleOpenFileDetails}>
           Details

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import FileActivityItem from "./FileActivityItem";
+import { Button } from "@/components/ui/button";
 
 interface FileActivityListProps {
   fileId: number;
@@ -18,7 +19,7 @@ interface FileActivityListProps {
 const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
   const { isAuthenticated } = useAuth();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["activitylog", fileId],
     queryFn: () => fetchFileActivityList(fileId),
     enabled: isAuthenticated,
@@ -30,7 +31,10 @@ const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
 
   if (error) {
     return (
-      <div className="text-center text-red-500">Error loading activities.</div>
+      <div>
+        <p className="text-center text-red-500">Error loading activities.</p>
+        <Button onClick={() => refetch}>Try again.</Button>
+      </div>
     );
   }
 

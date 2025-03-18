@@ -12,8 +12,9 @@ const FileRouteManager: React.FC<FileRouteManagerProps> = ({
   return (
     <div className="flex flex-row">
       {routes.map((route, index) => (
-        <h1 key={index} className="flex flex-row">
-          <p className="mx-1">{"/"}</p>
+        <h1 key={route.catalogId} className="flex flex-row font-bold text-2xl">
+          {index !== 0 && <p className="mx-2">/</p>}
+
           <p
             className="hover:underline cursor-pointer transition-all duration-200 "
             onClick={() => handleChangeRoute(route.catalogId)}

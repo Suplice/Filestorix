@@ -55,7 +55,7 @@ const useSettings = () => {
     isPending: isPending,
     error,
     refresh: refetch,
-    updateSettings: settingsMutation.mutate,
+    updateSettings: settingsMutation.mutateAsync,
     updating: settingsMutation.isPending,
   };
 };

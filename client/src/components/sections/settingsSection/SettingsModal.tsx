@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useModal } from "@/hooks/use-modal";
 import useSettings from "@/hooks/use-settings";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { SettingRecord } from "@/lib/types/settings";
 import { toast } from "sonner";
@@ -26,14 +26,7 @@ const SettingsModal = () => {
     ...settings.shortcuts,
   });
 
-  useEffect(() => {
-    setLocalTheme(settings.theme);
-    setLocalShortcuts({ ...settings.shortcuts });
-  }, [settings]);
-
-  const handleSave = () => {
-    console.log(localTheme, localShortcuts);
-
+  const handleSave = async () => {
     const settingsToUpdate: SettingRecord[] = [
       { setting_key: "theme", setting_value: localTheme },
       {
@@ -60,10 +53,10 @@ const SettingsModal = () => {
       settingsMap.add(setting.setting_value);
     }
 
-    console.log(settingsToUpdate);
-
-    updateSettings(settingsToUpdate);
-    hideModal();
+    await updateSettings(settingsToUpdate);
+    setTimeout(() => {
+      hideModal();
+    }, 100);
   };
 
   if (loading) {
@@ -71,7 +64,7 @@ const SettingsModal = () => {
   }
 
   return (
-    <Card className="w-full max-w-md py-4 px-4 dark:bg-neutral-900 bg-background transition-all rounded-2xl shadow-xl">
+    <Card className="w-full h-full py-6 px-6 bg-white dark:bg-neutral-900 rounded-none">
       <CardContent className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Settings</h2>
 
@@ -95,11 +88,11 @@ const SettingsModal = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="font-semibold">Enable show hidden files</label>
+          <label className="font-semibold">Show hidden files</label>
           <Select
             value={localHiddenFiles ? "True" : "False"}
             onValueChange={(value: "True" | "False") =>
-              setLocalHiddenFiles(value === "True" ? true : false)
+              setLocalHiddenFiles(value === "True")
             }
           >
             <SelectTrigger className="w-full">

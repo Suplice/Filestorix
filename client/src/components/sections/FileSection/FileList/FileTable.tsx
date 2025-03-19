@@ -96,9 +96,9 @@ const FileTable: React.FC<FileTableProps> = ({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[20%]">Name</TableHead>
-            <TableHead className="w-[20%]">Modified At</TableHead>
-            <TableHead className="w-[20%]">Size</TableHead>
-            <TableHead className="w-[20%]">Type</TableHead>
+            <TableHead className="w-[15%]">Modified At</TableHead>
+            <TableHead className="w-[15%]">Size</TableHead>
+            <TableHead className="w-[15%]">Type</TableHead>
             <TableHead className="w-[15%]"></TableHead>
             <TableHead className="w-[5%] text-right">Actions</TableHead>
           </TableRow>

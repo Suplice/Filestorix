@@ -18,10 +18,6 @@ const FileHiddenActionsMenu: React.FC<FileHiddenActionsMenuProps> = ({
   const { addFavoriteFile, removeFavoriteFile, hideFile, revealFile } =
     useFileActions();
 
-  if (!isHidden) {
-    return <></>;
-  }
-
   const handleStarClick = () => {
     if (file.isFavorite) {
       removeFavoriteFile({ fileId: file.id });
@@ -43,9 +39,13 @@ const FileHiddenActionsMenu: React.FC<FileHiddenActionsMenuProps> = ({
   };
 
   return (
-    <div className="flex flex-row gap-4">
+    <div
+      className={`transition-opacity duration-200 flex flex-row gap-2  ${
+        isHidden ? "opacity-100 visible" : "opacity-0 invisible"
+      }`}
+    >
       <div
-        className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+        className=" px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
         onClick={handlePenClick}
       >
         <PenLine />

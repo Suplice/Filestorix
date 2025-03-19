@@ -1,4 +1,5 @@
 import { FileRoute } from "@/lib/types/file";
+import { ChevronRight } from "lucide-react";
 
 interface FileRouteManagerProps {
   routes: FileRoute[];
@@ -10,18 +11,17 @@ const FileRouteManager: React.FC<FileRouteManagerProps> = ({
   handleChangeRoute,
 }) => {
   return (
-    <div className="flex flex-row">
+    <div className="flex items-center   text-lg font-medium select-none">
       {routes.map((route, index) => (
-        <h1 key={route.catalogId} className="flex flex-row font-bold text-2xl">
-          {index !== 0 && <p className="mx-2">/</p>}
-
-          <p
-            className="hover:underline cursor-pointer transition-all duration-200 "
+        <div key={route.catalogId} className="flex items-center">
+          {index !== 0 && <ChevronRight className="w-6 h-6 text-gray-500" />}
+          <div
+            className=" cursor-pointer transition-all duration-200  hover:bg-secondary rounded-xl px-4 py-1"
             onClick={() => handleChangeRoute(route.catalogId)}
           >
-            {route.sectionName}
-          </p>
-        </h1>
+            <p className="text-2xl font-extrabold">{route.sectionName}</p>
+          </div>
+        </div>
       ))}
     </div>
   );

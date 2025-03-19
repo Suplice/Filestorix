@@ -8,7 +8,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
+import {
+  ArchiveRestore,
+  ArrowUpLeft,
+  Delete,
+  Eye,
+  EyeOff,
+  FolderOpen,
+  Info,
+  MoreVertical,
+  PenLine,
+  Star,
+  StarOff,
+  Trash,
+} from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { UserFile } from "@/lib/types/file";
 import useFileActions from "@/hooks/use-file-actions";
@@ -84,7 +97,10 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
               : handleFileClick()
           }
         >
-          Open
+          <>
+            {file.type === "CATALOG" ? <FolderOpen /> : <ArrowUpLeft />}
+            <p>Open</p>
+          </>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -93,38 +109,73 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
           <>
             {file.type !== "CATALOG" && (
               <DropdownMenuItem onClick={handleFavorite}>
-                {file.isFavorite ? "Unfavorite" : "Favorite"}
+                {file.isFavorite ? (
+                  <>
+                    <StarOff />
+                    <p>Unfavorite</p>
+                  </>
+                ) : (
+                  <>
+                    <Star />
+                    <p>Favorite</p>
+                  </>
+                )}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
               onClick={() => showModal("FileNameChanger", { fileId: file.id })}
             >
-              Rename
+              <PenLine />
+              <p>Rename</p>
             </DropdownMenuItem>
           </>
         )}
 
         {file.type !== "CATALOG" && (
           <DropdownMenuItem onClick={handleHide}>
-            {file.isHidden ? "Reveal" : "Hide"}
+            {file.isHidden ? (
+              <>
+                <Eye />
+                <p>Reveal</p>
+              </>
+            ) : (
+              <>
+                <EyeOff />
+                <p>Hide</p>
+              </>
+            )}
           </DropdownMenuItem>
         )}
 
         {file.isTrashed && (
-          <DropdownMenuItem onClick={handleRestore}>Restore</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleRestore}>
+            <ArchiveRestore />
+            <p>Restore</p>
+          </DropdownMenuItem>
         )}
 
         <DropdownMenuItem
           onClick={handleTrashOrDelete}
           className="text-red-500"
         >
-          {file.isTrashed ? "Delete" : "Trash"}
+          {file.isTrashed ? (
+            <>
+              <Delete />
+              <p>Delete</p>
+            </>
+          ) : (
+            <>
+              <Trash />
+              <p>Trash</p>
+            </>
+          )}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={handleOpenFileDetails}>
-          Details
+          <Info />
+          <p>Details</p>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

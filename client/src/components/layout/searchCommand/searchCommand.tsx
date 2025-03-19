@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/command";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useFile } from "@/hooks/use-file";
-import { FileIcon } from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import useSettings from "@/hooks/use-settings";
+import FileIcon from "@/components/sections/FileSection/FileList/FileIcon";
 
 export function SearchCommand() {
   const { files } = useFile();
@@ -77,7 +77,7 @@ export function SearchCommand() {
                   });
                 }}
               >
-                <FileIcon className="w-4 h-4" />
+                <FileIcon extension={file.extension} />
                 <span>{file.name}</span>
               </CommandItem>
             ))}

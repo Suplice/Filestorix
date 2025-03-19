@@ -20,7 +20,10 @@ const AppSidebarHeader = () => {
     <>
       <SidebarGroup>
         <SidebarGroupLabel className="text-center font-bold ">
-          <Link href="/drive" className="lg:text-2xl text-xl">
+          <Link
+            href="/drive"
+            className="lg:text-2xl md:text-xl sm:text-sm text-xs"
+          >
             Filestorix
           </Link>
         </SidebarGroupLabel>

@@ -7,7 +7,7 @@ const AppSidebar = () => {
   return (
     <Sidebar
       collapsible="none"
-      className="xl:w-64 lg:w-48 md:w-36 w-32 min-h-screen p-2"
+      className="w-[20%] xl:w-[10%] md:w-[15%] min-h-screen p-2"
     >
       <SidebarContent>
         <AppSidebarHeader />

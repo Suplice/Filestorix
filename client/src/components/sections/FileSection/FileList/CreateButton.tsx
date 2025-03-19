@@ -5,9 +5,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Plus, FolderPlus, FilePlus } from "lucide-react";
+import { Plus, FolderPlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CreateButtonProps {
@@ -36,15 +37,16 @@ const CreateButton: React.FC<CreateButtonProps> = ({ parentId }) => {
           onClick={() => showModal("FileUploader", { parentId })}
           className="flex items-center gap-2 px-2 py-2 cursor-pointer"
         >
-          <FilePlus className="w-4 h-4 text-muted-foreground" />
-          <span>Upload Files</span>
+          <Upload />
+          <p>Upload Files</p>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => showModal("CatalogUploader", { parentId })}
           className="flex items-center gap-2 px-2 py-2 cursor-pointer"
         >
-          <FolderPlus className="w-4 h-4 text-muted-foreground" />
-          <span>Create Folder</span>
+          <FolderPlus />
+          <p>Create Folder</p>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -86,12 +86,10 @@ const AppSidebarBody = () => {
                         : "bg-green-500"
                     }
                   />
-                  <p className="text-sm text-gray-500 mt-1 flex flex-row flex-wrap gap-1">
-                    <span className="font-medium text-gray-300 ">
-                      {usedStorage}
-                    </span>
-                    <span>of</span>
-                    <span className="text-gray-300">{totalStorage}</span>
+                  <p className="text-sm  mt-1 flex flex-row flex-wrap gap-1">
+                    <span className="font-medium text-lg ">{usedStorage}</span>
+                    <span className="text-lg font-semibold ">of</span>
+                    <span className="font-medium text-lg">{totalStorage}</span>
                   </p>
                 </div>
               )}

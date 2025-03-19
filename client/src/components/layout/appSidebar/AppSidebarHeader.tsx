@@ -4,12 +4,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar";
 import { useModal } from "@/hooks/use-modal";
 
-import { Plus } from "lucide-react";
+import { FolderPlus, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
 const AppSidebarHeader = () => {
@@ -41,14 +42,17 @@ const AppSidebarHeader = () => {
                 showModal("FileUploader", { parentId: null });
               }}
             >
-              Upload Files
+              <Upload />
+              <p>Upload Files</p>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
                 showModal("CatalogUploader", { parentId: null });
               }}
             >
-              Create Folder
+              <FolderPlus />
+              <p>Create Folder</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

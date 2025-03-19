@@ -2,65 +2,53 @@
 import ModalWrapper from "@/components/sections/FileSection/ModalWrapper";
 import LoadingSpinner from "@/components/sections/LoadingSpinner/LoadingSpinner";
 import { useModal } from "@/hooks/use-modal";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 
-const FileUploader = dynamic(
-  () => import("@/components/sections/FileSection/FileUploader/FileUploader"),
-  { ssr: false }
+const FileUploader = lazy(
+  () => import("@/components/sections/FileSection/FileUploader/FileUploader")
 );
 
-const CatalogUploader = dynamic(
+const CatalogUploader = lazy(
   () =>
-    import("@/components/sections/FileSection/CatalogUploader/CatalogUploader"),
-  { ssr: false }
+    import("@/components/sections/FileSection/CatalogUploader/CatalogUploader")
 );
 
-const FileRenamer = dynamic(
-  () => import("@/components/sections/FileSection/FileRenamer/FileRenamer"),
-  { ssr: false }
+const FileRenamer = lazy(
+  () => import("@/components/sections/FileSection/FileRenamer/FileRenamer")
 );
 
-const FileTrasher = dynamic(
-  () => import("@/components/sections/FileSection/FileTrasher/FileTrasher"),
-  { ssr: false }
+const FileTrasher = lazy(
+  () => import("@/components/sections/FileSection/FileTrasher/FileTrasher")
 );
 
-const FilePreview = dynamic(
-  () => import("@/components/sections/FileSection/FilePreview/FilePreview"),
-  { ssr: false }
+const FilePreview = lazy(
+  () => import("@/components/sections/FileSection/FilePreview/FilePreview")
 );
 
-const FileRemover = dynamic(
-  () => import("@/components/sections/FileSection/FileRemover/FileRemover"),
-  { ssr: false }
+const FileRemover = lazy(
+  () => import("@/components/sections/FileSection/FileRemover/FileRemover")
 );
 
-const CatalogTrasher = dynamic(
+const CatalogTrasher = lazy(
   () =>
-    import("@/components/sections/FileSection/CatalogTrasher/CatalogTrasher"),
-  { ssr: false }
+    import("@/components/sections/FileSection/CatalogTrasher/CatalogTrasher")
 );
 
-const CatalogRemover = dynamic(
+const CatalogRemover = lazy(
   () =>
-    import("@/components/sections/FileSection/CatalogRemover/CatalogRemover"),
-  { ssr: false }
+    import("@/components/sections/FileSection/CatalogRemover/CatalogRemover")
 );
 
-const FileRestore = dynamic(
-  () => import("@/components/sections/FileSection/FileRestore/FileRestore"),
-  { ssr: false }
+const FileRestore = lazy(
+  () => import("@/components/sections/FileSection/FileRestore/FileRestore")
 );
 
-const SettingsModal = dynamic(
-  () => import("@/components/sections/SettingsSection/SettingsModal"),
-  { ssr: false }
+const SettingsModal = lazy(
+  () => import("@/components/sections/SettingsSection/SettingsModal")
 );
 
-const FileDetails = dynamic(
-  () => import("@/components/sections/FileSection/FileDetails/FileDetails"),
-  { ssr: false }
+const FileDetails = lazy(
+  () => import("@/components/sections/FileSection/FileDetails/FileDetails")
 );
 
 const ModalRoot = () => {

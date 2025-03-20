@@ -20,3 +20,7 @@ jest.mock("react-hook-form", () => {
     useForm: jest.fn(actual.useForm),
   };
 });
+
+jest.mock("@/hooks/use-file-actions");
+jest.mock("@/hooks/use-modal");
+jest.mock("@tanstack/react-query");

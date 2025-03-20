@@ -3,8 +3,7 @@ import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 import CatalogRemover from "../../../components/sections/FileSection/CatalogRemover";
 
-jest.mock("@/hooks/use-file-actions");
-jest.mock("@/hooks/use-modal");
+
 
 describe("CatalogRemover Component", () => {
   let mockDeleteCatalog: jest.Mock;

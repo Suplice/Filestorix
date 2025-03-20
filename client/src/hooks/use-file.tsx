@@ -79,6 +79,7 @@ export const useFile = () => {
   }, [query.isLoading, hideBasedFiles]);
 
   return {
+    allFiles: hideBasedFiles,
     files: baseFiles,
     favoriteFiles,
     recentFiles,

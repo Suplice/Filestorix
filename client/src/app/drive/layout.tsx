@@ -4,7 +4,6 @@ import AppTopbar from "@/components/layout/AppTopbar/AppTopbar";
 import ErrorLoadFilesFallback from "@/components/sections/FileSection/ErrorLoadFilesFallback";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import dynamic from "next/dynamic";
 import { ErrorBoundary } from "react-error-boundary";
 
 interface DriveLayoutProps {

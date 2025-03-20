@@ -5,7 +5,6 @@ import { useModal } from "@/hooks/use-modal";
 
 interface RightSidebarModalWrapperProps {
   children: React.ReactNode;
-  isOpen: boolean;
 }
 
 const RightSidebarModalWrapper: React.FC<RightSidebarModalWrapperProps> = ({

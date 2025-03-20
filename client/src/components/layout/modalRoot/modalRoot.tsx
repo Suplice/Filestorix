@@ -8,42 +8,39 @@ import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense } from "react";
 
 const FileUploader = lazy(
-  () => import("@/components/sections/FileSection/FileUploader/FileUploader")
+  () => import("@/components/sections/FileSection/FileUploader")
 );
 
 const CatalogUploader = lazy(
-  () =>
-    import("@/components/sections/FileSection/CatalogUploader/CatalogUploader")
+  () => import("@/components/sections/FileSection/CatalogUploader")
 );
 
 const FileRenamer = lazy(
-  () => import("@/components/sections/FileSection/FileRenamer/FileRenamer")
+  () => import("@/components/sections/FileSection/FileRenamer")
 );
 
 const FileTrasher = lazy(
-  () => import("@/components/sections/FileSection/FileTrasher/FileTrasher")
+  () => import("@/components/sections/FileSection/FileTrasher")
 );
 
 const FilePreview = lazy(
-  () => import("@/components/sections/FileSection/FilePreview/FilePreview")
+  () => import("@/components/sections/FileSection/FilePreview")
 );
 
 const FileRemover = lazy(
-  () => import("@/components/sections/FileSection/FileRemover/FileRemover")
+  () => import("@/components/sections/FileSection/FileRemover")
 );
 
 const CatalogTrasher = lazy(
-  () =>
-    import("@/components/sections/FileSection/CatalogTrasher/CatalogTrasher")
+  () => import("@/components/sections/FileSection/CatalogTrasher")
 );
 
 const CatalogRemover = lazy(
-  () =>
-    import("@/components/sections/FileSection/CatalogRemover/CatalogRemover")
+  () => import("@/components/sections/FileSection/CatalogRemover")
 );
 
 const FileRestore = lazy(
-  () => import("@/components/sections/FileSection/FileRestore/FileRestore")
+  () => import("@/components/sections/FileSection/FileRestore")
 );
 
 const SettingsModal = lazy(

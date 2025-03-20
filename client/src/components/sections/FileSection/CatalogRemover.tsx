@@ -1,19 +1,18 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 
-const CatalogTrasher = () => {
-  const { trashCatalog, trashCatalogLoading } = useFileActions();
+const CatalogRemover = () => {
+  const { deleteCatalog, deleteCatalogLoading } = useFileActions();
 
   const { hideModal, modalProps } = useModal();
 
-  const handleTrash = () => {
-    console.log("elo");
-    trashCatalog({ fileId: modalProps!.fileId! });
-    hideModal();
+  const handleRemove = () => {
+    if (modalProps !== undefined && modalProps.fileId != undefined) {
+      deleteCatalog({ fileId: modalProps!.fileId! });
+      hideModal();
+    }
   };
 
   return (
@@ -21,27 +20,28 @@ const CatalogTrasher = () => {
       <CardContent className="space-y-4">
         <div>
           <h1 className="text-lg font-semibold text-foreground">
-            Are you sure you want to trash this catalog?
+            Are you sure you want to Delete this catalog?
           </h1>
-          <p className="text-sm text-muted-foreground">
-            All files inside of catalog will be trashed too.
+          <p className="text-md font-bold text-muted-foreground">
+            This action is irreversible
           </p>
-          <p className="text-sm text-muted-foreground">
-            Later you can reverse this action in the Trash section.
+          <p className="text-md font-bold text-muted-foreground">
+            All trashed files that were contained within this catalog will be
+            available in root directory.
           </p>
         </div>
         <div className="flex justify-end gap-2">
           <Button
-            onClick={handleTrash}
+            onClick={handleRemove}
             variant="destructive"
-            disabled={trashCatalogLoading}
+            disabled={deleteCatalogLoading}
           >
-            {trashCatalogLoading ? "Trashing..." : "Trash"}
+            {deleteCatalogLoading ? "Removing..." : "Remove"}
           </Button>
           <Button
             onClick={hideModal}
             variant="outline"
-            disabled={trashCatalogLoading}
+            disabled={deleteCatalogLoading}
           >
             Cancel
           </Button>
@@ -51,4 +51,4 @@ const CatalogTrasher = () => {
   );
 };
 
-export default CatalogTrasher;
+export default CatalogRemover;

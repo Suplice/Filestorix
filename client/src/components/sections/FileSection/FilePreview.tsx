@@ -1,7 +1,7 @@
 import { useModal } from "@/hooks/use-modal";
 import { getFile } from "@/lib/api/file/filesApi";
 import { useQuery } from "@tanstack/react-query";
-import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { useEffect, useState } from "react";
 import { FileX2Icon } from "lucide-react";
 
@@ -35,7 +35,7 @@ const FilePreview = () => {
 
   if (error) {
     return (
-      <div className="w-full max-w-md mx-auto mt-4 rounded-xl border border-destructive/50 bg-destructive/10 p-4 shadow-sm flex items-center justify-between space-x-4">
+      <div className="select-none w-full max-w-md mx-auto mt-4 rounded-xl border border-destructive/50 bg-destructive/10 p-4 shadow-sm flex items-center justify-between space-x-4">
         <span className="text-sm text-destructive">
           An error occurred, please try again.
         </span>

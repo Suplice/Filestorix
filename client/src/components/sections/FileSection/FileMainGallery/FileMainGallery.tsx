@@ -48,6 +48,7 @@ const FileMainGallery: React.FC<FileMainGalleryProps> = ({ files }) => {
         <div className="flex flex-col justify-between md:flex-row md:items-end mb-4">
           <div className="mt-0 flex shrink-0 items-center justify-start w-full gap-2">
             <Button
+              data-testid="leftButtonTest"
               size="icon"
               variant="outline"
               onClick={() => carouselApi?.scrollPrev()}
@@ -57,6 +58,7 @@ const FileMainGallery: React.FC<FileMainGalleryProps> = ({ files }) => {
               <ArrowLeft className="size-5" />
             </Button>
             <Button
+              data-testid="rightButtonTest"
               size="icon"
               variant="outline"
               onClick={() => carouselApi?.scrollNext()}

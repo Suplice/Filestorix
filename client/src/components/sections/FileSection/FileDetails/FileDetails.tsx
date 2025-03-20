@@ -29,7 +29,7 @@ const FileDetails = () => {
     <Card className="p-4">
       <CardContent className="space-y-4">
         <FileMetaData file={file} />
-        <div className="border-t pt-4">
+        <div data-testid="divTest" className="border-t pt-4">
           {fileId && <FileActivityList fileId={fileId} />}
         </div>
       </CardContent>

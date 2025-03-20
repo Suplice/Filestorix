@@ -68,7 +68,7 @@ const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {cachedData?.map((activity) => (
+              {cachedData.map((activity) => (
                 <FileActivityItem key={activity.id} activityLog={activity} />
               ))}
             </TableBody>

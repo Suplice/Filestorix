@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthContext";
+"use client";
 import { fetchFileActivityList } from "@/lib/api/file/filesApi";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -11,29 +11,39 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import FileActivityItem from "./FileActivityItem";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { useEffect, useState } from "react";
+import { ActivityLog } from "@/lib/types/activityLog";
 
 interface FileActivityListProps {
   fileId: number;
 }
 
 const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
-  const { isAuthenticated } = useAuth();
-
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["activitylog", fileId],
-    queryFn: () => fetchFileActivityList(fileId),
-    enabled: isAuthenticated,
+    queryFn: async () => await fetchFileActivityList(fileId),
+    enabled: !!fileId,
   });
 
+  const [cachedData, setCachedData] = useState<ActivityLog[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setCachedData(data);
+    }
+    console.log(cachedData);
+  }, [data]);
+
   if (isLoading) {
-    return <div className="text-center text-muted-foreground">Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
     return (
       <div>
         <p className="text-center text-red-500">Error loading activities.</p>
-        <Button onClick={() => refetch}>Try again.</Button>
+        <Button onClick={() => refetch()}>Try again.</Button>
       </div>
     );
   }
@@ -41,7 +51,7 @@ const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
   return (
     <div className="p-4 ">
       <h2 className="text-2xl font-bold text-primary mb-4 ">File Activity</h2>
-      {data && data.length === 0 ? (
+      {cachedData && cachedData.length === 0 ? (
         <Card className="text-center py-4">
           <CardContent className="text-muted-foreground">
             No activity found.
@@ -58,7 +68,7 @@ const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data?.map((activity) => (
+              {cachedData?.map((activity) => (
                 <FileActivityItem key={activity.id} activityLog={activity} />
               ))}
             </TableBody>

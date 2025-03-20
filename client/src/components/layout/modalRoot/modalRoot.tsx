@@ -59,11 +59,11 @@ const ModalRoot = () => {
 
   return (
     <div id="modal-root">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen && (
           <>
             {modalType === "Settings" ? (
-              <RightSidebarModalWrapper isOpen={modalType === "Settings"}>
+              <RightSidebarModalWrapper>
                 <Suspense fallback={<LoadingSpinner />}>
                   <SettingsModal />
                 </Suspense>

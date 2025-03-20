@@ -1,3 +1,4 @@
+"use client";
 import { useModal } from "@/hooks/use-modal";
 import { getFile } from "@/lib/api/file/filesApi";
 import { useQuery } from "@tanstack/react-query";

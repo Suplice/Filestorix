@@ -9,8 +9,10 @@ const FileRemover = () => {
   const { hideModal, modalProps } = useModal();
 
   const handleRemove = () => {
-    removeFile({ fileId: modalProps!.fileId! });
-    hideModal();
+    if (modalProps && modalProps.fileId) {
+      removeFile({ fileId: modalProps.fileId });
+      hideModal();
+    }
   };
 
   return (

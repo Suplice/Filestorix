@@ -28,8 +28,10 @@ const CatalogUploader = () => {
   });
 
   const handleSubmit = (data: AddCatalogForm) => {
-    uploadCatalog({ name: data.name, parentId: modalProps!.parentId! });
-    hideModal();
+    if (modalProps !== undefined && modalProps.parentId !== undefined) {
+      uploadCatalog({ name: data.name, parentId: modalProps.parentId });
+      hideModal();
+    }
   };
 
   return (
@@ -45,10 +47,12 @@ const CatalogUploader = () => {
             autoComplete="off"
             id="name"
             type="text"
+            title="nameInput"
+            placeholder="Name"
             {...form.register("name")}
           />
           {form.formState.errors.name && (
-            <p className="text-sm text-red-500">
+            <p title="testTitle" className="text-sm text-red-500">
               {form.formState.errors.name.message}
             </p>
           )}

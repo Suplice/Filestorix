@@ -21,8 +21,10 @@ const FileRenamer = () => {
   });
 
   const handleSubmit = (data: RenameFileForm) => {
-    renameFile({ name: data.name, fileId: modalProps!.fileId! });
-    hideModal();
+    if (modalProps && modalProps.fileId) {
+      renameFile({ name: data.name, fileId: modalProps.fileId });
+      hideModal();
+    }
   };
 
   return (
@@ -38,6 +40,7 @@ const FileRenamer = () => {
               id="file-name"
               type="text"
               autoComplete="off"
+              placeholder="New Name"
               className="focus:ring focus:ring-primary focus:outline-none"
               {...form.register("name")}
             />

@@ -17,6 +17,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
   return (
     <motion.div
       className="w-full h-full flex items-center justify-center pointer-events-auto backdrop-brightness-[0.3]"
+      data-testid="testBackground"
       onMouseDown={handleBackdropClick}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

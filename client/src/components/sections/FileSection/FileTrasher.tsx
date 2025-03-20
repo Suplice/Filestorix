@@ -11,9 +11,10 @@ const FileTrasher = () => {
   const { hideModal, modalProps } = useModal();
 
   const handleTrash = () => {
-    console.log("elo");
-    trashFile({ fileId: modalProps!.fileId! });
-    hideModal();
+    if (modalProps && modalProps.fileId) {
+      trashFile({ fileId: modalProps.fileId });
+      hideModal();
+    }
   };
 
   return (

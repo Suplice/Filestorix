@@ -1,6 +1,6 @@
 const LoadingSpinner = () => {
   return (
-    <div className="w-screen h-screen">
+    <div data-testid="loading-spinner" className="w-screen h-screen">
       <div className="text-center flex items-center justify-center w-full h-full">
         <div role="status">
           <svg

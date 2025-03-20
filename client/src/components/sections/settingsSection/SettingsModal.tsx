@@ -68,9 +68,10 @@ const SettingsModal = () => {
       <CardContent className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Settings</h2>
 
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="selectTheme">
           <label className="font-semibold">Theme</label>
           <Select
+            name="selectTest"
             value={localTheme}
             onValueChange={(value: "light" | "dark" | "system") =>
               setLocalTheme(value)
@@ -129,6 +130,7 @@ const SettingsModal = () => {
               Toggle Hidden Files (Ctrl + )
             </label>
             <input
+              data-testid="toggleHiddenTestInput"
               type="text"
               maxLength={1}
               value={localShortcuts.toggleHiddenFiles}

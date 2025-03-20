@@ -75,7 +75,7 @@ const FileUploader = () => {
           {...getRootProps()}
           className="border-2 border-dashed border-gray-400 p-6 text-center cursor-pointer transition-all"
         >
-          <input {...getInputProps()} />
+          <input data-testid="inputTest" {...getInputProps()} />
           <p className="text-gray-500">
             Drag & drop files here, or click to select files
           </p>

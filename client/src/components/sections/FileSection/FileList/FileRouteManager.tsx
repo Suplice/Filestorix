@@ -11,7 +11,10 @@ const FileRouteManager: React.FC<FileRouteManagerProps> = ({
   handleChangeRoute,
 }) => {
   return (
-    <div className="flex items-center   text-lg font-medium select-none">
+    <div
+      data-testid="file-route-manager"
+      className="flex items-center   text-lg font-medium select-none"
+    >
       {routes.map((route, index) => (
         <div key={route.catalogId} className="flex items-center">
           {index !== 0 && <ChevronRight className="w-6 h-6 text-gray-500" />}

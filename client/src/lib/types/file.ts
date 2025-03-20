@@ -18,7 +18,7 @@ export type UserFile = {
   createdAt: Date;
   isTrashed: boolean;
   isFavorite: boolean;
-  parentId: number;
+  parentId: number | null;
   isHidden: boolean;
 };
 

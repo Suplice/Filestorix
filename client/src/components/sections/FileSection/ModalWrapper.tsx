@@ -16,14 +16,22 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
 
   return (
     <motion.div
-      className="w-full h-full flex items-center justify-center pointer-events-auto backdrop-brightness-[0.3]"
+      className="w-full h-full flex items-center justify-center pointer-events-auto "
       data-testid="testBackground"
-      onMouseDown={handleBackdropClick}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
+      <motion.div
+        className="absolute inset-0 bg-black bg-opacity-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.6 }}
+        onMouseDown={handleBackdropClick}
+      ></motion.div>
+
       <motion.div
         onMouseDown={(e) => e.stopPropagation()}
         className="relative"

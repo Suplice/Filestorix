@@ -67,7 +67,7 @@ const FileUploader = () => {
     <>
       <div
         className={cn(
-          "p-4 border rounded-md w-full h-full dark:bg-neutral-900 transition-all max-h-96 overflow-auto no-scrollbar",
+          "p-4 border rounded-md w-full h-full dark:bg-neutral-900 bg-slate-50 transition-all max-h-96 overflow-auto no-scrollbar",
           isDragActive && "p-8 border-blue-500 bg-blue-100 dark:bg-blue-900"
         )}
       >

@@ -46,7 +46,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, previewUrl }) => {
           fileName: file.id + file.extension,
         })
       }
-      className="group flex flex-col justify-between cursor-pointer "
+      className="group flex flex-col justify-between cursor-pointer select-none"
     >
       <div className="flex aspect-[3/2] overflow-hidden rounded-xl bg-muted/20 items-center justify-center max-h-[200px] w-full border border-gray-500 dark:border-gray-900">
         {previewUrl &&

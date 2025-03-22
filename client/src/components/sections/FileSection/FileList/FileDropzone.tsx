@@ -1,19 +1,29 @@
 "use client";
 
+import useFileActions from "@/hooks/use-file-actions";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
 interface FileDropzoneProps {
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
+  parentId: number | null;
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({
   isVisible,
   setIsVisible,
+  parentId,
 }) => {
+  const { uploadFiles } = useFileActions();
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
+    console.log("i am on drop");
     setIsVisible(false);
+    uploadFiles({
+      files: acceptedFiles,
+      parentId: parentId,
+    });
     console.log("Dropped files:", acceptedFiles);
   }, []);
 
@@ -21,6 +31,16 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     onDrop,
     noClick: true,
     noKeyboard: true,
+    onError: () => {
+      setIsVisible(false);
+    },
+    accept: {
+      "image/*": [],
+      "application/pdf": [],
+      "text/plain": [],
+      "application/vnd.ms-excel": [],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [],
+    },
   });
 
   useEffect(() => {

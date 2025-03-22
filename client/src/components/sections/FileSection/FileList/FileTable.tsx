@@ -70,16 +70,13 @@ const FileTable: React.FC<FileTableProps> = ({
   return (
     <>
       <div
-        className="p-6"
-        onDragOver={(e) => e.preventDefault()} // Zapobiega domyślnemu zachowaniu
+        className="p-6 w-full h-full"
+        onDragOver={(e) => e.preventDefault()}
         onDragEnter={(e) => {
           e.preventDefault();
-          if (!isDragging) setIsDragging(true); // Zapobiega niepotrzebnym re-renderom
+          if (!isDragging) setIsDragging(true);
         }}
         onDrop={() => setIsDragging(false)}
-        onDragLeave={(e) => {
-          if (e.relatedTarget === null) setIsDragging(false);
-        }}
       >
         <div className="w-full flex flex-row justify-between mb-4">
           <FileRouteManager
@@ -99,7 +96,13 @@ const FileTable: React.FC<FileTableProps> = ({
           handleFolderClick={handleFolderClick}
         />
       </div>
-      <FileDropzone isVisible={isDragging} setIsVisible={setIsDragging} />
+      {section !== "Trash" && (
+        <FileDropzone
+          isVisible={isDragging}
+          setIsVisible={setIsDragging}
+          parentId={parentId}
+        />
+      )}
     </>
   );
 };

@@ -85,7 +85,7 @@ func handleUpload(fileHeader *multipart.FileHeader, userFolder string, userId ui
 
 	name := strings.Split(filepath.Base(fileHeader.Filename), ".")[0]
 
-	exists, err := FileExists(userId, fileName, tx, parentId)
+	exists, err := FileExists(userId, name, tx, parentId)
 
 	if err != nil || exists {
 		tx.Rollback()

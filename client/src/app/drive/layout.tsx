@@ -16,7 +16,8 @@ const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
       <AppSidebar />
       <div className="w-[80%] xl:w-[90%] md:w-[85%] flex flex-col   p-4 gap-4 bg-sidebar h-screen">
         <AppTopbar />
-        <main className="w-full h-full rounded-2xl bg-card p-6 overflow-y-auto no-scrollbar">
+
+        <main className="w-full h-full rounded-2xl bg-card overflow-y-auto no-scrollbar  ">
           <QueryErrorResetBoundary>
             <ErrorBoundary
               fallbackRender={({ resetErrorBoundary }) => (

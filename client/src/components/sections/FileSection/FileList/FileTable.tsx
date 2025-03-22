@@ -1,16 +1,9 @@
 "use client";
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { UserFile, FileRoute } from "@/lib/types/file";
-import FileTableSkeleton from "./FileTableSkeleton";
 import dynamic from "next/dynamic";
+import FileTableBody from "./FileTableBody";
+import FileDropzone from "./FileDropzone";
 
 const FileRouteManager = dynamic(
   () => import("@/components/sections/FileSection/FileList/FileRouteManager"),
@@ -23,11 +16,6 @@ const CreateButton = dynamic(
 const FileMainGallery = dynamic(
   () =>
     import("@/components/sections/FileSection/FileMainGallery/FileMainGallery"),
-  { ssr: false }
-);
-
-const FileCard = dynamic(
-  () => import("@/components/sections/FileSection/FileList/FileCard"),
   { ssr: false }
 );
 
@@ -51,6 +39,7 @@ const FileTable: React.FC<FileTableProps> = ({
       catalogId: null,
     },
   ]);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleFolderClick = (fileId: number, fileName: string) => {
     if (!allowCatalogs) return;
@@ -80,49 +69,37 @@ const FileTable: React.FC<FileTableProps> = ({
 
   return (
     <>
-      <div className="w-full flex flex-row justify-between mb-4">
-        <FileRouteManager
-          routes={route}
-          handleChangeRoute={handleChangeRoute}
-        />
-        {section !== "Trash" && <CreateButton parentId={parentId} />}
-      </div>
-      {section === "Main" && files.length > 0 && (
-        <FileMainGallery
-          files={files.filter((file) => file.type !== "CATALOG").slice(0, 10)}
-        />
-      )}
-      <Table className="select-none w-full">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[20%]">Name</TableHead>
-            <TableHead className="w-[15%]">Modified At</TableHead>
-            <TableHead className="w-[15%]">Size</TableHead>
-            <TableHead className="w-[15%]">Type</TableHead>
-            <TableHead className="w-[15%]"></TableHead>
-            <TableHead className="w-[5%] text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        {isLoading ? (
-          <FileTableSkeleton />
-        ) : (
-          <TableBody>
-            {files.length === 0 ? (
-              <TableRow>
-                <TableCell>No files found</TableCell>
-              </TableRow>
-            ) : (
-              visibleFiles.map((file) => (
-                <FileCard
-                  file={file}
-                  key={file.id}
-                  handleClick={handleFolderClick}
-                />
-              ))
-            )}
-          </TableBody>
+      <div
+        className="p-6"
+        onDragOver={(e) => e.preventDefault()} // Zapobiega domyślnemu zachowaniu
+        onDragEnter={(e) => {
+          e.preventDefault();
+          if (!isDragging) setIsDragging(true); // Zapobiega niepotrzebnym re-renderom
+        }}
+        onDrop={() => setIsDragging(false)}
+        onDragLeave={(e) => {
+          if (e.relatedTarget === null) setIsDragging(false);
+        }}
+      >
+        <div className="w-full flex flex-row justify-between mb-4">
+          <FileRouteManager
+            routes={route}
+            handleChangeRoute={handleChangeRoute}
+          />
+          {section !== "Trash" && <CreateButton parentId={parentId} />}
+        </div>
+        {section === "Main" && files.length > 0 && (
+          <FileMainGallery
+            files={files.filter((file) => file.type !== "CATALOG").slice(0, 10)}
+          />
         )}
-      </Table>
+        <FileTableBody
+          files={visibleFiles}
+          isLoading={isLoading}
+          handleFolderClick={handleFolderClick}
+        />
+      </div>
+      <FileDropzone isVisible={isDragging} setIsVisible={setIsDragging} />
     </>
   );
 };

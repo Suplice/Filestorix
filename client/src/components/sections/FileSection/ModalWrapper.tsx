@@ -17,7 +17,6 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
   return (
     <motion.div
       className="w-full h-full flex items-center justify-center pointer-events-auto "
-      data-testid="testBackground"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -25,6 +24,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
     >
       <motion.div
         className="absolute inset-0 bg-black bg-opacity-50"
+        data-testid="testBackground"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

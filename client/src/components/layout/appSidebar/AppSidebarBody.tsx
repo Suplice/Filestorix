@@ -58,13 +58,16 @@ const AppSidebarBody = () => {
               {group.map((item) => (
                 <SidebarMenuItem key={item.title} title={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link
+                      href={item.url}
+                      className="items-center justify-center flex sm:justify-normal p-0 gap-0"
+                    >
                       <item.icon />
                       <span
                         className={
                           pathname === item.url
-                            ? "font-bold text-blue-500 xl:text-xl md:text-md sm:text-sm"
-                            : "xl:text-xl md:text-md sm:text-sm"
+                            ? "font-bold text-blue-500 xl:text-xl md:text-md sm:text-sm ml-2 hidden sm:flex"
+                            : "xl:text-xl md:text-md sm:text-sm ml-2 hidden sm:flex"
                         }
                       >
                         {item.title}
@@ -74,7 +77,7 @@ const AppSidebarBody = () => {
                 </SidebarMenuItem>
               ))}
               {group.some((item) => item.title === "Storage") && (
-                <div className="px-2 py-1 select-none">
+                <div className="px-2 py-1 select-none hidden sm:flex flex-col ">
                   <Progress
                     value={usagePercentage}
                     className="h-2 rounded-full"
@@ -87,9 +90,15 @@ const AppSidebarBody = () => {
                     }
                   />
                   <p className="text-sm  mt-1 flex flex-row flex-wrap gap-1">
-                    <span className="font-medium text-lg ">{usedStorage}</span>
-                    <span className="text-lg font-semibold ">of</span>
-                    <span className="font-medium text-lg">{totalStorage}</span>
+                    <span className="font-medium lg:text-lg md:text-base sm:text-sm  ">
+                      {usedStorage}
+                    </span>
+                    <span className="lg:text-lg md:text-base sm:text-sm  font-semibold ">
+                      of
+                    </span>
+                    <span className="font-medium lg:text-lg md:text-base sm:text-sm ">
+                      {totalStorage}
+                    </span>
                   </p>
                 </div>
               )}

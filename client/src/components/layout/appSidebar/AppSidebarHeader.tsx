@@ -10,7 +10,7 @@ import {
 import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar";
 import { useModal } from "@/hooks/use-modal";
 
-import { FolderPlus, Plus, Upload } from "lucide-react";
+import { BookOpen, FolderPlus, Plus, Upload } from "lucide-react";
 import Link from "next/link";
 
 const AppSidebarHeader = () => {
@@ -19,24 +19,26 @@ const AppSidebarHeader = () => {
   return (
     <>
       <SidebarGroup>
-        <SidebarGroupLabel className="text-center font-bold ">
-          <Link
-            href="/drive"
-            className="lg:text-2xl md:text-xl sm:text-sm text-xs"
-          >
-            Filestorix
+        <SidebarGroupLabel className="font-bold  flex  justify-center ">
+          <Link href="/drive">
+            <p className="lg:text-2xl md:text-lg sm:text-sm text-xs sm:flex hidden">
+              Filestorix
+            </p>
+            <BookOpen className=" sm:hidden w-8 h-8" />
           </Link>
         </SidebarGroupLabel>
       </SidebarGroup>
-      <SidebarGroup>
+      <SidebarGroup className="flex justify-end items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="primary"
-              className="w-full flex items-center gap-2"
+              className="w-full flex items-center justify-center "
             >
               <Plus size={64} />
-              <p className="text-xl font-semibold">New</p>
+              <p className="xl:text-xl lg:text-lg md:text-base sm:text-sm hidden sm:flex font-semibold">
+                New
+              </p>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

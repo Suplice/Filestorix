@@ -17,6 +17,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
   const { showModal } = useModal();
   const [isHiddenActionsMenuVisible, setIsHiddenActionsMenuVisible] =
     useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const formatSize = useMemo(() => {
     if (file.size < 1024) return `${file.size} B`;
@@ -40,6 +41,10 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
       }}
       onMouseEnter={() => setIsHiddenActionsMenuVisible(true)}
       onMouseLeave={() => setIsHiddenActionsMenuVisible(false)}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        setIsMenuOpen(true);
+      }}
     >
       <TableCell className="max-w-[200px]">
         <div className="flex flex-row gap-3 items-center">
@@ -74,6 +79,8 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
           file={file}
           handleClick={handleClick}
           handleFileClick={handleFileClick}
+          isOpen={isMenuOpen}
+          setIsOpen={setIsMenuOpen}
         />
       </TableCell>
     </TableRow>

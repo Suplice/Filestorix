@@ -30,12 +30,16 @@ interface FileActionsMenuProps {
   file: UserFile;
   handleClick: (fileId: number, catalogName: string) => void;
   handleFileClick: () => void;
+  isOpen: boolean;
+  setIsOpen: (state: boolean) => void;
 }
 
 const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
   file,
   handleClick,
   handleFileClick,
+  isOpen,
+  setIsOpen,
 }) => {
   const { showModal } = useModal();
 
@@ -83,13 +87,13 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <MoreVertical className="h-5 w-5 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="start" side="left">
         <DropdownMenuItem
           onClick={() =>
             file.type === "CATALOG"

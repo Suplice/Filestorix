@@ -64,6 +64,8 @@ describe("FileActionsMenu", () => {
         file={file}
         handleClick={mockHandleClick}
         handleFileClick={mockHandleFileClick}
+        isOpen={false}
+        setIsOpen={() => {}}
       />
     );
   };

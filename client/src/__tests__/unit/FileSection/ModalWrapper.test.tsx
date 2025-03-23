@@ -1,6 +1,6 @@
 import ModalWrapper from "@/components/sections/FileSection/ModalWrapper";
 import { useModal } from "@/hooks/use-modal";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("ModalWrapper", () => {
   let mockHideModal: jest.Mock;

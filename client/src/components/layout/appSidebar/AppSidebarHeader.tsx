@@ -19,7 +19,7 @@ const AppSidebarHeader = () => {
   return (
     <>
       <SidebarGroup>
-        <SidebarGroupLabel className="font-bold  flex  justify-center ">
+        <SidebarGroupLabel className="font-bold  flex  justify-center  select-none ">
           <Link href="/drive">
             <p className="lg:text-2xl md:text-lg sm:text-sm text-xs sm:flex hidden">
               Filestorix

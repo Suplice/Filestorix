@@ -41,7 +41,7 @@ export function SearchCommand() {
   return (
     <>
       <div
-        className="w-full max-w-sm cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring"
+        className="w-full select-none max-w-sm cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring"
         onClick={() => setOpen(true)}
       >
         <div className="flex items-center justify-between">

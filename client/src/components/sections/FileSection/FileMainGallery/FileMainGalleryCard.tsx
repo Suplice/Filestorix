@@ -56,6 +56,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, previewUrl }) => {
             src={previewUrl}
             alt={file.name}
             className="h-full w-full object-cover object-center transition duration-300 group-hover:scale-105 brightness-75"
+            loading="lazy"
           />
         ) : (
           getPlaceholderIcon()

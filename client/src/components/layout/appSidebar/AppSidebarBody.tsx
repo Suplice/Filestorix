@@ -32,10 +32,13 @@ const thirdGroup = [
 const AppSidebarBody = () => {
   const pathname = usePathname();
 
-  const { files } = useFile();
+  const { allFiles } = useFile();
 
   const { usedStorage, totalStorage, usagePercentage } = useMemo(() => {
-    const usedStorage = files.reduce((sum, current) => sum + current.size, 0);
+    const usedStorage = allFiles.reduce(
+      (sum, current) => sum + current.size,
+      0
+    );
     const totalStorage = 0.05 * 1024 * 1024 * 1024;
     const usagePercentage = (usedStorage / totalStorage) * 100;
 
@@ -47,7 +50,7 @@ const AppSidebarBody = () => {
       totalStorage: specifiedTotalStorage,
       usagePercentage: usagePercentage,
     };
-  }, [files]);
+  }, [allFiles]);
 
   return (
     <>
@@ -60,7 +63,7 @@ const AppSidebarBody = () => {
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
-                      className="items-center justify-center flex sm:justify-normal p-0 gap-0"
+                      className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none"
                     >
                       <item.icon />
                       <span

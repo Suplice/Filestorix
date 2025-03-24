@@ -63,14 +63,18 @@ const AppSidebarBody = () => {
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
-                      className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none"
+                      className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto"
                     >
-                      <item.icon />
+                      <item.icon
+                        className={`${
+                          pathname === item.url && "text-blue-500"
+                        }`}
+                      />
                       <span
                         className={
                           pathname === item.url
-                            ? "font-bold text-blue-500 xl:text-xl md:text-md sm:text-sm ml-2 hidden sm:flex"
-                            : "xl:text-xl md:text-md sm:text-sm ml-2 hidden sm:flex"
+                            ? "font-bold text-blue-500 xl:text-xl md:text-base sm:text-sm ml-2 hidden sm:flex truncate "
+                            : "xl:text-xl md:text-md sm:text-base ml-2 hidden sm:flex "
                         }
                       >
                         {item.title}

@@ -12,6 +12,7 @@ export type ModalType =
   | "FileRestorer"
   | "Settings"
   | "Details"
+  | "SearchBox"
   | null;
 
 export type ModalProps = {

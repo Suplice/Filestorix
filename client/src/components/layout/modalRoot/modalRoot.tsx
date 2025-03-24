@@ -6,6 +6,7 @@ import RightSidebarModalWrapper from "@/components/sections/SettingsSection/Righ
 import { useModal } from "@/hooks/use-modal";
 import { AnimatePresence } from "framer-motion";
 import { lazy, Suspense } from "react";
+import SearchCommandBody from "../SearchCommand/searchCommandBody";
 
 const FileUploader = lazy(
   () => import("@/components/sections/FileSection/FileUploader")
@@ -78,6 +79,7 @@ const ModalRoot = () => {
                   {modalType == "CatalogTrasher" && <CatalogTrasher />}
                   {modalType == "FileRestorer" && <FileRestore />}
                   {modalType == "Details" && <FileDetails />}
+                  {modalType == "SearchBox" && <SearchCommandBody />}
                 </Suspense>
               </ModalWrapper>
             )}

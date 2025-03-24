@@ -2,7 +2,14 @@
 import useFileActions from "@/hooks/use-file-actions";
 import { useModal } from "@/hooks/use-modal";
 import { UserFile } from "@/lib/types/file";
-import { Eye, EyeOff, PenLine, Star, StarOff } from "lucide-react";
+import {
+  ArchiveRestore,
+  Eye,
+  EyeOff,
+  PenLine,
+  Star,
+  StarOff,
+} from "lucide-react";
 
 interface FileHiddenActionsMenuProps {
   file: UserFile;
@@ -38,6 +45,12 @@ const FileHiddenActionsMenu: React.FC<FileHiddenActionsMenuProps> = ({
     }
   };
 
+  const handleRestoreClick = () => {
+    if (file.isTrashed) {
+      showModal("FileRestorer", { fileId: file.id, parentId: file.parentId });
+    }
+  };
+
   return (
     <div
       className={`transition-opacity duration-200 flex flex-row gap-2  ${
@@ -50,6 +63,15 @@ const FileHiddenActionsMenu: React.FC<FileHiddenActionsMenuProps> = ({
       >
         <PenLine />
       </div>
+      {file.isTrashed && (
+        <div
+          className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+          onClick={handleRestoreClick}
+        >
+          <ArchiveRestore />
+        </div>
+      )}
+
       <div
         className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
         onClick={handleStarClick}

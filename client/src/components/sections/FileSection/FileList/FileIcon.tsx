@@ -8,6 +8,7 @@ import {
   Folder,
 } from "lucide-react";
 import { FileIconMap } from "@/lib/types/file";
+import { cn } from "@/lib/utils/utils";
 
 const fileIcons: FileIconMap = {
   ".xlsx": { icon: FileSpreadsheet, color: "text-green-500" },
@@ -26,14 +27,15 @@ const fileIcons: FileIconMap = {
 
 interface FileIconProps {
   extension: string;
+  className?: string;
 }
 
-const FileIcon: React.FC<FileIconProps> = ({ extension }) => {
+const FileIcon: React.FC<FileIconProps> = ({ extension, className }) => {
   const { icon: Icon, color } = fileIcons[extension] || {
     icon: File,
     color: "text-muted-foreground",
   };
-  return <Icon className={`h-5 w-5 ${color}`} />;
+  return <Icon className={cn(`h-5 w-5 ${color}`, className)} />;
 };
 
 export default FileIcon;

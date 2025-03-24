@@ -7,6 +7,7 @@ import { useModal } from "@/hooks/use-modal";
 import FileIcon from "./FileIcon";
 import FileActionsMenu from "./FileActionsMenu";
 import FileHiddenActionsMenu from "./FileHiddenActionsMenu";
+import { Star } from "lucide-react";
 
 interface FileCardProps {
   handleClick: (fileId: number, catalogName: string) => void;
@@ -50,7 +51,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
         <div className="flex flex-row gap-3 items-center">
           <FileIcon extension={file.extension} />
           <span
-            className={`font-medium cursor-pointer truncate ${
+            className={`font-medium cursor-pointer truncate flex flex-row items-center gap-2 ${
               file.isHidden ? "text-gray-500" : ""
             }`}
             onClick={() =>
@@ -60,6 +61,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
             }
           >
             {file.name}
+            {file.isFavorite && <Star className="w-4 h-4" />}
           </span>
         </div>
       </TableCell>

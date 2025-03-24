@@ -17,15 +17,16 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
 }) => {
   const { uploadFiles } = useFileActions();
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log("i am on drop");
-    setIsVisible(false);
-    uploadFiles({
-      files: acceptedFiles,
-      parentId: parentId,
-    });
-    console.log("Dropped files:", acceptedFiles);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      setIsVisible(false);
+      uploadFiles({
+        files: acceptedFiles,
+        parentId: parentId,
+      });
+    },
+    [parentId, setIsVisible, uploadFiles]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -45,7 +46,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
 
   useEffect(() => {
     setIsVisible(isDragActive);
-  }, [isDragActive]);
+  }, [isDragActive, setIsVisible]);
 
   if (!isVisible) return null;
 

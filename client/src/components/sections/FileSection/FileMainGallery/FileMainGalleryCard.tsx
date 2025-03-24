@@ -1,12 +1,7 @@
 "use client";
 import { UserFile } from "@/lib/types/file";
 import { useModal } from "@/hooks/use-modal";
-import {
-  FileImageIcon,
-  FileTextIcon,
-  FileSpreadsheetIcon,
-  FileIcon,
-} from "lucide-react";
+import FileIcon from "../FileList/FileIcon";
 
 interface FileCardProps {
   file: UserFile;
@@ -17,27 +12,6 @@ const FileCard: React.FC<FileCardProps> = ({ file, previewUrl }) => {
   const { showModal } = useModal();
 
   const extension = file.extension.toLowerCase();
-
-  const getPlaceholderIcon = () => {
-    if (
-      extension.startsWith(".jpg") ||
-      extension.startsWith(".jpeg") ||
-      extension.startsWith(".png") ||
-      extension.startsWith(".gif") ||
-      extension.startsWith(".webp") ||
-      extension.startsWith(".svg")
-    ) {
-      return <FileImageIcon className="h-12 w-12 text-muted-foreground" />;
-    } else if (extension === ".pdf") {
-      return <FileIcon className="h-12 w-12 text-red-500" />;
-    } else if (extension === ".txt") {
-      return <FileTextIcon className="h-12 w-12 text-muted-foreground" />;
-    } else if ([".xls", ".xlsx"].includes(extension)) {
-      return <FileSpreadsheetIcon className="h-12 w-12 text-green-500" />;
-    } else {
-      return <FileIcon className="h-12 w-12 text-muted-foreground" />;
-    }
-  };
 
   return (
     <div
@@ -59,7 +33,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, previewUrl }) => {
             loading="lazy"
           />
         ) : (
-          getPlaceholderIcon()
+          <FileIcon extension={file.extension} className="w-10 h-10" />
         )}
       </div>
 

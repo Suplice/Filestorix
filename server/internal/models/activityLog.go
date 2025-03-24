@@ -16,6 +16,6 @@ type ActivityLog struct {
 	Details 		string 			`gorm:"size:255" json:"details"`
 	PerformedAt 	time.Time 		`gorm:"autoCreateTime" json:"performedAt"`
 
-	User 			User 			`gorm:"foreignKey:UserID" json:"-"`
-	File 			UserFile 		`gorm:"foreignKey:FileID" json:"-"`
+	User 			User 			`gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"-"`
+	File 			UserFile 		`gorm:"foreignKey:FileID;constraint:OnDelete:CASCADE" json:"-"`
 }

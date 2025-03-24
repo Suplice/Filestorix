@@ -7,7 +7,7 @@ import { useModal } from "@/hooks/use-modal";
 import FileIcon from "./FileIcon";
 import FileActionsMenu from "./FileActionsMenu";
 import FileHiddenActionsMenu from "./FileHiddenActionsMenu";
-import { Star } from "lucide-react";
+import { FaStar } from "react-icons/fa";
 
 interface FileCardProps {
   handleClick: (fileId: number, catalogName: string) => void;
@@ -61,7 +61,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
             }
           >
             {file.name}
-            {file.isFavorite && <Star className="w-4 h-4" />}
+            {file.isFavorite && <FaStar className="w-4 h-4" />}
           </span>
         </div>
       </TableCell>

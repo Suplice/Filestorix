@@ -15,7 +15,7 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
 const mainGroup = [
-  { title: "Main Page", url: "/drive", icon: Home },
+  { title: "Home", url: "/drive", icon: Home },
   { title: "My Drive", url: "/drive/drive", icon: Inbox },
 ];
 
@@ -63,7 +63,7 @@ const AppSidebarBody = () => {
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
-                      className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto"
+                      className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto "
                     >
                       <item.icon
                         className={`${
@@ -71,11 +71,11 @@ const AppSidebarBody = () => {
                         }`}
                       />
                       <span
-                        className={
+                        className={`hidden sm:block overflow-hidden text-ellipsis whitespace-nowrap  lg:text-lg md:text-base sm:text-sm ${
                           pathname === item.url
-                            ? "font-bold text-blue-500 xl:text-xl md:text-base sm:text-sm ml-2 hidden sm:flex truncate "
-                            : "xl:text-xl md:text-md sm:text-base ml-2 hidden sm:flex "
-                        }
+                            ? "font-semibold text-blue-500"
+                            : "font-normal text-gray-700 dark:text-gray-300"
+                        }`}
                       >
                         {item.title}
                       </span>

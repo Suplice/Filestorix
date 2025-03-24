@@ -20,23 +20,26 @@ const AppSidebarFooter = () => {
   const { showModal } = useModal();
 
   return (
-    <SidebarFooter className=" border-t border-gray-200 dark:border-gray-800 gap-0 p-2">
+    <SidebarFooter className=" border-t border-gray-200 dark:border-gray-800 gap-0 px-0">
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="w-full justify-center items-center "
+                className="w-full   px-3 flex sm:justify-around justify-center"
               >
                 <User2 className="h-5 w-5" />
-                <span className="truncate hidden sm:flex">
+                <span
+                  className="hidden sm:block truncate  lg:text-sm md:text-xs sm:text-xs"
+                  title={user?.username}
+                >
                   {user?.username}
                 </span>
                 <ChevronUp className=" h-4 w-4 " />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" align="start" className="w-full">
+            <DropdownMenuContent side="top" align="end" className="w-full">
               <DropdownMenuItem
                 onClick={() => {
                   console.log("test");

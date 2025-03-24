@@ -247,6 +247,9 @@ func (fs *FileService) RestoreFile(fileId string, parentId string) error {
 	return fs.fileRepository.RestoreFile(fileId, parentId)
 }
 
+// RemoveFavorite removes a file from the user's list of favorite files.
+// It takes fileId and userId as parameters, converting them to uint before processing.
+// Returns nil if the file is successfully removed from favorites, or an error otherwise.
 func (fs *FileService) RemoveFavorite(fileId string, userId string) error {
 
 	uintFileId, err := convertStringToUint(fileId)
@@ -264,6 +267,9 @@ func (fs *FileService) RemoveFavorite(fileId string, userId string) error {
 	return fs.fileRepository.RemoveFavorite(uintFileId, uintUserId)
 }
 
+// AddFavorite adds a file to the user's list of favorite files.
+// It takes fileId and userId as parameters, converting them to uint before processing.
+// Returns nil if the file is successfully added to favorites, or an error otherwise.
 func (fs *FileService) AddFavorite(fileId string, userId string) error {
 
 	uintFileId, err := convertStringToUint(fileId)
@@ -281,6 +287,9 @@ func (fs *FileService) AddFavorite(fileId string, userId string) error {
 	return fs.fileRepository.AddFavorite(uintFileId, uintUserId)
 }
 
+// HideFile marks a file as hidden for a specific user.
+// It takes fileId and userId as parameters, converting them to uint before processing.
+// Returns nil if the file is successfully hidden, or an error otherwise.
 func (fs *FileService) HideFile(fileId string, userId string) error {
 
 	uintFileId, err := convertStringToUint(fileId)
@@ -298,6 +307,9 @@ func (fs *FileService) HideFile(fileId string, userId string) error {
 	return fs.fileRepository.HideFile(uintFileId, uintUserId)
 }
 
+// RevealFile makes a previously hidden file visible again for a specific user.
+// It takes fileId and userId as parameters, converting them to uint before processing.
+// Returns nil if the file is successfully revealed, or an error otherwise.
 func (fs *FileService) RevealFile(fileId string, userId string) error {
 
 	uintFileId, err := convertStringToUint(fileId)
@@ -315,6 +327,9 @@ func (fs *FileService) RevealFile(fileId string, userId string) error {
 	return fs.fileRepository.RevealFile(uintFileId, uintUserId)
 }
 
+// GetActivityLogForFile retrieves the activity log for a specified file and user.
+// It takes fileId and userId as parameters and returns a slice of ActivityLog entries.
+// Returns the activity log if successful, or an error otherwise.
 func (fs *FileService) GetActivityLogForFile(fileId string, userId string) ([]models.ActivityLog, error) {
 	return fs.fileRepository.GetActivityLogForFile(fileId, userId)
 }

@@ -175,7 +175,7 @@ func FileExists(userId uint, fileName string, db *gorm.DB, parentId *uint) (bool
 
 
 	// ParentId check to be handled properly
-	
+
 	// if parentId == nil {
 	// 	query = query.Where("parent_id IS NULL")
 	// } else {
@@ -570,6 +570,10 @@ func (fr *FileRepository) RestoreFile(fileId string, parentId string) error {
 
 }
 
+// RemoveFavorite removes a file from the user's favorites.
+// It takes fileId and userId as parameters.
+// Uses a transaction to ensure changes are applied correctly.
+// Returns nil if the operation is successful, or an error otherwise.
 func (fr *FileRepository) RemoveFavorite(fileId uint, userId uint) error {
 
 	tx := fr.db.Begin()
@@ -597,6 +601,10 @@ func (fr *FileRepository) RemoveFavorite(fileId uint, userId uint) error {
 	return nil
 }
 
+// AddFavorite marks a file as a favorite for the user.
+// It takes fileId and userId as parameters.
+// Uses a transaction to ensure consistency.
+// Returns nil if the operation is successful, or an error otherwise.
 func (fr *FileRepository) AddFavorite(fileId uint, userId uint) error {
 
 	tx := fr.db.Begin()
@@ -623,6 +631,10 @@ func (fr *FileRepository) AddFavorite(fileId uint, userId uint) error {
 	return nil
 }
 
+// HideFile marks a file as hidden for the user.
+// It takes fileId and userId as parameters.
+// Uses a transaction to ensure consistency.
+// Returns nil if the operation is successful, or an error otherwise.
 func (fr *FileRepository) HideFile(fileId uint, userId uint) error {
 
 	tx := fr.db.Begin()
@@ -648,6 +660,10 @@ func (fr *FileRepository) HideFile(fileId uint, userId uint) error {
 	return nil
 }
 
+// RevealFile unmarks a file as hidden for the user.
+// It takes fileId and userId as parameters.
+// Uses a transaction to ensure consistency.
+// Returns nil if the operation is successful, or an error otherwise.
 func (fr *FileRepository) RevealFile(fileId uint, userId uint) error {
 
 	tx := fr.db.Begin()
@@ -674,7 +690,10 @@ func (fr *FileRepository) RevealFile(fileId uint, userId uint) error {
 	return nil
 }
 
-
+// CreateActivityLog creates a new activity log entry for a file action performed by a user.
+// It takes a database transaction (tx), the user's ID (userId), the file's ID (fileId),
+// the action type (action), and additional details about the action (details).
+// Returns nil if the log is successfully created, or an error otherwise.
 func CreateActivityLog(tx *gorm.DB, userId uint, fileId *uint, action, details string ) error {
 	activityLog := models.ActivityLog {
 		UserID: userId,
@@ -690,6 +709,9 @@ func CreateActivityLog(tx *gorm.DB, userId uint, fileId *uint, action, details s
 	return nil
 }
 
+// GetActivityLogForFile retrieves the activity log for a specific file and user.
+// It takes the file ID (fileId) and user ID (userId) as parameters and returns a slice of ActivityLog entries.
+// If an error occurs during retrieval, it returns nil and an error.
 func (fr *FileRepository) GetActivityLogForFile(fileId string, userId string)([]models.ActivityLog, error) {
 	var logs []models.ActivityLog
 

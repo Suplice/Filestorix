@@ -82,3 +82,41 @@ func (sc *SettingController) UpdateSettingsForUser(c *gin.Context) {
 	})
 
 }
+
+func (sc *SettingController) ToggleHiddenFilesForUser(c *gin.Context) {
+
+	state := c.Param("state")
+
+	if state == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrToggleHidden,
+		})
+		return
+	}
+
+	userId, exists := c.Get("userID")
+
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnauthorized,
+		})
+		return
+	}
+
+	stringUserId := fmt.Sprintf("%d", userId)
+
+	err := sc.settingService.ToggleHiddenFilesForUser(stringUserId, state)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessToggleHidden,
+	})
+	return
+
+}

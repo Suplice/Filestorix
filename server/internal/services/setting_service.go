@@ -38,3 +38,20 @@ func (ss *SettingService) UpdateSettingsForUser(userId string, settings []dto.Us
 
 	return ss.settingRepository.UpdateSettingsForUser(userId, settings)
 }
+
+func (ss *SettingService) ToggleHiddenFilesForUser(userId string, state string) error {
+	toggleHiddenSetting := []dto.UserSetting{
+        {
+            SettingKey:   "showHiddenFiles",
+            SettingValue: state,
+        },
+    }
+
+	err := ss.settingRepository.UpdateSettingsForUser(userId, toggleHiddenSetting)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

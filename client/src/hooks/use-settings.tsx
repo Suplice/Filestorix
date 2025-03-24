@@ -1,6 +1,10 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
-import { fetchSettings, updateSettings } from "@/lib/api/settings/settingsApi";
+import {
+  fetchSettings,
+  toggleHidden,
+  updateSettings,
+} from "@/lib/api/settings/settingsApi";
 import { UpdateSettingsResult } from "@/lib/types/settings";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 import { setSettings } from "@/store/settingsSlice";
@@ -48,6 +52,19 @@ const useSettings = () => {
     },
   });
 
+  const toggleHiddenFilesMutation = useMutation({
+    mutationFn: toggleHidden,
+    onSuccess: (result: UpdateSettingsResult) => {
+      toast.success(getSuccessMessage(result.message));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings", user?.ID] });
+    },
+  });
+
   return {
     settings: settings,
     loading: isLoading,
@@ -56,6 +73,7 @@ const useSettings = () => {
     error,
     refresh: refetch,
     updateSettings: settingsMutation.mutateAsync,
+    toggleHidden: toggleHiddenFilesMutation.mutate,
     updating: settingsMutation.isPending,
   };
 };

@@ -64,6 +64,9 @@ const (
 
 	// Success message, when revealing file is successful
 	SuccessRevealFile		= "SUCCESS_REVEAL_FILE"
+
+	//Success message, when toggling hidden files is succcessful
+	SuccessToggleHidden		= "SUCCESS_TOGGLE_HIDDEN"
 )
 // Api error messages
 const (
@@ -154,6 +157,9 @@ const (
 
 	// Error message, when revealing file has failed
 	ErrRevealFile			= "ERROR_REVEAL_FILE"
+
+	// Error message, when toggling hidden files fails
+	ErrToggleHidden			= "ERROR_TOGGLE_HIDDEN"
 
 )
 

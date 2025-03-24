@@ -173,11 +173,14 @@ func FileExists(userId uint, fileName string, db *gorm.DB, parentId *uint) (bool
 	query := db.Model(&models.UserFile{}).
     Where("user_id = ? AND name = ?", userId, fileName)
 
-	if parentId == nil {
-		query = query.Where("parent_id IS NULL")
-	} else {
-		query = query.Where("parent_id = ?", parentId)
-	}
+
+	// ParentId check to be handled properly
+	
+	// if parentId == nil {
+	// 	query = query.Where("parent_id IS NULL")
+	// } else {
+	// 	query = query.Where("parent_id = ?", parentId)
+	// }
 
 	err := query.Count(&count).Error
 

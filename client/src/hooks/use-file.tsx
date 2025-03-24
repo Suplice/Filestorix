@@ -35,9 +35,32 @@ export const useFile = () => {
     }
   }, [query.data, query.error, dispatch]);
 
-  const hideBasedFiles = settings.showHiddenFiles
-    ? files
-    : files.filter((file) => !file.isHidden);
+  /**
+   * List of all files, with catalogs on top
+   */
+  const filteredFiles = useMemo(() => {
+    return [...files].sort((a) => (a.type === "CATALOG" ? -1 : 1));
+  }, [files]);
+
+  /**
+   * List of all files based on isHidden property
+   */
+  const hideBasedFiles = useMemo(() => {
+    return query.isLoading
+      ? []
+      : settings.showHiddenFiles
+      ? filteredFiles
+      : filteredFiles.filter((file) => !file.isHidden);
+  }, [settings.showHiddenFiles, query.isLoading, filteredFiles]);
+
+  /**
+   * List of all files without catalogs
+   */
+  const nonCatalogFiles = useMemo(() => {
+    return query.isLoading
+      ? []
+      : hideBasedFiles.filter((file) => file.type !== "CATALOG");
+  }, [hideBasedFiles, query.isLoading]);
 
   /**
    * List of all user files that are not trashed.
@@ -79,6 +102,7 @@ export const useFile = () => {
   }, [query.isLoading, hideBasedFiles]);
 
   return {
+    nonCatalogFiles: nonCatalogFiles,
     allFiles: hideBasedFiles,
     files: baseFiles,
     favoriteFiles,

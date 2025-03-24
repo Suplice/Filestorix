@@ -21,3 +21,7 @@ export type UpdateSettingsResult = {
 };
 
 export type UpdateSettingsResponse = BaseResponse;
+
+export type ToggleHiddenRequest = {
+  state: boolean;
+};

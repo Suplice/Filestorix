@@ -70,5 +70,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	{
 		settingRoutes.GET("/all", middleware.ValidateJWT(), settingController.GetAllUserSettings)
 		settingRoutes.PUT("/update", middleware.ValidateJWT(), settingController.UpdateSettingsForUser)
+		settingRoutes.PATCH("/togglehidden/:state", middleware.ValidateJWT(), settingController.ToggleHiddenFilesForUser)
 	}
 }

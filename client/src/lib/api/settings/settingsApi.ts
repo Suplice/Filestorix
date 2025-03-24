@@ -3,6 +3,7 @@ import {
   FetchSettingsResult,
   SettingRecord,
   Settings,
+  ToggleHiddenRequest,
   UpdateSettingsResponse,
   UpdateSettingsResult,
 } from "@/lib/types/settings";
@@ -64,6 +65,24 @@ export const updateSettings = async (
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(settings),
+    }
+  );
+
+  const responseData: UpdateSettingsResponse = await response.json();
+
+  if (!response.ok || !responseData.message)
+    throw new Error(responseData.error);
+  return { message: responseData.message };
+};
+
+export const toggleHidden = async (
+  data: ToggleHiddenRequest
+): Promise<UpdateSettingsResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/settings/togglehidden/${data.state}`,
+    {
+      credentials: "include",
+      method: "PATCH",
     }
   );
 

@@ -11,12 +11,12 @@ const GlobalShortcuts = () => {
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
+        console.log("test", isAvailable);
         e.preventDefault();
         if (isAvailable) {
-          setIsAvailable(false);
-
           switch (e.key) {
             case settings.shortcuts.openSearchBox: {
+              setIsAvailable(false);
               if (isOpen && modalType === "SearchBox") {
                 hideModal();
               } else {
@@ -25,6 +25,7 @@ const GlobalShortcuts = () => {
               break;
             }
             case settings.shortcuts.toggleHiddenFiles: {
+              setIsAvailable(false);
               toggleHidden({ state: !settings.showHiddenFiles });
               break;
             }
@@ -33,8 +34,12 @@ const GlobalShortcuts = () => {
       }
     };
 
-    const up = () => {
-      setIsAvailable(true);
+    const up = (e: KeyboardEvent) => {
+      if (
+        e.key === settings.shortcuts.openSearchBox ||
+        e.key === settings.shortcuts.toggleHiddenFiles
+      )
+        setIsAvailable(true);
     };
 
     document.addEventListener("keydown", down);

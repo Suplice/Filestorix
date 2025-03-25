@@ -9,13 +9,10 @@ import {
 } from "@/lib/types/settings";
 
 export const fetchSettings = async (): Promise<FetchSettingsResult> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/settings/all`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/`, {
+    method: "GET",
+    credentials: "include",
+  });
 
   const responseData: FetchSettingsResponse = await response.json();
 

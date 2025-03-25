@@ -40,13 +40,10 @@ import {
  * @throws An error if the fetch operation fails or the response is not ok.
  */
 export const fetchUserFiles = async (): Promise<FetchFilesResponse> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/fetchall`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  );
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/files/`, {
+    method: "GET",
+    credentials: "include",
+  });
 
   const responseData: FetchFilesResponse = await response.json();
 
@@ -77,7 +74,7 @@ export const uploadFiles = async (
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/addfile`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file`,
     {
       method: "POST",
       credentials: "include",
@@ -105,7 +102,7 @@ export const uploadCatalog = async (
   data: UploadCatalogRequest
 ): Promise<string> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/addcatalog`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/catalog`,
     {
       method: "POST",
       credentials: "include",
@@ -170,7 +167,7 @@ export const trashFile = async (
   data: TrashFileRequest
 ): Promise<TrashFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/trash/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/trash/${data.fileId}`,
     {
       method: "PATCH",
       credentials: "include",
@@ -195,7 +192,7 @@ export const trashFile = async (
  */
 export const getFile = async (fileName: string): Promise<Blob> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/getfile/${fileName}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/${fileName}`,
     {
       credentials: "include",
       method: "GET",
@@ -222,7 +219,7 @@ export const deleteFile = async (
   data: DeleteFileRequest
 ): Promise<DeleteFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/delete/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/delete/${data.fileId}`,
     {
       credentials: "include",
       method: "DELETE",
@@ -249,7 +246,7 @@ export const trashCatalog = async (
   data: TrashCatalogRequest
 ): Promise<TrashCatalogResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/trashcatalog/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/catalog/trash/${data.fileId}`,
     {
       method: "PATCH",
       credentials: "include",
@@ -276,7 +273,7 @@ export const deleteCatalog = async (
   data: DeleteCatalogRequest
 ): Promise<DeleteCatalogResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/deletecatalog/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/catalog/delete/${data.fileId}`,
     {
       credentials: "include",
       method: "DELETE",
@@ -303,7 +300,7 @@ export const restoreFile = async (
   data: RestoreFileRequest
 ): Promise<RestoreFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/restore/${data.fileId}/${data.parentId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/restore/${data.fileId}/${data.parentId}`,
     {
       credentials: "include",
       method: "PATCH",
@@ -323,7 +320,7 @@ export const addFavoriteFile = async (
   data: FavoriteFileRequest
 ): Promise<FavoriteFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/addfavorite/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/favorite/${data.fileId}`,
     {
       credentials: "include",
       method: "PATCH",
@@ -343,7 +340,7 @@ export const removeFavoriteFile = async (
   data: FavoriteFileRequest
 ): Promise<FavoriteFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/removefavorite/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/unfavorite/${data.fileId}`,
     {
       credentials: "include",
       method: "PATCH",
@@ -363,7 +360,7 @@ export const hideFile = async (
   data: HideFileRequest
 ): Promise<HideFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/hide/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/hide/${data.fileId}`,
     {
       credentials: "include",
       method: "PATCH",
@@ -383,7 +380,7 @@ export const revealFile = async (
   data: HideFileRequest
 ): Promise<HideFileResult> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/reveal/${data.fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/reveal/${data.fileId}`,
     {
       credentials: "include",
       method: "PATCH",
@@ -403,7 +400,7 @@ export const fetchFileActivityList = async (
   fileId: number
 ): Promise<ActivityLog[]> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/files/activitylog/${fileId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/activitylog/${fileId}`,
     {
       credentials: "include",
       method: "GET",

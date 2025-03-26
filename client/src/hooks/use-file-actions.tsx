@@ -106,12 +106,27 @@ const useFileActions = () => {
     onSuccess: (result: TrashFileResult) => {
       toast.success(getSuccessMessage(result.message));
       dispatch(sliceTrashFile({ fileId: result.fileId }));
+
+      queryClient.setQueryData(["files", user?.ID], (oldData: UserFile) => {
+        if (
+          !oldData ||
+          !("files" in oldData) ||
+          !Array.isArray(oldData.files)
+        ) {
+          return { files: [] };
+        }
+
+        return {
+          ...oldData,
+          files: oldData.files.map((file) =>
+            file.id === result.fileId ? { ...file, isTrashed: true } : file
+          ),
+        };
+      });
     },
     onError: (error: Error) => {
+      console.error(error);
       toast.error(getErrorMessage(error.message));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
     },
   });
 

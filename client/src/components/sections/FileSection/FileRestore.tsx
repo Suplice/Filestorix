@@ -9,10 +9,10 @@ const FileRestore = () => {
   const { hideModal, modalProps } = useModal();
 
   const handleRestore = () => {
-    if (modalProps && modalProps.fileId && modalProps.parentId) {
+    if (modalProps && modalProps.fileId) {
       restoreFile({
         fileId: modalProps.fileId,
-        parentId: modalProps.parentId,
+        parentId: modalProps.parentId!,
       });
       hideModal();
     }

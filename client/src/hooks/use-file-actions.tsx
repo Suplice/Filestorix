@@ -125,7 +125,6 @@ const useFileActions = () => {
       });
     },
     onError: (error: Error) => {
-      console.error(error);
       toast.error(getErrorMessage(error.message));
     },
   });

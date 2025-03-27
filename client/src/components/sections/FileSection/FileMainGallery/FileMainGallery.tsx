@@ -2,45 +2,26 @@
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
-  CarouselApi,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { useFilePreviews } from "@/hooks/use-file-previews";
 import { UserFile } from "@/lib/types/file";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
 import FileMainGalleryCard from "./FileMainGalleryCard";
+import useFileGallery from "@/hooks/use-file-gallery";
 
 interface FileMainGalleryProps {
   files: UserFile[];
 }
 
 const FileMainGallery: React.FC<FileMainGalleryProps> = ({ files }) => {
-  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  const previews = useFilePreviews(files);
-
-  useEffect(() => {
-    if (!carouselApi) return;
-
-    const updateScrollButtons = () => {
-      setCanScrollPrev(carouselApi.canScrollPrev());
-      setCanScrollNext(carouselApi.canScrollNext());
-    };
-
-    updateScrollButtons();
-
-    carouselApi.on("select", updateScrollButtons);
-
-    carouselApi.scrollTo(0);
-
-    return () => {
-      carouselApi.off("select", updateScrollButtons);
-    };
-  }, [carouselApi, files, previews]);
+  const {
+    carouselApi,
+    canScrollPrev,
+    canScrollNext,
+    setCarouselApi,
+    previews,
+  } = useFileGallery(files);
 
   return (
     <section className="py-0">

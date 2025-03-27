@@ -1,7 +1,8 @@
 "use client";
 import { UserFile } from "@/lib/types/file";
-import { useModal } from "@/hooks/use-modal";
 import FileIcon from "../FileCard/FileIcon";
+import FileSizeCell from "@/components/ui/FileSizeCell";
+import useFileHandlers from "@/hooks/use-file-handlers";
 
 interface FileCardProps {
   file: UserFile;
@@ -9,17 +10,13 @@ interface FileCardProps {
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file, previewUrl }) => {
-  const { showModal } = useModal();
-
   const extension = file.extension.toLowerCase();
+
+  const { handleFileClick } = useFileHandlers();
 
   return (
     <div
-      onClick={() =>
-        showModal("FilePreview", {
-          fileName: file.id + file.extension,
-        })
-      }
+      onClick={() => handleFileClick(file)}
       className="group flex flex-col justify-between cursor-pointer select-none"
     >
       <div className="flex aspect-[3/2] overflow-hidden rounded-xl bg-muted/20 items-center justify-center max-h-[200px] w-full border border-gray-500 dark:border-gray-900">
@@ -42,7 +39,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, previewUrl }) => {
       </div>
 
       <div className="text-sm text-muted-foreground line-clamp-1">
-        {(file.size / 1024).toFixed(2)} KB
+        <FileSizeCell file={file} />
       </div>
     </div>
   );

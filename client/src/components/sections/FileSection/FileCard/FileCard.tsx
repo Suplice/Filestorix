@@ -1,24 +1,30 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UserFile } from "@/lib/types/file";
 import { useModal } from "@/hooks/use-modal";
-import FileIcon from "./FileIcon";
 import FileActionsMenu from "./FileActionsMenu";
 import FileHiddenActionsMenu from "./FileHiddenActionsMenu";
-import { FaStar } from "react-icons/fa";
+import useFileCardActions from "@/hooks/use-file-card-actions";
+import FileNameCell from "@/components/ui/FileNameCell";
 
 interface FileCardProps {
-  handleClick: (fileId: number, catalogName: string) => void;
+  handleFolderClick: (fileId: number, catalogName: string) => void;
   file: UserFile;
 }
 
-const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
+const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
   const { showModal } = useModal();
-  const [isHiddenActionsMenuVisible, setIsHiddenActionsMenuVisible] =
-    useState<boolean>(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const {
+    isHiddenActionsMenuVisible,
+    isMenuOpen,
+    setIsMenuOpen,
+    handleMouseEnter,
+    handleMouseLeave,
+    handleContextMenu,
+  } = useFileCardActions();
 
   const formatSize = useMemo(() => {
     if (file.size < 1024) return `${file.size} B`;
@@ -37,36 +43,22 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
       key={file.id}
       onDoubleClick={() => {
         return file.type === "CATALOG"
-          ? handleClick(file.id, file.name)
+          ? handleFolderClick(file.id, file.name)
           : handleFileClick();
       }}
-      onMouseEnter={() => setIsHiddenActionsMenuVisible(true)}
-      onMouseLeave={() => setIsHiddenActionsMenuVisible(false)}
-      onContextMenu={(e) => {
-        e.preventDefault();
-        setIsMenuOpen(true);
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onContextMenu={handleContextMenu}
     >
       <TableCell className="max-w-[200px]">
-        <div className="flex flex-row gap-3 items-center">
-          <FileIcon extension={file.extension} />
-          <span
-            className={`font-medium cursor-pointer truncate flex flex-row items-center gap-2 ${
-              file.isHidden ? "text-gray-500" : ""
-            }`}
-            onClick={() =>
-              file.type === "CATALOG"
-                ? handleClick(file.id, file.name)
-                : handleFileClick()
-            }
-          >
-            {file.name}
-            {file.isFavorite && <FaStar className="w-4 h-4" />}
-          </span>
-        </div>
+        <FileNameCell
+          file={file}
+          handleFileClick={handleFileClick}
+          handleFolderClick={handleFolderClick}
+        />
       </TableCell>
       <TableCell>{new Date(file.modifiedAt).toLocaleString()}</TableCell>
-      <TableCell>{file.type === "CATALOG" ? "" : formatSize}</TableCell>
+      <TableCell>{file.type === "CATALOG" ? "-" : formatSize}</TableCell>
       <TableCell className="capitalize">
         {file.extension.toUpperCase().substring(1)}
       </TableCell>
@@ -79,7 +71,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleClick }) => {
       <TableCell className="text-right">
         <FileActionsMenu
           file={file}
-          handleClick={handleClick}
+          handleFolderClick={handleFolderClick}
           handleFileClick={handleFileClick}
           isOpen={isMenuOpen}
           setIsOpen={setIsMenuOpen}

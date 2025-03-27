@@ -28,7 +28,7 @@ import useFileActions from "@/hooks/use-file-actions";
 
 interface FileActionsMenuProps {
   file: UserFile;
-  handleClick: (fileId: number, catalogName: string) => void;
+  handleFolderClick: (fileId: number, catalogName: string) => void;
   handleFileClick: () => void;
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
@@ -36,7 +36,7 @@ interface FileActionsMenuProps {
 
 const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
   file,
-  handleClick,
+  handleFolderClick,
   handleFileClick,
   isOpen,
   setIsOpen,
@@ -97,7 +97,7 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         <DropdownMenuItem
           onClick={() =>
             file.type === "CATALOG"
-              ? handleClick(file.id, file.name)
+              ? handleFolderClick(file.id, file.name)
               : handleFileClick()
           }
         >

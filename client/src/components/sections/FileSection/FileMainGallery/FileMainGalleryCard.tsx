@@ -1,7 +1,7 @@
 "use client";
 import { UserFile } from "@/lib/types/file";
 import { useModal } from "@/hooks/use-modal";
-import FileIcon from "../FileList/FileIcon";
+import FileIcon from "../FileCard/FileIcon";
 
 interface FileCardProps {
   file: UserFile;

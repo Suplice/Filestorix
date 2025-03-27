@@ -16,7 +16,7 @@ import { useMemo } from "react";
 
 const mainGroup = [
   { title: "Home", url: "/drive", icon: Home },
-  { title: "My Drive", url: "/drive/drive", icon: Inbox },
+  { title: "My Drive", url: "/drive/my-drive", icon: Inbox },
 ];
 
 const secondGroup = [

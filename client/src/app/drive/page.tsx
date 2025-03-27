@@ -1,7 +1,18 @@
-import FileList from "@/components/sections/FileSection/FileList/FileList";
+"use client";
+import FileTable from "@/components/sections/FileSection/FileList/FileTable";
+import { useFile } from "@/hooks/use-file";
 
 const Drive = () => {
-  return <FileList section="Main" />;
+  const { files, isLoading } = useFile();
+
+  return (
+    <FileTable
+      files={files}
+      isLoading={isLoading}
+      section={"Main"}
+      allowCatalogs={true}
+    />
+  );
 };
 
 export default Drive;

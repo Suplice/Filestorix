@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useModal } from "@/hooks/use-modal";
 import useSettings from "@/hooks/use-settings";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import useLocalSettings from "@/hooks/use-local-settings";
@@ -9,7 +7,6 @@ import SettingsSelectOptions from "./SettingsSelectOptions";
 import SettingsButtons from "./SettingsButtons";
 
 const SettingsModal = () => {
-  const { hideModal } = useModal();
   const { updateSettings, updating, settings, loading } = useSettings();
   const {
     localGeneralOptions,

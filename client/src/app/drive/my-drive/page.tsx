@@ -2,17 +2,17 @@
 import FileTable from "@/components/sections/FileSection/FileList/FileTable";
 import { useFile } from "@/hooks/use-file";
 
-const MyDrive = () => {
+const Home = () => {
   const { files, isLoading } = useFile();
 
   return (
     <FileTable
       files={files}
       isLoading={isLoading}
-      section={"Home"}
+      section={"MyDrive"}
       allowCatalogs={true}
     />
   );
 };
 
-export default MyDrive;
+export default Home;

@@ -12,7 +12,7 @@ const SettingsShortcutOptions: React.FC<SettingsShortcutOptions> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <div className="space-x-2">
+      <div className="grid grid-cols-2">
         <label className="font-semibold">Search Box Shortcut (Ctrl + )</label>
         <input
           type="text"
@@ -24,11 +24,11 @@ const SettingsShortcutOptions: React.FC<SettingsShortcutOptions> = ({
               openSearchBox: e.target.value.toLowerCase(),
             }))
           }
-          className="border p-2 rounded w-16 text-center dark:bg-neutral-800 dark:border-neutral-700"
+          className="border p-2 rounded w-16 text-center dark:bg-neutral-800 dark:border-neutral-700 place-self-end"
         />
       </div>
 
-      <div className="space-x-2">
+      <div className="grid grid-cols-2">
         <label className="font-semibold">Toggle Hidden Files (Ctrl + )</label>
         <input
           data-testid="toggleHiddenTestInput"
@@ -41,7 +41,7 @@ const SettingsShortcutOptions: React.FC<SettingsShortcutOptions> = ({
               toggleHiddenFiles: e.target.value.toLowerCase(),
             }))
           }
-          className="border p-2 rounded w-16 text-center dark:bg-neutral-800 dark:border-neutral-700"
+          className="border p-2 rounded w-16 text-center dark:bg-neutral-800 dark:border-neutral-700 place-self-end"
         />
       </div>
     </div>

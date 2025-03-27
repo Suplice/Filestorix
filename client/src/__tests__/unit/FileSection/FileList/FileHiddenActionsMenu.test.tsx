@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { useModal } from "@/hooks/use-modal";
 import useFileActions from "@/hooks/use-file-actions";
-import FileHiddenActionsMenu from "@/components/sections/FileSection/FileList/FileHiddenActionsMenu";
+import FileHiddenActionsMenu from "@/components/sections/FileSection/FileCard/FileHiddenActionsMenu";
 import { UserFile } from "@/lib/types/file";
 
 jest.mock("lucide-react", () => ({

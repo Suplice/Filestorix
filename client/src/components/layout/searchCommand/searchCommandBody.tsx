@@ -1,4 +1,4 @@
-import FileIcon from "@/components/sections/FileSection/FileList/FileIcon";
+import FileIcon from "@/components/sections/FileSection/FileCard/FileIcon";
 import {
   CommandDialog,
   CommandEmpty,

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { UserFile } from "@/lib/types/file";
 import FileTableSkeleton from "./FileTableSkeleton";
-import FileCard from "./FileCard";
+import FileCard from "../FileCard/FileCard";
 
 interface FileTableBodyProps {
   files: UserFile[];
@@ -46,7 +46,7 @@ const FileTableBody: React.FC<FileTableBodyProps> = ({
               <FileCard
                 file={file}
                 key={file.id}
-                handleClick={handleFolderClick}
+                handleFolderClick={handleFolderClick}
               />
             ))
           )}

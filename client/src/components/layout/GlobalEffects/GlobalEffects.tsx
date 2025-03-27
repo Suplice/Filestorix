@@ -26,7 +26,7 @@ const GlobalShortcuts = () => {
             }
             case settings.shortcuts.toggleHiddenFiles: {
               setIsAvailable(false);
-              toggleHidden({ state: !settings.showHiddenFiles });
+              toggleHidden({ state: !settings.generalOptions.showHiddenFiles });
               break;
             }
           }

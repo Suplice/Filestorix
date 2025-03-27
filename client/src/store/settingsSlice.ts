@@ -1,19 +1,31 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Shortcuts {
+export enum Theme {
+  light = "light",
+  dark = "dark",
+  system = "system",
+}
+
+export interface Shortcuts {
   openSearchBox: string;
   toggleHiddenFiles: string;
 }
 
-export interface SettingsState {
-  theme: "light" | "dark" | "system";
+export interface GeneralOptions {
+  theme: Theme;
   showHiddenFiles: boolean;
+}
+
+export interface SettingsState {
+  generalOptions: GeneralOptions;
   shortcuts: Shortcuts;
 }
 
-const initialState: SettingsState = {
-  theme: "system",
-  showHiddenFiles: false,
+export const initialState: SettingsState = {
+  generalOptions: {
+    theme: Theme.system,
+    showHiddenFiles: false,
+  },
   shortcuts: {
     openSearchBox: "j",
     toggleHiddenFiles: "h",
@@ -28,25 +40,26 @@ const settingsSlice = createSlice({
       Object.assign(state, action.payload);
     },
     toggleTheme: (state) => {
-      state.theme = state.theme === "dark" ? "light" : "dark";
+      state.generalOptions.theme =
+        state.generalOptions.theme === Theme.dark ? Theme.light : Theme.dark;
     },
-    setTheme: (state, action: PayloadAction<"light" | "dark" | "system">) => {
-      state.theme = action.payload;
+    setTheme: (state, action: PayloadAction<Theme>) => {
+      state.generalOptions.theme = action.payload;
     },
     toggleHiddenFiles: (state) => {
-      state.showHiddenFiles = !state.showHiddenFiles;
+      state.generalOptions.showHiddenFiles =
+        !state.generalOptions.showHiddenFiles;
     },
     setHiddenFiles: (state, action: PayloadAction<boolean>) => {
-      state.showHiddenFiles = action.payload;
+      state.generalOptions.showHiddenFiles = action.payload;
     },
     setShortcut: (
       state,
       action: PayloadAction<{ type: keyof Shortcuts; key: string }>
     ) => {
       const { type, key } = action.payload;
-      if (key.length === 1 && /^[a-zA-Z]$/.test(key)) {
-        state.shortcuts[type] = key.toLowerCase();
-      }
+
+      state.shortcuts[type] = key.toLowerCase();
     },
   },
 });

@@ -48,10 +48,10 @@ export const useFile = () => {
   const hideBasedFiles = useMemo(() => {
     return query.isLoading
       ? []
-      : settings.showHiddenFiles
+      : settings.generalOptions.showHiddenFiles
       ? filteredFiles
       : filteredFiles.filter((file) => !file.isHidden);
-  }, [settings.showHiddenFiles, query.isLoading, filteredFiles]);
+  }, [settings.generalOptions.showHiddenFiles, query.isLoading, filteredFiles]);
 
   /**
    * List of all files without catalogs

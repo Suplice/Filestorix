@@ -7,6 +7,7 @@ import {
   UpdateSettingsResponse,
   UpdateSettingsResult,
 } from "@/lib/types/settings";
+import { Theme } from "@/store/settingsSlice";
 
 export const fetchSettings = async (): Promise<FetchSettingsResult> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/`, {
@@ -20,8 +21,10 @@ export const fetchSettings = async (): Promise<FetchSettingsResult> => {
     throw new Error(responseData.error);
 
   const settings: Settings = {
-    theme: "system",
-    showHiddenFiles: false,
+    generalOptions: {
+      theme: Theme.system,
+      showHiddenFiles: false,
+    },
     shortcuts: {
       openSearchBox: "j",
       toggleHiddenFiles: "h",
@@ -31,17 +34,30 @@ export const fetchSettings = async (): Promise<FetchSettingsResult> => {
   responseData.settings.forEach((setting) => {
     switch (setting.setting_key) {
       case "theme":
-        if (["light", "dark", "system"].includes(setting.setting_value)) {
-          settings.theme = setting.setting_value as Settings["theme"];
+        console.log("theme");
+        if (
+          setting.setting_value === Theme.dark ||
+          setting.setting_value === Theme.light ||
+          setting.setting_value === Theme.system
+        ) {
+          console.log(setting.setting_value, "two");
+          console.log(settings.generalOptions.theme, "three");
+          console.log(setting.setting_value as Theme, "three");
+          settings.generalOptions.theme = setting.setting_value as Theme;
+          console.log(settings.generalOptions.theme, "three");
         }
         break;
       case "showHiddenFiles":
-        settings.showHiddenFiles = setting.setting_value === "true";
+        console.log("hidden files");
+        settings.generalOptions.showHiddenFiles =
+          setting.setting_value === "true";
         break;
       case "openSearchBox":
+        console.log("search box");
         settings.shortcuts.openSearchBox = setting.setting_value;
         break;
       case "toggleHiddenFiles":
+        console.log("toggle hidden");
         settings.shortcuts.toggleHiddenFiles = setting.setting_value;
         break;
       default:
@@ -49,6 +65,7 @@ export const fetchSettings = async (): Promise<FetchSettingsResult> => {
     }
   });
 
+  console.log("i return settings");
   return { settings: settings };
 };
 

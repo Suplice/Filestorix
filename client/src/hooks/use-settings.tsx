@@ -33,8 +33,9 @@ const useSettings = () => {
   useEffect(() => {
     if (data) {
       dispatch(setSettings(data.settings));
-      setTheme(data.settings.theme);
+      setTheme(data.settings.generalOptions.theme);
     } else if (error) {
+      console.error(error);
       toast.error(getErrorMessage(error.message));
     }
   }, [data, error, dispatch, setTheme]);
@@ -54,9 +55,6 @@ const useSettings = () => {
 
   const toggleHiddenFilesMutation = useMutation({
     mutationFn: toggleHidden,
-    onSuccess: (result: UpdateSettingsResult) => {
-      toast.success(getSuccessMessage(result.message));
-    },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
     },

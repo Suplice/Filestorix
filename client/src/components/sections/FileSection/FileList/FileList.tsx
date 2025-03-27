@@ -3,7 +3,7 @@ import { useFile } from "@/hooks/use-file";
 import FileTable from "./FileTable";
 
 interface FileListProps {
-  section: "Recent" | "Favorite" | "Trash" | "Main" | "MyDrive";
+  section: "Recent" | "Favorite" | "Trash" | "Main" | "Home";
 }
 
 const FileList: React.FC<FileListProps> = ({ section }) => {

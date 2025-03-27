@@ -1,7 +1,17 @@
-import FileList from "@/components/sections/FileSection/FileList/FileList";
+"use client";
+import FileTable from "@/components/sections/FileSection/FileList/FileTable";
+import { useFile } from "@/hooks/use-file";
 
 const Recent = () => {
-  return <FileList section="Recent" />;
+  const { recentFiles, isLoading } = useFile();
+  return (
+    <FileTable
+      files={recentFiles}
+      isLoading={isLoading}
+      section={"Recent"}
+      allowCatalogs={false}
+    />
+  );
 };
 
 export default Recent;

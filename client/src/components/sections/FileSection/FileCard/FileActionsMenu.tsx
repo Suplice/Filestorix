@@ -22,14 +22,12 @@ import {
   StarOff,
   Trash,
 } from "lucide-react";
-import { useModal } from "@/hooks/use-modal";
 import { UserFile } from "@/lib/types/file";
-import useFileActions from "@/hooks/use-file-actions";
+import useFileHandlers from "@/hooks/use-file-handlers";
 
 interface FileActionsMenuProps {
   file: UserFile;
-  handleFolderClick: (fileId: number, catalogName: string) => void;
-  handleFileClick: () => void;
+  handleFolderClick: (file: UserFile) => void;
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
 }
@@ -37,54 +35,18 @@ interface FileActionsMenuProps {
 const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
   file,
   handleFolderClick,
-  handleFileClick,
   isOpen,
   setIsOpen,
 }) => {
-  const { showModal } = useModal();
-
-  const { addFavoriteFile, removeFavoriteFile, hideFile, revealFile } =
-    useFileActions();
-
-  const handleTrashOrDelete = () => {
-    if (file.type === "CATALOG") {
-      if (file.isTrashed) {
-        showModal("CatalogRemover", { fileId: file.id });
-      } else {
-        showModal("CatalogTrasher", { fileId: file.id });
-      }
-    } else {
-      if (file.isTrashed) {
-        showModal("FileRemover", { fileId: file.id });
-      } else {
-        showModal("FileTrasher", { fileId: file.id });
-      }
-    }
-  };
-
-  const handleRestore = () => {
-    showModal("FileRestorer", { fileId: file.id, parentId: file.parentId });
-  };
-
-  const handleFavorite = () => {
-    if (file.isFavorite) {
-      removeFavoriteFile({ fileId: file.id });
-    } else {
-      addFavoriteFile({ fileId: file.id });
-    }
-  };
-
-  const handleHide = () => {
-    if (file.isHidden) {
-      revealFile({ fileId: file.id });
-    } else {
-      hideFile({ fileId: file.id });
-    }
-  };
-
-  const handleOpenFileDetails = () => {
-    showModal("Details", { fileId: file.id });
-  };
+  const {
+    handleTrashOrDelete,
+    handleRestore,
+    handleFavorite,
+    handleIsHidden,
+    handleOpenFileDetails,
+    handleChangeFileName,
+    handleFileClick,
+  } = useFileHandlers();
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
@@ -97,8 +59,8 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         <DropdownMenuItem
           onClick={() =>
             file.type === "CATALOG"
-              ? handleFolderClick(file.id, file.name)
-              : handleFileClick()
+              ? handleFolderClick(file)
+              : handleFileClick(file)
           }
         >
           <>
@@ -112,7 +74,7 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         {!file.isTrashed && (
           <>
             {file.type !== "CATALOG" && (
-              <DropdownMenuItem onClick={handleFavorite}>
+              <DropdownMenuItem onClick={() => handleFavorite(file)}>
                 {file.isFavorite ? (
                   <>
                     <StarOff />
@@ -126,9 +88,7 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
                 )}
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem
-              onClick={() => showModal("FileNameChanger", { fileId: file.id })}
-            >
+            <DropdownMenuItem onClick={() => handleChangeFileName(file)}>
               <PenLine />
               <p>Rename</p>
             </DropdownMenuItem>
@@ -136,7 +96,7 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         )}
 
         {file.type !== "CATALOG" && (
-          <DropdownMenuItem onClick={handleHide}>
+          <DropdownMenuItem onClick={() => handleIsHidden(file)}>
             {file.isHidden ? (
               <>
                 <Eye />
@@ -152,14 +112,14 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
         )}
 
         {file.isTrashed && (
-          <DropdownMenuItem onClick={handleRestore}>
+          <DropdownMenuItem onClick={() => handleRestore(file)}>
             <ArchiveRestore />
             <p>Restore</p>
           </DropdownMenuItem>
         )}
 
         <DropdownMenuItem
-          onClick={handleTrashOrDelete}
+          onClick={() => handleTrashOrDelete(file)}
           className="text-red-500"
         >
           {file.isTrashed ? (
@@ -177,7 +137,7 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={handleOpenFileDetails}>
+        <DropdownMenuItem onClick={() => handleOpenFileDetails(file)}>
           <Info />
           <p>Details</p>
         </DropdownMenuItem>

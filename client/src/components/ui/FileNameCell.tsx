@@ -4,8 +4,8 @@ import { FaStar } from "react-icons/fa";
 
 interface FileNameCellProps {
   file: UserFile;
-  handleFolderClick: (fileId: number, catalogName: string) => void;
-  handleFileClick: () => void;
+  handleFolderClick: (file: UserFile) => void;
+  handleFileClick: (file: UserFile) => void;
 }
 
 const FileNameCell: React.FC<FileNameCellProps> = ({
@@ -22,8 +22,8 @@ const FileNameCell: React.FC<FileNameCellProps> = ({
         }`}
         onClick={() =>
           file.type === "CATALOG"
-            ? handleFolderClick(file.id, file.name)
-            : handleFileClick()
+            ? handleFolderClick(file)
+            : handleFileClick(file)
         }
       >
         {file.name}

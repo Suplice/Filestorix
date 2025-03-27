@@ -13,7 +13,7 @@ import FileCard from "../FileCard/FileCard";
 interface FileTableBodyProps {
   files: UserFile[];
   isLoading: boolean;
-  handleFolderClick: (fileId: number, fileName: string) => void;
+  handleFolderClick: (file: UserFile) => void;
 }
 
 const FileTableBody: React.FC<FileTableBodyProps> = ({

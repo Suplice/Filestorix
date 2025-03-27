@@ -41,13 +41,12 @@ const FileTable: React.FC<FileTableProps> = ({
   ]);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFolderClick = (fileId: number, fileName: string) => {
+  const handleFolderClick = (file: UserFile) => {
     if (!allowCatalogs) return;
 
-    const file = files.find((file) => file.id === fileId);
-    if (file?.type === "CATALOG") {
-      setParentId(fileId);
-      setRoute([...route, { sectionName: fileName, catalogId: fileId }]);
+    if (file.type === "CATALOG") {
+      setParentId(file.id);
+      setRoute([...route, { sectionName: file.name, catalogId: file.id }]);
     }
   };
 
@@ -96,13 +95,12 @@ const FileTable: React.FC<FileTableProps> = ({
           handleFolderClick={handleFolderClick}
         />
       </div>
-      {section !== "Trash" && (
-        <FileDropzone
-          isVisible={isDragging}
-          setIsVisible={setIsDragging}
-          parentId={parentId}
-        />
-      )}
+
+      <FileDropzone
+        isVisible={isDragging && section !== "Trash"}
+        setIsVisible={setIsDragging}
+        parentId={parentId}
+      />
     </>
   );
 };

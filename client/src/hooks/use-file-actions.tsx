@@ -24,17 +24,15 @@ import {
   HideFileResult,
 } from "@/lib/types/file";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDispatch } from "react-redux";
-import { toast } from "sonner";
 import {
-  renameFile as sliceFileRename,
-  trashFile as sliceTrashFile,
-} from "@/store/fileSlice";
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 
 const useFileActions = () => {
-  const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
   const { user } = useAuth();
@@ -84,15 +82,13 @@ const useFileActions = () => {
     mutationFn: renameFile,
     onSuccess: (result: RenameFileResult) => {
       toast.success(getSuccessMessage(result.message));
-      dispatch(
-        sliceFileRename({ fileId: result.fileId, newName: result.newName })
-      );
+      updateFilesQueryData(queryClient, user!.ID, result.fileId!, (file) => ({
+        ...file,
+        name: result.newName!,
+      }));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
     },
   });
 
@@ -105,24 +101,11 @@ const useFileActions = () => {
     mutationFn: trashFile,
     onSuccess: (result: TrashFileResult) => {
       toast.success(getSuccessMessage(result.message));
-      dispatch(sliceTrashFile({ fileId: result.fileId }));
 
-      queryClient.setQueryData(["files", user?.ID], (oldData: UserFile) => {
-        if (
-          !oldData ||
-          !("files" in oldData) ||
-          !Array.isArray(oldData.files)
-        ) {
-          return { files: [] };
-        }
-
-        return {
-          ...oldData,
-          files: oldData.files.map((file) =>
-            file.id === result.fileId ? { ...file, isTrashed: true } : file
-          ),
-        };
-      });
+      updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
+        ...file,
+        isTrashed: true,
+      }));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
@@ -138,12 +121,17 @@ const useFileActions = () => {
     mutationFn: deleteFile,
     onSuccess: (result: DeleteFileResult) => {
       toast.success(getSuccessMessage(result.message));
+
+      updateFilesQueryData(
+        queryClient,
+        user!.ID,
+        result.fileId,
+        undefined,
+        true
+      );
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
     },
   });
 
@@ -205,12 +193,13 @@ const useFileActions = () => {
     mutationFn: addFavoriteFile,
     onSuccess: (result: FavoriteFileResult) => {
       toast.success(getSuccessMessage(result.message));
+      updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
+        ...file,
+        isFavorite: true,
+      }));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
     },
   });
 
@@ -218,12 +207,13 @@ const useFileActions = () => {
     mutationFn: removeFavoriteFile,
     onSuccess: (result: FavoriteFileResult) => {
       toast.success(getSuccessMessage(result.message));
+      updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
+        ...file,
+        isFavorite: false,
+      }));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
     },
   });
 
@@ -231,12 +221,13 @@ const useFileActions = () => {
     mutationFn: hideFile,
     onSuccess: (result: HideFileResult) => {
       toast.success(getSuccessMessage(result.message));
+      updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
+        ...file,
+        isHidden: true,
+      }));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
     },
   });
 
@@ -244,14 +235,41 @@ const useFileActions = () => {
     mutationFn: revealFile,
     onSuccess: (result: HideFileResult) => {
       toast.success(getSuccessMessage(result.message));
+      updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
+        ...file,
+        isHidden: false,
+      }));
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error.message));
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["files", user?.ID] });
-    },
   });
+
+  const updateFilesQueryData = (
+    queryClient: QueryClient,
+    userId: number | undefined,
+    fileId: number,
+    updateFn?: (file: UserFile) => UserFile,
+    remove: boolean = false
+  ) => {
+    queryClient.setQueryData(
+      ["files", userId],
+      (oldData: { files: UserFile[] } | undefined) => {
+        if (!oldData || !Array.isArray(oldData.files)) {
+          return { files: [] };
+        }
+
+        return {
+          ...oldData,
+          files: oldData.files
+            .filter((file) => (remove ? file.id !== fileId : true))
+            .map((file) =>
+              file.id === fileId && updateFn ? updateFn(file) : file
+            ),
+        };
+      }
+    );
+  };
 
   return {
     restoreFile: restoreFileMutation.mutate,

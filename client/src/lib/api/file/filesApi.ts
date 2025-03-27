@@ -333,7 +333,7 @@ export const addFavoriteFile = async (
     throw new Error(responseData.error);
   }
 
-  return { message: responseData.message };
+  return { message: responseData.message, fileId: data.fileId };
 };
 
 export const removeFavoriteFile = async (
@@ -353,7 +353,7 @@ export const removeFavoriteFile = async (
     throw new Error(responseData.error);
   }
 
-  return { message: responseData.message };
+  return { message: responseData.message, fileId: data.fileId };
 };
 
 export const hideFile = async (
@@ -373,7 +373,7 @@ export const hideFile = async (
     throw new Error(responseData.error);
   }
 
-  return { message: responseData.message };
+  return { message: responseData.message, fileId: data.fileId };
 };
 
 export const revealFile = async (
@@ -393,7 +393,7 @@ export const revealFile = async (
     throw new Error(responseData.error);
   }
 
-  return { message: responseData.message };
+  return { message: responseData.message, fileId: data.fileId };
 };
 
 export const fetchFileActivityList = async (

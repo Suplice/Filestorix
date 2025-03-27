@@ -204,12 +204,16 @@ export type RestoreFileResult = TrashCatalogResult;
 /**
  * Result after setting file as favorite or removing file from being favorite.
  */
-export type FavoriteFileResult = TrashCatalogResult;
+export type FavoriteFileResult = TrashCatalogResult & {
+  fileId: number;
+};
 
 /**
  * Result after setting file as hidden or removing file from being hidden.
  */
-export type HideFileResult = TrashCatalogResult;
+export type HideFileResult = TrashCatalogResult & {
+  fileId: number;
+};
 
 /* ---------------------------- Icon Mapping ---------------------------- */
 

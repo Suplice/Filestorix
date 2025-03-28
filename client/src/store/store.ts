@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import fileReducer from "./fileSlice";
 import modalReducer from "./modalSlice";
 import settingsReducer from "./settingsSlice";
+import locationReducer from "./locationSlice";
 
 export const store = configureStore({
   reducer: {
     file: fileReducer,
     modal: modalReducer,
     settings: settingsReducer,
+    location: locationReducer,
   },
 });
 

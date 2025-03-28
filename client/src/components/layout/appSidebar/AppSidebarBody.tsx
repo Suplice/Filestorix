@@ -8,31 +8,56 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { useFile } from "@/hooks/use-file";
-import { formatFileSize } from "@/lib/utils/utils";
+import { formatFileSize, Section } from "@/lib/utils/utils";
+import { setRoute } from "@/store/locationSlice";
 import { HardDrive, Home, Inbox, Search, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const mainGroup = [
-  { title: "Home", url: "/drive", icon: Home },
-  { title: "My Drive", url: "/drive/my-drive", icon: Inbox },
+  { title: "Home", url: "/drive", icon: Home, section: Section.Main },
+  {
+    title: "My Drive",
+    url: "/drive/my-drive",
+    icon: Inbox,
+    section: Section.MyDrive,
+  },
 ];
 
 const secondGroup = [
-  { title: "Favorite", url: "/drive/favorite", icon: Star },
-  { title: "Recent", url: "/drive/recent", icon: Search },
+  {
+    title: "Favorite",
+    url: "/drive/favorite",
+    icon: Star,
+    section: Section.Favorite,
+  },
+  {
+    title: "Recent",
+    url: "/drive/recent",
+    icon: Search,
+    section: Section.Recent,
+  },
 ];
 
 const thirdGroup = [
-  { title: "Trash", url: "/drive/trash", icon: Trash2 },
-  { title: "Storage", url: "/drive/storage", icon: HardDrive },
+  { title: "Trash", url: "/drive/trash", icon: Trash2, section: Section.Trash },
+  {
+    title: "Storage",
+    url: "/drive/storage",
+    icon: HardDrive,
+    section: Section.Main,
+  },
 ];
 
 const AppSidebarBody = () => {
   const pathname = usePathname();
+  const [pendingSection, setPendingSection] = useState<Section | null>(null);
 
   const { allFiles } = useFile();
+
+  const dispatch = useDispatch();
 
   const { usedStorage, totalStorage, usagePercentage } = useMemo(() => {
     const usedStorage = allFiles.reduce(
@@ -52,6 +77,19 @@ const AppSidebarBody = () => {
     };
   }, [allFiles]);
 
+  const handleLinkChange = (section: Section) => {
+    setPendingSection(section);
+  };
+
+  useEffect(() => {
+    if (pendingSection) {
+      dispatch(
+        setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] })
+      );
+      setPendingSection(null);
+    }
+  }, [pathname]);
+
   return (
     <>
       {[mainGroup, secondGroup, thirdGroup].map((group, idx) => (
@@ -63,6 +101,7 @@ const AppSidebarBody = () => {
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
+                      onClick={() => handleLinkChange(item.section)}
                       className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto "
                     >
                       <item.icon

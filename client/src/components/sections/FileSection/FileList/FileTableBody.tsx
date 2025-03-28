@@ -13,14 +13,9 @@ import FileCard from "../FileCard/FileCard";
 interface FileTableBodyProps {
   files: UserFile[];
   isLoading: boolean;
-  handleFolderClick: (file: UserFile) => void;
 }
 
-const FileTableBody: React.FC<FileTableBodyProps> = ({
-  files,
-  isLoading,
-  handleFolderClick,
-}) => {
+const FileTableBody: React.FC<FileTableBodyProps> = ({ files, isLoading }) => {
   return (
     <Table className="select-none w-full">
       <TableHeader>
@@ -42,13 +37,7 @@ const FileTableBody: React.FC<FileTableBodyProps> = ({
               <TableCell>No files found</TableCell>
             </TableRow>
           ) : (
-            files.map((file) => (
-              <FileCard
-                file={file}
-                key={file.id}
-                handleFolderClick={handleFolderClick}
-              />
-            ))
+            files.map((file) => <FileCard file={file} key={file.id} />)
           )}
         </TableBody>
       )}

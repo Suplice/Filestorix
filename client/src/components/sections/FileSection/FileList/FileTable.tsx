@@ -1,9 +1,12 @@
 "use client";
-import { useState } from "react";
-import { UserFile, FileRoute } from "@/lib/types/file";
+import { useMemo, useState } from "react";
+import { UserFile } from "@/lib/types/file";
 import dynamic from "next/dynamic";
 import FileTableBody from "./FileTableBody";
 import FileDropzone from "./FileDropzone";
+import { Section } from "@/lib/utils/utils";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
 
 const FileRouteManager = dynamic(
   () => import("@/components/sections/FileSection/FileList/FileRouteManager"),
@@ -22,7 +25,7 @@ const FileMainGallery = dynamic(
 interface FileTableProps {
   files: UserFile[];
   isLoading: boolean;
-  section: string;
+  section: Section;
   allowCatalogs: boolean;
 }
 
@@ -32,39 +35,23 @@ const FileTable: React.FC<FileTableProps> = ({
   section,
   allowCatalogs,
 }) => {
-  const [parentId, setParentId] = useState<number | null>(null);
-  const [route, setRoute] = useState<FileRoute[]>([
-    {
-      sectionName: section,
-      catalogId: null,
-    },
-  ]);
+  const parentId = useSelector((state: RootState) => state.location.parentId);
+
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFolderClick = (file: UserFile) => {
-    if (!allowCatalogs) return;
+  const visibleFiles = useMemo(() => {
+    return files.filter((file) => {
+      if (!allowCatalogs && file.type === "CATALOG") return false;
 
-    if (file.type === "CATALOG") {
-      setParentId(file.id);
-      setRoute([...route, { sectionName: file.name, catalogId: file.id }]);
-    }
-  };
+      if (allowCatalogs) return file.parentId === parentId;
 
-  const handleChangeRoute = (catalogId: number | null) => {
-    setParentId(catalogId);
-    const newRouteIndex = route.findIndex(
-      (route) => route.catalogId === catalogId
-    );
-    setRoute(route.slice(0, newRouteIndex + 1));
-  };
+      return true;
+    });
+  }, [files, parentId, allowCatalogs]);
 
-  const visibleFiles = files.filter((file) => {
-    if (!allowCatalogs && file.type === "CATALOG") return false;
-
-    if (allowCatalogs) return file.parentId === parentId;
-
-    return true;
-  });
+  const mainGalleryFiles = useMemo(() => {
+    return files.filter((file) => file.type !== "CATALOG").slice(0, 10);
+  }, [files]);
 
   return (
     <>
@@ -78,22 +65,15 @@ const FileTable: React.FC<FileTableProps> = ({
         onDrop={() => setIsDragging(false)}
       >
         <div className="w-full flex flex-row justify-between mb-4">
-          <FileRouteManager
-            routes={route}
-            handleChangeRoute={handleChangeRoute}
-          />
-          {section !== "Trash" && <CreateButton parentId={parentId} />}
+          <FileRouteManager />
+          <CreateButton parentId={parentId} />
         </div>
+
         {section === "Main" && files.length > 0 && (
-          <FileMainGallery
-            files={files.filter((file) => file.type !== "CATALOG").slice(0, 10)}
-          />
+          <FileMainGallery files={mainGalleryFiles} />
         )}
-        <FileTableBody
-          files={visibleFiles}
-          isLoading={isLoading}
-          handleFolderClick={handleFolderClick}
-        />
+
+        <FileTableBody files={visibleFiles} isLoading={isLoading} />
       </div>
 
       <FileDropzone

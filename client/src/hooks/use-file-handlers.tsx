@@ -1,9 +1,16 @@
 import { UserFile } from "@/lib/types/file";
 import { useModal } from "./use-modal";
 import useFileActions from "./use-file-actions";
+import { useDispatch, useSelector } from "react-redux";
+import { setParentId, setRoute } from "@/store/locationSlice";
+import { RootState } from "@/store/store";
 
 const useFileHandlers = () => {
   const { showModal } = useModal();
+
+  const dispatch = useDispatch();
+
+  const route = useSelector((state: RootState) => state.location.route);
 
   const { addFavoriteFile, removeFavoriteFile, hideFile, revealFile } =
     useFileActions();
@@ -56,6 +63,29 @@ const useFileHandlers = () => {
     showModal("FileNameChanger", { fileId: file.id });
   };
 
+  const handleFolderClick = (file: UserFile) => {
+    if (file.type === "CATALOG") {
+      dispatch(setParentId({ parentId: file.id }));
+      dispatch(
+        setRoute({
+          route: [...route, { sectionName: file.name, catalogId: file.id }],
+        })
+      );
+    }
+  };
+
+  const handleChangeRoute = (catalogId: number | null) => {
+    dispatch(setParentId({ parentId: catalogId }));
+    const newRouteIndex = route.findIndex(
+      (route) => route.catalogId === catalogId
+    );
+    dispatch(
+      setRoute({
+        route: route.slice(0, newRouteIndex + 1),
+      })
+    );
+  };
+
   return {
     handleFileClick,
     handleTrashOrDelete,
@@ -64,6 +94,8 @@ const useFileHandlers = () => {
     handleIsHidden,
     handleOpenFileDetails,
     handleChangeFileName,
+    handleFolderClick,
+    handleChangeRoute,
   };
 };
 

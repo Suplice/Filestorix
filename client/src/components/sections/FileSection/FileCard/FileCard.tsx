@@ -12,11 +12,10 @@ import FileExtensionCell from "@/components/ui/FileExtensionCell";
 import useFileHandlers from "@/hooks/use-file-handlers";
 
 interface FileCardProps {
-  handleFolderClick: (file: UserFile) => void;
   file: UserFile;
 }
 
-const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
+const FileCard: React.FC<FileCardProps> = ({ file }) => {
   const {
     isHiddenActionsMenuVisible,
     isMenuOpen,
@@ -26,7 +25,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, handleFolderClick }) => {
     handleContextMenu,
   } = useFileCardActions();
 
-  const { handleFileClick } = useFileHandlers();
+  const { handleFileClick, handleFolderClick } = useFileHandlers();
 
   return (
     <TableRow

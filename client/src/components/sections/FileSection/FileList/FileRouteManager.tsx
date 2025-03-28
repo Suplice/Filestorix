@@ -1,15 +1,13 @@
-import { FileRoute } from "@/lib/types/file";
+import useFileHandlers from "@/hooks/use-file-handlers";
+import { RootState } from "@/store/store";
 import { ChevronRight } from "lucide-react";
+import { useSelector } from "react-redux";
 
-interface FileRouteManagerProps {
-  routes: FileRoute[];
-  handleChangeRoute: (catalogId: number | null) => void;
-}
+const FileRouteManager = () => {
+  const routes = useSelector((state: RootState) => state.location.route);
 
-const FileRouteManager: React.FC<FileRouteManagerProps> = ({
-  routes,
-  handleChangeRoute,
-}) => {
+  const { handleChangeRoute } = useFileHandlers();
+
   return (
     <div
       data-testid="file-route-manager"

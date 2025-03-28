@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus, FolderPlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
+import { Section } from "@/lib/utils/utils";
 
 interface CreateButtonProps {
   parentId: number | null;
@@ -17,6 +20,12 @@ interface CreateButtonProps {
 
 const CreateButton: React.FC<CreateButtonProps> = ({ parentId }) => {
   const { showModal } = useModal();
+
+  const route = useSelector((state: RootState) => state.location.route);
+
+  if (route[0].sectionName === Section.Trash) {
+    return null;
+  }
 
   return (
     <DropdownMenu>

@@ -1,18 +1,15 @@
 import { UserFile } from "@/lib/types/file";
 import FileIcon from "../sections/FileSection/FileCard/FileIcon";
 import { FaStar } from "react-icons/fa";
+import useFileHandlers from "@/hooks/use-file-handlers";
 
 interface FileNameCellProps {
   file: UserFile;
-  handleFolderClick: (file: UserFile) => void;
-  handleFileClick: (file: UserFile) => void;
 }
 
-const FileNameCell: React.FC<FileNameCellProps> = ({
-  file,
-  handleFileClick,
-  handleFolderClick,
-}) => {
+const FileNameCell: React.FC<FileNameCellProps> = ({ file }) => {
+  const { handleFolderClick, handleFileClick } = useFileHandlers();
+
   return (
     <div className="flex flex-row gap-3 items-center">
       <FileIcon extension={file.extension} />

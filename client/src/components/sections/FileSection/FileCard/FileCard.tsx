@@ -40,11 +40,7 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
       onContextMenu={handleContextMenu}
     >
       <TableCell className="max-w-[200px]">
-        <FileNameCell
-          file={file}
-          handleFileClick={handleFileClick}
-          handleFolderClick={handleFolderClick}
-        />
+        <FileNameCell file={file} />
       </TableCell>
       <TableCell>
         <FileDateCell date={file.modifiedAt} />
@@ -64,7 +60,6 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
       <TableCell className="text-right">
         <FileActionsMenu
           file={file}
-          handleFolderClick={handleFolderClick}
           isOpen={isMenuOpen}
           setIsOpen={setIsMenuOpen}
         />

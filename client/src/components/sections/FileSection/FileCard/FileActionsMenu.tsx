@@ -27,14 +27,12 @@ import useFileHandlers from "@/hooks/use-file-handlers";
 
 interface FileActionsMenuProps {
   file: UserFile;
-  handleFolderClick: (file: UserFile) => void;
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
 }
 
 const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
   file,
-  handleFolderClick,
   isOpen,
   setIsOpen,
 }) => {
@@ -46,6 +44,7 @@ const FileActionsMenu: React.FC<FileActionsMenuProps> = ({
     handleOpenFileDetails,
     handleChangeFileName,
     handleFileClick,
+    handleFolderClick,
   } = useFileHandlers();
 
   return (

@@ -1,6 +1,14 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export enum Section {
+  Main = "Main",
+  MyDrive = "MyDrive",
+  Recent = "Recent",
+  Favorite = "Favorite",
+  Trash = "Trash",
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

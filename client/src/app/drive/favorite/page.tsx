@@ -1,6 +1,7 @@
 "use client";
 import FileTable from "@/components/sections/FileSection/FileList/FileTable";
 import { useFile } from "@/hooks/use-file";
+import { Section } from "@/lib/utils/utils";
 
 const Favorite = () => {
   const { favoriteFiles, isLoading } = useFile();
@@ -8,7 +9,7 @@ const Favorite = () => {
     <FileTable
       files={favoriteFiles}
       isLoading={isLoading}
-      section={"Favorite"}
+      section={Section.Favorite}
       allowCatalogs={false}
     />
   );

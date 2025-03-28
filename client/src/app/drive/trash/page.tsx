@@ -1,6 +1,7 @@
 "use client";
 import FileTable from "@/components/sections/FileSection/FileList/FileTable";
 import { useFile } from "@/hooks/use-file";
+import { Section } from "@/lib/utils/utils";
 
 const Trash = () => {
   const { trashedFiles, isLoading } = useFile();
@@ -8,7 +9,7 @@ const Trash = () => {
     <FileTable
       files={trashedFiles}
       isLoading={isLoading}
-      section={"Trash"}
+      section={Section.Trash}
       allowCatalogs={false}
     />
   );

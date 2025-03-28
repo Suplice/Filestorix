@@ -1,6 +1,7 @@
 "use client";
 import FileTable from "@/components/sections/FileSection/FileList/FileTable";
 import { useFile } from "@/hooks/use-file";
+import { Section } from "@/lib/utils/utils";
 
 const Drive = () => {
   const { files, isLoading } = useFile();
@@ -9,7 +10,7 @@ const Drive = () => {
     <FileTable
       files={files}
       isLoading={isLoading}
-      section={"Main"}
+      section={Section.Main}
       allowCatalogs={true}
     />
   );

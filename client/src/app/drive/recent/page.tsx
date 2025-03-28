@@ -1,6 +1,7 @@
 "use client";
 import FileTable from "@/components/sections/FileSection/FileList/FileTable";
 import { useFile } from "@/hooks/use-file";
+import { Section } from "@/lib/utils/utils";
 
 const Recent = () => {
   const { recentFiles, isLoading } = useFile();
@@ -8,7 +9,7 @@ const Recent = () => {
     <FileTable
       files={recentFiles}
       isLoading={isLoading}
-      section={"Recent"}
+      section={Section.Recent}
       allowCatalogs={false}
     />
   );

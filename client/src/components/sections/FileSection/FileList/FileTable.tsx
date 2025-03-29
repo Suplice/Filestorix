@@ -76,7 +76,9 @@ const FileTable: React.FC<FileTableProps> = ({
 
         <FileTableBody files={visibleFiles} isLoading={isLoading} />
 
-        {visibleFiles.length === 0 && <EmptyList section={section} />}
+        {visibleFiles.length === 0 && !isLoading && (
+          <EmptyList section={section} />
+        )}
       </div>
 
       <FileDropzone

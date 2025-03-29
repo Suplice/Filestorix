@@ -1,4 +1,5 @@
 "use client";
+import TooltipBox from "@/components/ui/tooltipBox";
 import useFileHandlers from "@/hooks/use-file-handlers";
 import { UserFile } from "@/lib/types/file";
 import {
@@ -32,33 +33,43 @@ const FileHiddenActionsMenu: React.FC<FileHiddenActionsMenuProps> = ({
         isHidden ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
-      <div
-        className=" px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
-        onClick={() => handleChangeFileName(file)}
-      >
-        <PenLine />
-      </div>
-      {file.isTrashed && (
+      <TooltipBox message="Rename">
         <div
-          className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
-          onClick={() => handleRestore(file)}
+          className=" px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+          onClick={() => handleChangeFileName(file)}
         >
-          <ArchiveRestore />
+          <PenLine />
         </div>
+      </TooltipBox>
+      {file.isTrashed && (
+        <TooltipBox message="Restore">
+          <div
+            className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+            onClick={() => handleRestore(file)}
+          >
+            <ArchiveRestore />
+          </div>
+        </TooltipBox>
       )}
 
-      <div
-        className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
-        onClick={() => handleFavorite(file)}
+      <TooltipBox
+        message={file.isFavorite ? "remove favorite mark" : "Mark as favorite"}
       >
-        {file.isFavorite ? <StarOff /> : <Star />}
-      </div>
-      <div
-        className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
-        onClick={() => handleIsHidden(file)}
-      >
-        {file.isHidden ? <Eye /> : <EyeOff />}
-      </div>
+        <div
+          className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+          onClick={() => handleFavorite(file)}
+        >
+          {file.isFavorite ? <StarOff /> : <Star />}
+        </div>
+      </TooltipBox>
+      <TooltipBox message={file.isHidden ? "Hide file" : "Reveal file"}>
+        <div
+          className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+          onClick={() => handleIsHidden(file)}
+        >
+          {file.isHidden ? <Eye /> : <EyeOff />}
+        </div>
+      </TooltipBox>
     </div>
   );
 };

@@ -7,7 +7,9 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import TooltipBox from "@/components/ui/tooltipBox";
 import { useFile } from "@/hooks/use-file";
+import { ScreenSize } from "@/lib/types/common";
 import { formatFileSize, Section } from "@/lib/utils/utils";
 import { setRoute } from "@/store/locationSlice";
 import { HardDrive, Home, Inbox, Search, Star, Trash2 } from "lucide-react";
@@ -53,6 +55,7 @@ const thirdGroup = [
 
 const AppSidebarBody = () => {
   const pathname = usePathname();
+
   const [pendingSection, setPendingSection] = useState<Section | null>(null);
 
   const { allFiles } = useFile();
@@ -97,29 +100,32 @@ const AppSidebarBody = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {group.map((item) => (
-                <SidebarMenuItem key={item.title} title={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={item.url}
-                      onClick={() => handleLinkChange(item.section)}
-                      className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto "
-                    >
-                      <item.icon
-                        className={`${
-                          pathname === item.url && "text-blue-500"
-                        }`}
-                      />
-                      <span
-                        className={`hidden sm:block overflow-hidden text-ellipsis whitespace-nowrap  lg:text-lg md:text-base sm:text-sm ${
-                          pathname === item.url
-                            ? "font-semibold text-blue-500"
-                            : "font-normal text-gray-700 dark:text-gray-300"
-                        }`}
+                <SidebarMenuItem key={item.title}>
+                  <TooltipBox message={item.title} visibleUntil={ScreenSize.SM}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        onClick={() => handleLinkChange(item.section)}
+                        className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto "
                       >
-                        {item.title}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
+                        <item.icon
+                          className={`${
+                            pathname === item.url && "text-blue-500"
+                          }`}
+                        />
+
+                        <span
+                          className={`hidden sm:block overflow-hidden text-ellipsis whitespace-nowrap  lg:text-lg md:text-base sm:text-sm ${
+                            pathname === item.url
+                              ? "font-semibold text-blue-500"
+                              : "font-normal text-gray-700 dark:text-gray-300"
+                          }`}
+                        >
+                          {item.title}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </TooltipBox>
                 </SidebarMenuItem>
               ))}
               {group.some((item) => item.title === "Storage") && (

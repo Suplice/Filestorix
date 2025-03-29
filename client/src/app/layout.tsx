@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import ModalRoot from "@/components/layout/ModalRoot/modalRoot";
 import GlobalEffects from "@/components/layout/GlobalEffects/GlobalEffects";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const queryClient = new QueryClient();
 
@@ -21,14 +22,16 @@ export default function RootLayout({
       <body>
         <Provider store={store}>
           <QueryClientProvider client={queryClient}>
-            <ThemeProvider attribute="class" enableSystem>
-              <AuthProvider>
-                {children}
-                <Toaster />
-                <ModalRoot />
-                <GlobalEffects />
-              </AuthProvider>
-            </ThemeProvider>
+            <TooltipProvider>
+              <ThemeProvider attribute="class" enableSystem>
+                <AuthProvider>
+                  {children}
+                  <Toaster />
+                  <ModalRoot />
+                  <GlobalEffects />
+                </AuthProvider>
+              </ThemeProvider>
+            </TooltipProvider>
           </QueryClientProvider>
         </Provider>
       </body>

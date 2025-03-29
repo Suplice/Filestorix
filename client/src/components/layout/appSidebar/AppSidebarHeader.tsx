@@ -8,7 +8,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarGroup, SidebarGroupLabel } from "@/components/ui/sidebar";
+import TooltipBox from "@/components/ui/tooltipBox";
 import { useModal } from "@/hooks/use-modal";
+import { ScreenSize } from "@/lib/types/common";
 
 import { BookOpen, FolderPlus, Plus, Upload } from "lucide-react";
 import Link from "next/link";
@@ -30,17 +32,19 @@ const AppSidebarHeader = () => {
       </SidebarGroup>
       <SidebarGroup className="flex justify-end items-center">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="primary"
-              className="w-full flex items-center justify-center "
-            >
-              <Plus size={64} />
-              <p className="xl:text-xl lg:text-lg md:text-base sm:text-sm hidden sm:flex font-semibold">
-                New
-              </p>
-            </Button>
-          </DropdownMenuTrigger>
+          <TooltipBox message="New" visibleUntil={ScreenSize.SM}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="primary"
+                className="w-full flex items-center justify-center "
+              >
+                <Plus size={64} />
+                <p className="xl:text-xl lg:text-lg md:text-base sm:text-sm hidden sm:flex font-semibold">
+                  New
+                </p>
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipBox>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={() => {

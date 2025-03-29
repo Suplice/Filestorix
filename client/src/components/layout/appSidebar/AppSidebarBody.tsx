@@ -87,9 +87,9 @@ const AppSidebarBody = () => {
   useEffect(() => {
     if (pendingSection) {
       dispatch(
-        setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] }),
-        setParentId({ parentId: null })
+        setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] })
       );
+      dispatch(setParentId({ parentId: null }));
       setPendingSection(null);
     }
   }, [pathname]);

@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -30,15 +29,11 @@ const FileTableBody: React.FC<FileTableBodyProps> = ({ files, isLoading }) => {
       </TableHeader>
       {isLoading ? (
         <FileTableSkeleton />
-      ) : (
+      ) : files.length === 0 ? null : (
         <TableBody>
-          {files.length === 0 ? (
-            <TableRow>
-              <TableCell>No files found</TableCell>
-            </TableRow>
-          ) : (
-            files.map((file) => <FileCard file={file} key={file.id} />)
-          )}
+          {files.map((file) => (
+            <FileCard file={file} key={file.id} />
+          ))}
         </TableBody>
       )}
     </Table>

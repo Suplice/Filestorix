@@ -7,6 +7,7 @@ import FileDropzone from "./FileDropzone";
 import { Section } from "@/lib/utils/utils";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
+import EmptyList from "./EmptyList";
 
 const FileRouteManager = dynamic(
   () => import("@/components/sections/FileSection/FileList/FileRouteManager"),
@@ -69,15 +70,17 @@ const FileTable: React.FC<FileTableProps> = ({
           <CreateButton parentId={parentId} />
         </div>
 
-        {section === "Main" && files.length > 0 && (
+        {section === Section.Main && files.length > 0 && (
           <FileMainGallery files={mainGalleryFiles} />
         )}
 
         <FileTableBody files={visibleFiles} isLoading={isLoading} />
+
+        {visibleFiles.length === 0 && <EmptyList section={section} />}
       </div>
 
       <FileDropzone
-        isVisible={isDragging && section !== "Trash"}
+        isVisible={isDragging && section !== Section.Trash}
         setIsVisible={setIsDragging}
         parentId={parentId}
       />

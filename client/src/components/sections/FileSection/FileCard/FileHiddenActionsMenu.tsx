@@ -51,18 +51,21 @@ const FileHiddenActionsMenu: React.FC<FileHiddenActionsMenuProps> = ({
           </div>
         </TooltipBox>
       )}
-
-      <TooltipBox
-        message={file.isFavorite ? "remove favorite mark" : "Mark as favorite"}
-      >
-        <div
-          className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
-          onClick={() => handleFavorite(file)}
+      {file.type === "FILE" && (
+        <TooltipBox
+          message={
+            file.isFavorite ? "Remove favorite mark" : "Mark as favorite"
+          }
         >
-          {file.isFavorite ? <StarOff /> : <Star />}
-        </div>
-      </TooltipBox>
-      <TooltipBox message={file.isHidden ? "Hide file" : "Reveal file"}>
+          <div
+            className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
+            onClick={() => handleFavorite(file)}
+          >
+            {file.isFavorite ? <StarOff /> : <Star />}
+          </div>
+        </TooltipBox>
+      )}
+      <TooltipBox message={file.isHidden ? "Reveal File" : "Hide file"}>
         <div
           className="px-2 py-1 hover:brightness-50 cursor-pointer brightness-75"
           onClick={() => handleIsHidden(file)}

@@ -11,7 +11,7 @@ import TooltipBox from "@/components/ui/tooltipBox";
 import { useFile } from "@/hooks/use-file";
 import { ScreenSize } from "@/lib/types/common";
 import { formatFileSize, Section } from "@/lib/utils/utils";
-import { setRoute } from "@/store/locationSlice";
+import { setParentId, setRoute } from "@/store/locationSlice";
 import { HardDrive, Home, Inbox, Search, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -87,7 +87,8 @@ const AppSidebarBody = () => {
   useEffect(() => {
     if (pendingSection) {
       dispatch(
-        setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] })
+        setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] }),
+        setParentId({ parentId: null })
       );
       setPendingSection(null);
     }

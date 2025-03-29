@@ -62,6 +62,12 @@ export const useFile = () => {
       : hideBasedFiles.filter((file) => file.type !== "CATALOG");
   }, [hideBasedFiles, query.isLoading]);
 
+  const catalogFiles = useMemo(() => {
+    return query.isLoading
+      ? []
+      : hideBasedFiles.filter((file) => file.type !== "FILE");
+  }, [hideBasedFiles, query.isLoading]);
+
   /**
    * List of all user files that are not trashed.
    */
@@ -103,6 +109,7 @@ export const useFile = () => {
 
   return {
     nonCatalogFiles: nonCatalogFiles,
+    catalogFiles,
     allFiles: hideBasedFiles,
     files: baseFiles,
     favoriteFiles,

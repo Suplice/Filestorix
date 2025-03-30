@@ -1,9 +1,5 @@
 import { UserFile } from "@/lib/types/file";
-import {
-  setDraggedFileId,
-  setDraggedFileInfo,
-  setIsDraggingFile,
-} from "@/store/fileSlice";
+import { setDraggedFileId, setIsDraggingFile } from "@/store/fileSlice";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import useFileActions from "./use-file-actions";
@@ -28,13 +24,14 @@ const useDragAndDropFiles = () => {
   ) => {
     dispatch(setIsDraggingFile(true));
     dispatch(setDraggedFileId(file.id));
-    dispatch(setDraggedFileInfo({ name: file.name, type: file.type }));
 
     ghostImage = document.createElement("div");
     ghostImage.id = "ghostImage";
     ghostImage.innerHTML = `
   <div style="display: flex; align-items: center; justify-content: center;">
-    <span style="font-size: 20px; margin-right: 8px;">📂</span>
+    <span style="font-size: 20px; margin-right: 8px;">${
+      file.type === "CATALOG" ? "📂" : "📄"
+    }</span>
     ${file.name}
   </div>
 `;
@@ -47,7 +44,6 @@ const useDragAndDropFiles = () => {
   const handleDragEnd = () => {
     dispatch(setIsDraggingFile(false));
     dispatch(setDraggedFileId(undefined));
-    dispatch(setDraggedFileInfo(null));
 
     if (ghostImage) {
       document.body.removeChild(ghostImage);
@@ -57,7 +53,6 @@ const useDragAndDropFiles = () => {
   const handleDrop = (file: UserFile) => {
     dispatch(setIsDraggingFile(false));
     dispatch(setDraggedFileId(undefined));
-    dispatch(setDraggedFileInfo(null));
 
     if (
       draggedFileId !== undefined &&

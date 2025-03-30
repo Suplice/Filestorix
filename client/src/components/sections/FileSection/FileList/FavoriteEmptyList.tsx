@@ -1,7 +1,7 @@
 const FavoriteEmptyList = () => {
   return (
     <div className="w-full  flex items-center justify-center flex-col">
-      <div className="flex items-center justify-center gap-2 flex-col cursor-pointer">
+      <div className="flex items-center justify-center gap-2 flex-col ">
         <img
           src="/empty_favorite_list.png"
           alt="test"

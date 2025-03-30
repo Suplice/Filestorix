@@ -1,3 +1,4 @@
+"use client";
 import FileIcon from "@/components/sections/FileSection/FileCard/FileIcon";
 import {
   CommandDialog,

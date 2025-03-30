@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import useSettings from "@/hooks/use-settings";
 import { useModal } from "@/hooks/use-modal";

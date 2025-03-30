@@ -30,7 +30,7 @@ const FileTableBody: React.FC<FileTableBodyProps> = ({ files, isLoading }) => {
       {isLoading ? (
         <FileTableSkeleton />
       ) : files.length === 0 ? null : (
-        <TableBody>
+        <TableBody className="select-none">
           {files.map((file) => (
             <FileCard file={file} key={file.id} />
           ))}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"os"
 	"path"
@@ -72,6 +73,7 @@ func (fs *FileService) UploadFiles(c *gin.Context, userId string, parentId strin
 
 	var uintParentId *uint = nil
 
+	fmt.Print("adding", parentId)
 
 	if parentId != "" {
 		parentIDInt, err := convertStringToUint(parentId)
@@ -347,11 +349,20 @@ func (fs *FileService) MoveFile(fileId string, newParentId string, userId string
 		return errors.New(constants.ErrInvalidFileData)
 	}
 
-	uintNewParentId, err := convertStringToUint(newParentId)
+	var uintParentId *uint = nil
 
-	if err != nil {
-		return errors.New(constants.ErrInvalidData)
+
+	if newParentId != "null" {
+		parentIDInt, err := convertStringToUint(newParentId)
+
+		if err != nil {
+			return errors.New(constants.ErrUnexpected)
+		}
+		uintParentId = &parentIDInt
 	}
 
-	return fs.fileRepository.MoveFile(uintFileId, uintNewParentId, uintUserId)
+
+
+
+	return fs.fileRepository.MoveFile(uintFileId, uintParentId, uintUserId)
 }

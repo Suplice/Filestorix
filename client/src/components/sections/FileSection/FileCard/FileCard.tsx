@@ -32,7 +32,8 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
 
   const { handleFileClick, handleFolderClick } = useFileHandlers();
 
-  const { handleDragStart, handleDragEnd, handleDrop } = useDragAndDropFiles();
+  const { handleDragStart, handleDragEnd, handleDrop, draggedFileId } =
+    useDragAndDropFiles();
 
   return (
     <TableRow
@@ -54,7 +55,11 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onContextMenu={handleContextMenu}
-      className={cn(isDragOver ? "bg-slate-700" : "")}
+      className={cn(
+        isDragOver ? "bg-neutral-900" : "",
+        isDragOver && draggedFileId === file.id ? "opacity-50" : "opacity-100",
+        "transition-all duration-200"
+      )}
     >
       <TableCell className="max-w-[200px]">
         <FileNameCell file={file} />

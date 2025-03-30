@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 
 interface FileDateCellProps {
-  date: Date;
+  date: Date | string;
 }
 
 const FileDateCell: React.FC<FileDateCellProps> = ({ date }) => {

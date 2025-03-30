@@ -10,6 +10,8 @@ const useDragAndDropFiles = () => {
 
   const { moveFile } = useFileActions();
 
+  const routes = useSelector((store: RootState) => store.location.route);
+
   const isDraggingFile = useSelector(
     (store: RootState) => store.file.isDraggingFile
   );
@@ -39,6 +41,19 @@ const useDragAndDropFiles = () => {
       moveFile({ fileId: draggedFileId, newParentId: file.id });
   };
 
+  const handleRouteDrop = (catalogId: number | null) => {
+    dispatch(setIsDraggingFile(false));
+    dispatch(setDraggedFileId(undefined));
+
+    if (routes[routes.length - 1].catalogId === catalogId) {
+      return;
+    }
+
+    if (draggedFileId !== undefined && catalogId !== draggedFileId) {
+      moveFile({ fileId: draggedFileId, newParentId: catalogId });
+    }
+  };
+
   return {
     handleDragStart,
     handleDragEnd,
@@ -46,6 +61,7 @@ const useDragAndDropFiles = () => {
     setIsDraggingFile,
     isDraggingFile,
     draggedFileId,
+    handleRouteDrop,
   };
 };
 

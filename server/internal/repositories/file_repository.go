@@ -724,7 +724,7 @@ func (fr *FileRepository) GetActivityLogForFile(fileId string, userId string)([]
 	return logs, nil
 }
 
-func (fr *FileRepository) MoveFile(fileId uint, newParentId uint, userId uint) error {
+func (fr *FileRepository) MoveFile(fileId uint, newParentId *uint, userId uint) error {
 	tx := fr.db.Begin()
 
 	if tx.Error != nil {

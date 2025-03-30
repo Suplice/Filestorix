@@ -14,7 +14,7 @@ export type UserFile = {
   type: "FILE" | "CATALOG";
   size: number;
   path: string;
-  modifiedAt: Date;
+  modifiedAt: Date | string;
   createdAt: Date;
   isTrashed: boolean;
   isFavorite: boolean;
@@ -164,7 +164,7 @@ export type HideFileRequest = {
 
 export type MoveFileRequest = {
   fileId: number;
-  newParentId: number;
+  newParentId: number | null;
 };
 
 /* ----------------------------- API Results ------------------------------ */

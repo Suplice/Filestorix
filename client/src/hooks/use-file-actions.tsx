@@ -87,7 +87,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId!, (file) => ({
         ...file,
         name: result.newName!,
-        modifiedAt: new Date(),
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {
@@ -108,7 +108,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
         ...file,
         isTrashed: true,
-        modifiedAt: new Date(),
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {
@@ -200,7 +200,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
         ...file,
         isFavorite: true,
-        modifiedAt: new Date(),
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {
@@ -215,7 +215,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
         ...file,
         isFavorite: false,
-        modifiedAt: new Date(),
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {
@@ -230,7 +230,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
         ...file,
         isHidden: true,
-        modifiedAt: new Date(),
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {
@@ -245,7 +245,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
         ...file,
         isHidden: false,
-        modifiedAt: new Date(),
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {

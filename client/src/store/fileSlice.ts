@@ -5,12 +5,14 @@ interface FileState {
   files: UserFile[];
   isDraggingFile: boolean;
   draggedFileId: number | undefined;
+  draggedFileInfo?: { name: string; type: "FILE" | "CATALOG" } | null;
 }
 
 const initialState: FileState = {
   files: [],
   isDraggingFile: false,
   draggedFileId: undefined,
+  draggedFileInfo: null,
 };
 
 const fileSlice = createSlice({
@@ -54,6 +56,12 @@ const fileSlice = createSlice({
     setDraggedFileId: (state, action: PayloadAction<number | undefined>) => {
       state.draggedFileId = action.payload;
     },
+    setDraggedFileInfo: (
+      state,
+      action: PayloadAction<{ name: string; type: "FILE" | "CATALOG" } | null>
+    ) => {
+      state.draggedFileInfo = action.payload;
+    },
   },
 });
 
@@ -65,5 +73,6 @@ export const {
   trashFile,
   setIsDraggingFile,
   setDraggedFileId,
+  setDraggedFileInfo,
 } = fileSlice.actions;
 export default fileSlice.reducer;

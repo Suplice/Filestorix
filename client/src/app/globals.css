@@ -105,3 +105,23 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+#ghostImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -9999;
+  padding: 6px 9px;
+  background-color: black;
+  color: beige;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 8px;
+  text-align: center;
+  opacity: 1;
+  backdrop-filter: blur(10px);
+  border-color: hsl(var(--border));
+  outline-color: hsl(var(--ring) / 0.5);
+  width: fit-content;
+  height: fit-content;
+}

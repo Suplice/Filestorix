@@ -260,6 +260,7 @@ const useFileActions = () => {
       updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
         ...file,
         parentId: result.newParentId,
+        modifiedAt: new Date().toISOString(),
       }));
     },
     onError: (error: Error) => {

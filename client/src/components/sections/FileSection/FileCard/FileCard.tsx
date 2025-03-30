@@ -36,57 +36,63 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
     useDragAndDropFiles();
 
   return (
-    <TableRow
-      key={file.id}
-      onDoubleClick={() => {
-        return file.type === "CATALOG"
-          ? handleFolderClick(file)
-          : handleFileClick(file);
-      }}
-      draggable
-      onDragStart={() => handleDragStart(file)}
-      onDragEnd={handleDragEnd}
-      onDrop={() => {
-        setIsDragOver(false);
-        handleDrop(file);
-      }}
-      onDragOver={() => setIsDragOver(true)}
-      onDragLeave={() => setIsDragOver(false)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onContextMenu={handleContextMenu}
-      className={cn(
-        isDragOver ? "bg-neutral-900" : "",
-        isDragOver && draggedFileId === file.id ? "opacity-50" : "opacity-100",
-        "transition-all duration-200"
-      )}
-    >
-      <TableCell className="max-w-[200px]">
-        <FileNameCell file={file} />
-      </TableCell>
-      <TableCell>
-        <FileDateCell date={file.modifiedAt} />
-      </TableCell>
-      <TableCell>
-        <FileSizeCell file={file} />
-      </TableCell>
-      <TableCell>
-        <FileExtensionCell file={file} />
-      </TableCell>
-      <TableCell>
-        <FileHiddenActionsMenu
-          file={file}
-          isHidden={isHiddenActionsMenuVisible}
-        />
-      </TableCell>
-      <TableCell className="text-right">
-        <FileActionsMenu
-          file={file}
-          isOpen={isMenuOpen}
-          setIsOpen={setIsMenuOpen}
-        />
-      </TableCell>
-    </TableRow>
+    <>
+      <TableRow
+        key={file.id}
+        onDoubleClick={() => {
+          return file.type === "CATALOG"
+            ? handleFolderClick(file)
+            : handleFileClick(file);
+        }}
+        draggable
+        onDragStart={(e: React.DragEvent<HTMLTableRowElement>) =>
+          handleDragStart(e, file)
+        }
+        onDragEnd={handleDragEnd}
+        onDrop={() => {
+          setIsDragOver(false);
+          handleDrop(file);
+        }}
+        onDragOver={() => setIsDragOver(true)}
+        onDragLeave={() => setIsDragOver(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onContextMenu={handleContextMenu}
+        className={cn(
+          isDragOver ? "dark:bg-neutral-900 bg-slate-200" : "",
+          isDragOver && draggedFileId === file.id
+            ? "opacity-75"
+            : "opacity-100",
+          "transition-all duration-200"
+        )}
+      >
+        <TableCell className="max-w-[200px]">
+          <FileNameCell file={file} />
+        </TableCell>
+        <TableCell>
+          <FileDateCell date={file.modifiedAt} />
+        </TableCell>
+        <TableCell>
+          <FileSizeCell file={file} />
+        </TableCell>
+        <TableCell>
+          <FileExtensionCell file={file} />
+        </TableCell>
+        <TableCell>
+          <FileHiddenActionsMenu
+            file={file}
+            isHidden={isHiddenActionsMenuVisible}
+          />
+        </TableCell>
+        <TableCell className="text-right">
+          <FileActionsMenu
+            file={file}
+            isOpen={isMenuOpen}
+            setIsOpen={setIsMenuOpen}
+          />
+        </TableCell>
+      </TableRow>
+    </>
   );
 };
 

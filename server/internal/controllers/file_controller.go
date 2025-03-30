@@ -528,3 +528,32 @@ func (fc *FileController) GetActivityLogForFile(c *gin.Context) {
 		"logs": logs,
 	})
 }
+
+func (fc *FileController) MoveFile(c *gin.Context) {
+	fileId := c.Param("fileId")
+	newParentId := c.Param("newParentId")
+
+	if fileId == "" || newParentId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": constants.ErrUnexpected,
+		})
+		return
+	}
+
+	userId := c.GetString("stringUserID")
+
+	err := fc.fileService.MoveFile(fileId, newParentId, userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": constants.SuccessMoveFile,
+	})
+	return
+
+}

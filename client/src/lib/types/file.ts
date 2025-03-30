@@ -92,6 +92,8 @@ export type FavoriteFileResponse = BaseResponse;
  */
 export type HideFileResponse = BaseResponse;
 
+export type MoveFileResponse = BaseResponse;
+
 /* ----------------------------- API Requests ------------------------------ */
 
 /**
@@ -160,6 +162,11 @@ export type HideFileRequest = {
   fileId: number;
 };
 
+export type MoveFileRequest = {
+  fileId: number;
+  newParentId: number;
+};
+
 /* ----------------------------- API Results ------------------------------ */
 
 /**
@@ -213,6 +220,10 @@ export type FavoriteFileResult = TrashCatalogResult & {
  */
 export type HideFileResult = TrashCatalogResult & {
   fileId: number;
+};
+
+export type MoveFileResult = MoveFileRequest & {
+  message: string;
 };
 
 /* ---------------------------- Icon Mapping ---------------------------- */

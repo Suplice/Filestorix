@@ -8,6 +8,7 @@ import { Section } from "@/lib/utils/utils";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import EmptyList from "./EmptyList";
+import useDragAndDropFiles from "@/hooks/use-drag-and-drop-files";
 
 const FileRouteManager = dynamic(
   () => import("@/components/sections/FileSection/FileList/FileRouteManager"),
@@ -40,6 +41,8 @@ const FileTable: React.FC<FileTableProps> = ({
 
   const [isDragging, setIsDragging] = useState(false);
 
+  const { isDraggingFile } = useDragAndDropFiles();
+
   const visibleFiles = useMemo(() => {
     return files.filter((file) => {
       if (!allowCatalogs && file.type === "CATALOG") return false;
@@ -61,9 +64,8 @@ const FileTable: React.FC<FileTableProps> = ({
         onDragOver={(e) => e.preventDefault()}
         onDragEnter={(e) => {
           e.preventDefault();
-          if (!isDragging) setIsDragging(true);
+          if (!isDragging) setIsDragging(isDraggingFile ? false : true);
         }}
-        onDrop={() => setIsDragging(false)}
       >
         <div className="w-full flex flex-row justify-between mb-4">
           <FileRouteManager />

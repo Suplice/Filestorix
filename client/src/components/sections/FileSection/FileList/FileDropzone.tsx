@@ -1,8 +1,8 @@
 "use client";
 
 import useFileActions from "@/hooks/use-file-actions";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import { useDropzone } from "react-dropzone";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { DropEvent, FileRejection, useDropzone } from "react-dropzone";
 
 interface FileDropzoneProps {
   isVisible: boolean;
@@ -17,16 +17,37 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
 }) => {
   const { uploadFiles } = useFileActions();
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
+  useEffect(() => {
+    const handleDragOver = (event: DragEvent) => {
+      event.preventDefault();
+    };
+
+    const handleDrop = (event: DragEvent) => {
+      event.preventDefault();
       setIsVisible(false);
-      uploadFiles({
-        files: acceptedFiles,
-        parentId: parentId,
-      });
-    },
-    [parentId, setIsVisible, uploadFiles]
-  );
+    };
+
+    window.addEventListener("dragover", handleDragOver);
+    window.addEventListener("drop", handleDrop);
+
+    return () => {
+      window.removeEventListener("dragover", handleDragOver);
+      window.removeEventListener("drop", handleDrop);
+    };
+  }, []);
+
+  const onDrop = (
+    acceptedFiles: File[],
+    fileRejections: FileRejection[],
+    e: DropEvent
+  ) => {
+    setIsVisible(false);
+    uploadFiles({
+      files: acceptedFiles,
+      parentId: parentId,
+    });
+    console.log(e);
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -45,8 +66,8 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   });
 
   useEffect(() => {
-    setIsVisible(isDragActive);
-  }, [isDragActive, setIsVisible]);
+    setIsVisible(isVisible);
+  }, [isDragActive]);
 
   if (!isVisible) return null;
 
@@ -56,6 +77,10 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       className={`sticky inset-0 w-full h-full flex items-center justify-center bg-black bg-opacity-70 z-50  ${
         isDragActive ? "opacity-100" : "opacity-50"
       }`}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        setIsVisible(false);
+      }}
     >
       <input {...getInputProps()} />
       <p className="text-white font-bold text-lg">Drop files here</p>

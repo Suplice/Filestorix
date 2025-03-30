@@ -12,6 +12,7 @@ import {
   removeFavoriteFile,
   hideFile,
   revealFile,
+  moveFile,
 } from "@/lib/api/file/filesApi";
 import {
   UserFile,
@@ -22,6 +23,7 @@ import {
   DeleteCatalogResult,
   FavoriteFileResult,
   HideFileResult,
+  MoveFileResult,
 } from "@/lib/types/file";
 import { getErrorMessage, getSuccessMessage } from "@/lib/utils/ApiResponses";
 import {
@@ -251,6 +253,20 @@ const useFileActions = () => {
     },
   });
 
+  const moveFileMutation = useMutation({
+    mutationFn: moveFile,
+    onSuccess: (result: MoveFileResult) => {
+      toast.success(getSuccessMessage(result.message));
+      updateFilesQueryData(queryClient, user!.ID, result.fileId, (file) => ({
+        ...file,
+        parentId: result.newParentId,
+      }));
+    },
+    onError: (error: Error) => {
+      toast.error(getErrorMessage(error.message));
+    },
+  });
+
   const updateFilesQueryData = (
     queryClient: QueryClient,
     userId: number | undefined,
@@ -278,6 +294,7 @@ const useFileActions = () => {
   };
 
   return {
+    moveFile: moveFileMutation.mutate,
     restoreFile: restoreFileMutation.mutate,
     deleteCatalog: deleteCatalogMutation.mutate,
     trashCatalog: trashCatalogMutation.mutate,

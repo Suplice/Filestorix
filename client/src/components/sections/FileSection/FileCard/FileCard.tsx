@@ -10,12 +10,17 @@ import FileDateCell from "@/components/ui/FileDateCell";
 import FileSizeCell from "@/components/ui/FileSizeCell";
 import FileExtensionCell from "@/components/ui/FileExtensionCell";
 import useFileHandlers from "@/hooks/use-file-handlers";
+import useDragAndDropFiles from "@/hooks/use-drag-and-drop-files";
+import { useState } from "react";
+import { cn } from "@/lib/utils/utils";
 
 interface FileCardProps {
   file: UserFile;
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file }) => {
+  const [isDragOver, setIsDragOver] = useState(false);
+
   const {
     isHiddenActionsMenuVisible,
     isMenuOpen,
@@ -27,6 +32,8 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
 
   const { handleFileClick, handleFolderClick } = useFileHandlers();
 
+  const { handleDragStart, handleDragEnd, handleDrop } = useDragAndDropFiles();
+
   return (
     <TableRow
       key={file.id}
@@ -35,9 +42,19 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
           ? handleFolderClick(file)
           : handleFileClick(file);
       }}
+      draggable
+      onDragStart={() => handleDragStart(file)}
+      onDragEnd={handleDragEnd}
+      onDrop={() => {
+        setIsDragOver(false);
+        handleDrop(file);
+      }}
+      onDragOver={() => setIsDragOver(true)}
+      onDragLeave={() => setIsDragOver(false)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onContextMenu={handleContextMenu}
+      className={cn(isDragOver ? "bg-slate-700" : "")}
     >
       <TableCell className="max-w-[200px]">
         <FileNameCell file={file} />

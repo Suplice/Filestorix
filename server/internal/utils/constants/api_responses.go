@@ -67,6 +67,9 @@ const (
 
 	//Success message, when toggling hidden files is succcessful
 	SuccessToggleHidden		= "SUCCESS_TOGGLE_HIDDEN"
+
+	// Success message, when moving file is successful
+	SuccessMoveFile			= "SUCCESS_MOVE_FILE"
 )
 // Api error messages
 const (
@@ -160,6 +163,9 @@ const (
 
 	// Error message, when toggling hidden files fails
 	ErrToggleHidden			= "ERROR_TOGGLE_HIDDEN"
+
+	// Error message, when moving file fails
+	ErrMoveFile 			= "ERROR_MOVE_FILE"
 
 )
 

@@ -3,10 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FileState {
   files: UserFile[];
+  isDraggingFile: boolean;
+  draggedFileId: number | undefined;
 }
 
 const initialState: FileState = {
   files: [],
+  isDraggingFile: false,
+  draggedFileId: undefined,
 };
 
 const fileSlice = createSlice({
@@ -44,9 +48,22 @@ const fileSlice = createSlice({
         file.isTrashed = true;
       }
     },
+    setIsDraggingFile: (state, action: PayloadAction<boolean>) => {
+      state.isDraggingFile = action.payload;
+    },
+    setDraggedFileId: (state, action: PayloadAction<number | undefined>) => {
+      state.draggedFileId = action.payload;
+    },
   },
 });
 
-export const { setFiles, addFile, removeFile, renameFile, trashFile } =
-  fileSlice.actions;
+export const {
+  setFiles,
+  addFile,
+  removeFile,
+  renameFile,
+  trashFile,
+  setIsDraggingFile,
+  setDraggedFileId,
+} = fileSlice.actions;
 export default fileSlice.reducer;

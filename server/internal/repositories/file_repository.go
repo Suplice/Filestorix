@@ -722,6 +722,29 @@ func (fr *FileRepository) GetActivityLogForFile(fileId string, userId string)([]
 	}
 
 	return logs, nil
+}
 
+func (fr *FileRepository) MoveFile(fileId uint, newParentId uint, userId uint) error {
+	tx := fr.db.Begin()
 
+	if tx.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrUnexpected)
+	}
+
+	result := tx.Model(&models.UserFile{}).Where("id = ?", fileId).Update("parent_id", newParentId)
+
+	if result.Error != nil {
+		tx.Rollback()
+		return errors.New(constants.ErrMoveFile)
+	}
+
+	if err := CreateActivityLog(tx, userId, &fileId, "MOVE", "Moved to another catalog"); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
 }

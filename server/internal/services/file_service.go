@@ -333,3 +333,25 @@ func (fs *FileService) RevealFile(fileId string, userId string) error {
 func (fs *FileService) GetActivityLogForFile(fileId string, userId string) ([]models.ActivityLog, error) {
 	return fs.fileRepository.GetActivityLogForFile(fileId, userId)
 }
+
+func (fs *FileService) MoveFile(fileId string, newParentId string, userId string) error {
+	uintFileId, err := convertStringToUint(fileId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	uintUserId, err := convertStringToUint(userId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidFileData)
+	}
+
+	uintNewParentId, err := convertStringToUint(newParentId)
+
+	if err != nil {
+		return errors.New(constants.ErrInvalidData)
+	}
+
+	return fs.fileRepository.MoveFile(uintFileId, uintNewParentId, uintUserId)
+}

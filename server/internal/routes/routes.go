@@ -64,6 +64,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 		fileRoutes.PATCH("/file/hide/:fileId", middleware.ValidateJWT(), fileController.HideFile)
 		fileRoutes.PATCH("/file/reveal/:fileId", middleware.ValidateJWT(), fileController.RevealFile)
 		fileRoutes.GET("/file/activitylog/:fileId", middleware.ValidateJWT(), fileController.GetActivityLogForFile)
+		fileRoutes.PATCH("/file/move/:fileId/:newParentId", middleware.ValidateJWT(), fileController.MoveFile)
 	}
 
 	settingRoutes := router.Group("/settings")

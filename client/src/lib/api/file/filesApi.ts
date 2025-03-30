@@ -15,6 +15,9 @@ import {
   HideFileRequest,
   HideFileResponse,
   HideFileResult,
+  MoveFileRequest,
+  MoveFileResponse,
+  MoveFileResult,
   RenameFileRequest,
   RenameFileResponse,
   RenameFileResult,
@@ -414,4 +417,28 @@ export const fetchFileActivityList = async (
   }
 
   return responseData.logs;
+};
+
+export const moveFile = async (
+  data: MoveFileRequest
+): Promise<MoveFileResult> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/files/file/move/${data.fileId}/${data.newParentId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+    }
+  );
+
+  const responseData: MoveFileResponse = await response.json();
+
+  if (!response.ok || !responseData.message) {
+    throw new Error(responseData.error);
+  }
+
+  return {
+    fileId: data.fileId,
+    newParentId: data.newParentId,
+    message: responseData.message,
+  };
 };

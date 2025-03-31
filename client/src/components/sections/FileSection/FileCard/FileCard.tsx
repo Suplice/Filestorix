@@ -44,7 +44,7 @@ const FileCard: React.FC<FileCardProps> = ({ file }) => {
             ? handleFolderClick(file)
             : handleFileClick(file);
         }}
-        draggable
+        draggable={!file.isTrashed}
         onDragStart={(e: React.DragEvent<HTMLTableRowElement>) =>
           handleDragStart(e, file)
         }

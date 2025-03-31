@@ -22,6 +22,7 @@ const useDragAndDropFiles = () => {
     event: React.DragEvent<HTMLTableRowElement>,
     file: UserFile
   ) => {
+    if (file.isTrashed) return;
     dispatch(setIsDraggingFile(true));
     dispatch(setDraggedFileId(file.id));
 
@@ -45,9 +46,7 @@ const useDragAndDropFiles = () => {
     dispatch(setIsDraggingFile(false));
     dispatch(setDraggedFileId(undefined));
 
-    if (ghostImage) {
-      document.body.removeChild(ghostImage);
-    }
+    removeGhostImage();
   };
 
   const handleDrop = (file: UserFile) => {
@@ -62,9 +61,7 @@ const useDragAndDropFiles = () => {
       moveFile({ fileId: draggedFileId, newParentId: file.id });
     }
 
-    if (ghostImage) {
-      document.body.removeChild(ghostImage);
-    }
+    removeGhostImage();
   };
 
   const handleRouteDrop = (catalogId: number | null) => {
@@ -79,6 +76,10 @@ const useDragAndDropFiles = () => {
       moveFile({ fileId: draggedFileId, newParentId: catalogId });
     }
 
+    removeGhostImage();
+  };
+
+  const removeGhostImage = () => {
     if (ghostImage) {
       document.body.removeChild(ghostImage);
     }

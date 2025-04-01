@@ -55,7 +55,7 @@ const CreateButton: React.FC<CreateButtonProps> = ({ parentId }) => {
           className="flex items-center gap-2 px-2 py-2 cursor-pointer"
         >
           <FolderPlus />
-          <p>Create Folder</p>
+          <p>Create Catalog</p>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

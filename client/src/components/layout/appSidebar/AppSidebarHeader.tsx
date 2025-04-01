@@ -61,7 +61,7 @@ const AppSidebarHeader = () => {
               }}
             >
               <FolderPlus />
-              <p>Create Folder</p>
+              <p>Create Catalog</p>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

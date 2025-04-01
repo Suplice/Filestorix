@@ -3,6 +3,7 @@ import fileReducer from "./fileSlice";
 import modalReducer from "./modalSlice";
 import settingsReducer from "./settingsSlice";
 import locationReducer from "./locationSlice";
+import filterReducer from "./filterSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     modal: modalReducer,
     settings: settingsReducer,
     location: locationReducer,
+    filters: filterReducer,
   },
 });
 

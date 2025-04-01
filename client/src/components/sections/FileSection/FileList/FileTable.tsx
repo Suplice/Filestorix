@@ -9,6 +9,8 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import EmptyList from "./EmptyList";
 import useDragAndDropFiles from "@/hooks/use-drag-and-drop-files";
+import useFilteredFiles from "@/hooks/use-filtered-files";
+import FileFilterMenu from "../FileFilters/FileFilterMenu";
 
 const FileRouteManager = dynamic(
   () => import("@/components/sections/FileSection/FileList/FileRouteManager"),
@@ -43,19 +45,21 @@ const FileTable: React.FC<FileTableProps> = ({
 
   const { isDraggingFile } = useDragAndDropFiles();
 
+  const { filteredFiles } = useFilteredFiles(files);
+
   const visibleFiles = useMemo(() => {
-    return files.filter((file) => {
+    return filteredFiles.filter((file) => {
       if (!allowCatalogs && file.type === "CATALOG") return false;
 
       if (allowCatalogs) return file.parentId === parentId;
 
       return true;
     });
-  }, [files, parentId, allowCatalogs]);
+  }, [filteredFiles, parentId, allowCatalogs]);
 
   const mainGalleryFiles = useMemo(() => {
-    return files.filter((file) => file.type !== "CATALOG").slice(0, 10);
-  }, [files]);
+    return filteredFiles.filter((file) => file.type !== "CATALOG").slice(0, 10);
+  }, [filteredFiles]);
 
   return (
     <>
@@ -72,9 +76,10 @@ const FileTable: React.FC<FileTableProps> = ({
           <CreateButton parentId={parentId} />
         </div>
 
-        {section === Section.Main && files.length > 0 && (
+        {section === Section.Main && mainGalleryFiles.length > 0 && (
           <FileMainGallery files={mainGalleryFiles} />
         )}
+        <FileFilterMenu />
 
         <FileTableBody files={visibleFiles} isLoading={isLoading} />
 

@@ -41,7 +41,7 @@ const FileActivityList: React.FC<FileActivityListProps> = ({ fileId }) => {
   }
 
   return (
-    <div className="p-4 ">
+    <div className="p-4 relative flex items-center justify-center flex-col ">
       <h2 className="text-2xl font-bold text-primary mb-4 ">File Activity</h2>
       {activities && activities.length === 0 ? (
         <Card className="text-center py-4">

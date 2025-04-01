@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/table";
 import FileActivityItem from "./FileActivityItem";
 import { ActivityLog } from "@/lib/types/activityLog";
+import useScrollPosition from "@/hooks/use-scroll-position";
+import ScrollBackUp from "../ScrollBackUp";
 
 interface FileActivityListBodyProps {
   activities: ActivityLog[];
@@ -15,8 +17,13 @@ interface FileActivityListBodyProps {
 const FileActivityListBody: React.FC<FileActivityListBodyProps> = ({
   activities,
 }) => {
+  const { containerRef, isScrolled, scrollBackUp } = useScrollPosition(50);
+
   return (
-    <div className="max-h-[300px] overflow-y-auto no-scrollbar relative ">
+    <div
+      ref={containerRef}
+      className="max-h-[300px] overflow-y-auto no-scrollbar  "
+    >
       <Table>
         <TableHeader className="sticky w-full bg-background">
           <TableRow>
@@ -31,6 +38,8 @@ const FileActivityListBody: React.FC<FileActivityListBodyProps> = ({
           ))}
         </TableBody>
       </Table>
+
+      {isScrolled && <ScrollBackUp onClick={scrollBackUp} />}
     </div>
   );
 };

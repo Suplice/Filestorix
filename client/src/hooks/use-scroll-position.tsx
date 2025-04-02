@@ -11,7 +11,6 @@ const useScrollPosition = (offset: number = 50) => {
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
-        console.log(containerRef.current.scrollTop);
         setIsScrolled(containerRef.current.scrollTop > offset);
       }
     };

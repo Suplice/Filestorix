@@ -12,10 +12,12 @@ const getSidebarWidth = () => {
 
 interface UiState {
   sidebarWidth: number;
+  tempWidth: number;
 }
 
 const initialState: UiState = {
   sidebarWidth: getSidebarWidth(),
+  tempWidth: 0,
 };
 
 const uiSlice = createSlice({
@@ -25,8 +27,11 @@ const uiSlice = createSlice({
     setSidebarWidth: (state, action: PayloadAction<number>) => {
       state.sidebarWidth = action.payload;
     },
+    setTempSidebarWidth: (state, action: PayloadAction<number>) => {
+      state.tempWidth = action.payload;
+    },
   },
 });
 
-export const { setSidebarWidth } = uiSlice.actions;
+export const { setSidebarWidth, setTempSidebarWidth } = uiSlice.actions;
 export default uiSlice.reducer;

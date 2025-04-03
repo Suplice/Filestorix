@@ -1,22 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const getSidebarWidth = () => {
-  const width = localStorage.getItem("sidebar-width");
-
-  if (!width) {
-    return 0;
-  }
-
-  return Number(width);
-};
-
 interface UiState {
   sidebarWidth: number;
   tempWidth: number;
 }
 
 const initialState: UiState = {
-  sidebarWidth: getSidebarWidth(),
+  sidebarWidth: 0,
   tempWidth: 0,
 };
 

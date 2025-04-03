@@ -4,6 +4,7 @@ import modalReducer from "./modalSlice";
 import settingsReducer from "./settingsSlice";
 import locationReducer from "./locationSlice";
 import filterReducer from "./filterSlice";
+import uiReducer from "./uiSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     settings: settingsReducer,
     location: locationReducer,
     filters: filterReducer,
+    ui: uiReducer,
   },
 });
 

@@ -1,4 +1,4 @@
-# Wezzer
+# Filestorix
 
 
 Filestorix is a modern web application inspired by Google Drive, designed to securely store files, create directories, and manage content with ease. It offers a rich set of features including settings customization, intuitive organization, and seamless file sharing. With its sleek design and robust architecture, Filestorix provides a reliable and user-friendly solution for everyday cloud storage needs.

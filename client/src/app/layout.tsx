@@ -9,6 +9,7 @@ import { store } from "@/store/store";
 import ModalRoot from "@/components/layout/ModalRoot/modalRoot";
 import GlobalEffects from "@/components/layout/GlobalEffects/GlobalEffects";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import NextTopLoader from "nextjs-toploader";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ export default function RootLayout({
               <ThemeProvider attribute="class" enableSystem>
                 <AuthProvider>
                   {children}
+                  <NextTopLoader />
                   <Toaster />
                   <ModalRoot />
                   <GlobalEffects />

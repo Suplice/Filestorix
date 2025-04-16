@@ -4,8 +4,11 @@ import AppTopbar from "@/components/layout/AppTopbar/AppTopbar";
 import ErrorLoadFilesFallback from "@/components/sections/FileSection/ErrorLoadFilesFallback";
 import ScrollBackUp from "@/components/sections/FileSection/ScrollBackUp";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import useLocation from "@/hooks/use-location";
 import useScrollPosition from "@/hooks/use-scroll-position";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 interface DriveLayoutProps {
@@ -14,6 +17,15 @@ interface DriveLayoutProps {
 
 const DriveLayout: React.FC<DriveLayoutProps> = ({ children }) => {
   const { containerRef, isScrolled, scrollBackUp } = useScrollPosition(100);
+
+  const { handleOriginalPathname } = useLocation();
+
+  const path = usePathname();
+
+  useEffect(() => {
+    handleOriginalPathname(path);
+  }, [path]);
+
   return (
     <SidebarProvider>
       <AppSidebar />

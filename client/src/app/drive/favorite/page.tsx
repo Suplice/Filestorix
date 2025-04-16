@@ -5,6 +5,7 @@ import { Section } from "@/lib/utils/utils";
 
 const Favorite = () => {
   const { favoriteFiles, isLoading } = useFile();
+
   return (
     <FileTable
       files={favoriteFiles}

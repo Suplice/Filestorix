@@ -1,5 +1,4 @@
 import { FileRoute } from "@/lib/types/file";
-import { Section } from "@/lib/utils/utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LocationState {
@@ -11,7 +10,7 @@ const initialState: LocationState = {
   parentId: null,
   route: [
     {
-      sectionName: Section.Main,
+      sectionName: "",
       catalogId: null,
     },
   ],

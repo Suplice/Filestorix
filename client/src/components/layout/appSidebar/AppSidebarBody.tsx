@@ -86,6 +86,7 @@ const AppSidebarBody = () => {
 
   useEffect(() => {
     if (pendingSection) {
+      console.log(pendingSection);
       dispatch(
         setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] })
       );

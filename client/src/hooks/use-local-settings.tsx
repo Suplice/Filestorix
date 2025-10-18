@@ -33,16 +33,8 @@ const useLocalSettings = ({
     const settingsToUpdate: SettingRecord[] = [
       { setting_key: "theme", setting_value: localGeneralOptions.theme },
       {
-        setting_key: "showHiddenFiles",
-        setting_value: localGeneralOptions.showHiddenFiles ? "true" : "false",
-      },
-      {
         setting_key: "openSearchBox",
         setting_value: localShortcuts.openSearchBox,
-      },
-      {
-        setting_key: "toggleHiddenFiles",
-        setting_value: localShortcuts.toggleHiddenFiles,
       },
     ];
 

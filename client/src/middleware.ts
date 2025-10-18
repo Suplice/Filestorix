@@ -12,13 +12,13 @@ export const middleware = async (req: NextRequest) => {
 
   if (pathname === "/") {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL("/drive", req.url));
+      return NextResponse.redirect(new URL("/home", req.url));
     } else {
       return NextResponse.redirect(new URL("/auth/signin", req.url));
     }
   }
 
-  if (pathname.startsWith("/drive") && !isLoggedIn) {
+  if (pathname.startsWith("/home") && !isLoggedIn) {
     return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
 

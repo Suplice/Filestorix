@@ -12,15 +12,7 @@ var BaseSettings = []dto.UserSetting{
 		SettingValue: "system",
 	},
 	{
-		SettingKey: "showHiddenFiles",
-		SettingValue: "false",
-	},
-	{
 		SettingKey: "openSearchBox",
 		SettingValue: "j",
-	},
-	{
-		SettingKey: "toggleHiddenFiles",
-		SettingValue: "h",
 	},
 }

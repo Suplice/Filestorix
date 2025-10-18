@@ -1,5 +1,4 @@
 "use client";
-import { Progress } from "@/components/ui/progress";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,96 +7,49 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import TooltipBox from "@/components/ui/tooltipBox";
-import { useFile } from "@/hooks/use-file";
 import { ScreenSize } from "@/lib/types/common";
-import { formatFileSize, Section } from "@/lib/utils/utils";
-import { setParentId, setRoute } from "@/store/locationSlice";
-import { HardDrive, Home, Inbox, Search, Star, Trash2 } from "lucide-react";
+import { Section } from "@/lib/utils/utils";
+import { Book, Home, Trophy, User, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
 
 const mainGroup = [
-  { title: "Home", url: "/drive", icon: Home, section: Section.Main },
+  { title: "Home", url: "/home", icon: Home, section: Section.Home },
   {
-    title: "My Drive",
-    url: "/drive/my-drive",
-    icon: Inbox,
-    section: Section.MyDrive,
+    title: "Courses",
+    url: "/courses",
+    icon: Book,
+    section: Section.Courses,
+  },
+  {
+    title: "Leaderboard",
+    url: "/leaderboard",
+    icon: Trophy,
+    section: Section.Leaderboard,
   },
 ];
 
 const secondGroup = [
   {
-    title: "Favorite",
-    url: "/drive/favorite",
-    icon: Star,
-    section: Section.Favorite,
+    title: "Friends",
+    url: "/friends",
+    icon: Users,
+    section: Section.Friends,
   },
   {
-    title: "Recent",
-    url: "/drive/recent",
-    icon: Search,
-    section: Section.Recent,
-  },
-];
-
-const thirdGroup = [
-  { title: "Trash", url: "/drive/trash", icon: Trash2, section: Section.Trash },
-  {
-    title: "Storage",
-    url: "/drive/storage",
-    icon: HardDrive,
-    section: Section.Main,
+    title: "Profile",
+    url: "/profile",
+    icon: User,
+    section: Section.Profile,
   },
 ];
 
 const AppSidebarBody = () => {
   const pathname = usePathname();
 
-  const [pendingSection, setPendingSection] = useState<Section | null>(null);
-
-  const { allFiles } = useFile();
-
-  const dispatch = useDispatch();
-
-  const { usedStorage, totalStorage, usagePercentage } = useMemo(() => {
-    const usedStorage = allFiles.reduce(
-      (sum, current) => sum + current.size,
-      0
-    );
-    const totalStorage = 0.05 * 1024 * 1024 * 1024;
-    const usagePercentage = (usedStorage / totalStorage) * 100;
-
-    const specifiedUsedStorage = formatFileSize(usedStorage);
-    const specifiedTotalStorage = formatFileSize(totalStorage);
-
-    return {
-      usedStorage: specifiedUsedStorage,
-      totalStorage: specifiedTotalStorage,
-      usagePercentage: usagePercentage,
-    };
-  }, [allFiles]);
-
-  const handleLinkChange = (section: Section) => {
-    setPendingSection(section);
-  };
-
-  useEffect(() => {
-    if (pendingSection) {
-      console.log(pendingSection);
-      dispatch(
-        setRoute({ route: [{ sectionName: pendingSection, catalogId: null }] })
-      );
-      dispatch(setParentId({ parentId: null }));
-      setPendingSection(null);
-    }
-  }, [pathname]);
-
   return (
     <>
-      {[mainGroup, secondGroup, thirdGroup].map((group, idx) => (
+      {[mainGroup, secondGroup].map((group, idx) => (
         <SidebarGroup key={idx}>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -107,7 +59,6 @@ const AppSidebarBody = () => {
                     <SidebarMenuButton asChild>
                       <Link
                         href={item.url}
-                        onClick={() => handleLinkChange(item.section)}
                         className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto "
                       >
                         <item.icon
@@ -130,32 +81,6 @@ const AppSidebarBody = () => {
                   </TooltipBox>
                 </SidebarMenuItem>
               ))}
-              {group.some((item) => item.title === "Storage") && (
-                <div className="px-2 py-1 select-none hidden sm:flex flex-col ">
-                  <Progress
-                    value={usagePercentage}
-                    className="h-2 rounded-full"
-                    color={
-                      usagePercentage > 80
-                        ? "bg-red-500"
-                        : usagePercentage > 50
-                        ? "bg-yellow-500"
-                        : "bg-green-500"
-                    }
-                  />
-                  <p className="text-sm  mt-1 flex flex-row flex-wrap gap-1">
-                    <span className="font-medium lg:text-lg md:text-base sm:text-sm  ">
-                      {usedStorage}
-                    </span>
-                    <span className="lg:text-lg md:text-base sm:text-sm  font-semibold ">
-                      of
-                    </span>
-                    <span className="font-medium lg:text-lg md:text-base sm:text-sm ">
-                      {totalStorage}
-                    </span>
-                  </p>
-                </div>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

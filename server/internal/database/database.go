@@ -39,11 +39,16 @@ func Connect(databaseURL string) (*gorm.DB, error) {
 func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&models.User{},
-		&models.UserFile{},
-		//&models.FavoriteFile{},
-		&models.Thrash{},
-		&models.ActivityLog{},
 		&models.Settings{},
+		&models.Task{},
+		&models.TaskQuestion{},
+		&models.UserTaskProgress{},
+		&models.UserAnswer{},
+		&models.CodeSubmission{},
+		&models.Badge{},
+		&models.UserBadge{},
+		&models.Friendship{},
+		&models.ActivityLog{},
 	)
 
 	if err != nil {

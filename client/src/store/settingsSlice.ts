@@ -8,12 +8,10 @@ export enum Theme {
 
 export interface Shortcuts {
   openSearchBox: string;
-  toggleHiddenFiles: string;
 }
 
 export interface GeneralOptions {
   theme: Theme;
-  showHiddenFiles: boolean;
 }
 
 export interface SettingsState {
@@ -24,11 +22,9 @@ export interface SettingsState {
 export const initialState: SettingsState = {
   generalOptions: {
     theme: Theme.system,
-    showHiddenFiles: false,
   },
   shortcuts: {
     openSearchBox: "j",
-    toggleHiddenFiles: "h",
   },
 };
 
@@ -46,13 +42,7 @@ const settingsSlice = createSlice({
     setTheme: (state, action: PayloadAction<Theme>) => {
       state.generalOptions.theme = action.payload;
     },
-    toggleHiddenFiles: (state) => {
-      state.generalOptions.showHiddenFiles =
-        !state.generalOptions.showHiddenFiles;
-    },
-    setHiddenFiles: (state, action: PayloadAction<boolean>) => {
-      state.generalOptions.showHiddenFiles = action.payload;
-    },
+
     setShortcut: (
       state,
       action: PayloadAction<{ type: keyof Shortcuts; key: string }>
@@ -64,13 +54,7 @@ const settingsSlice = createSlice({
   },
 });
 
-export const {
-  toggleTheme,
-  setTheme,
-  toggleHiddenFiles,
-  setHiddenFiles,
-  setShortcut,
-  setSettings,
-} = settingsSlice.actions;
+export const { toggleTheme, setTheme, setShortcut, setSettings } =
+  settingsSlice.actions;
 
 export default settingsSlice.reducer;

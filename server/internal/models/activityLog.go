@@ -6,16 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
+
+
 type ActivityLog struct {
 	gorm.Model
-	ID 				uint 			`gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID 			uint 			`gorm:"not null;constraint:OnDelete:CASCADE" json:"userId"`
-	FileID 			*uint 			`gorm:";constraint:OnDelete:CASCADE" json:"fileId"`
+	UserID     uint      `gorm:"not null;index" json:"user_id"`
+	ActionType string    `gorm:"size:255;not null" json:"action_type"` 
+	Description string   `gorm:"size:512" json:"description"`
+	PointsEarned int     `json:"points_earned"`
+	XPEarned     int     `json:"xp_earned"`
+	Timestamp    time.Time `gorm:"autoCreateTime" json:"timestamp"`
 
-	Action 			string 			`gorm:"size:255;not null" json:"action"`
-	Details 		string 			`gorm:"size:255" json:"details"`
-	PerformedAt 	time.Time 		`gorm:"autoCreateTime" json:"performedAt"`
-
-	User 			User 			`gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"-"`
-	File 			UserFile 		`gorm:"foreignKey:FileID;constraint:OnDelete:CASCADE" json:"-"`
+	User User `gorm:"foreignKey:UserID" json:"-"`
 }

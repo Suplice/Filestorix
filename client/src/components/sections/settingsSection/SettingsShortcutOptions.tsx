@@ -27,23 +27,6 @@ const SettingsShortcutOptions: React.FC<SettingsShortcutOptions> = ({
           className="border p-2 rounded w-16 text-center dark:bg-neutral-800 dark:border-neutral-700 place-self-end"
         />
       </div>
-
-      <div className="grid grid-cols-2">
-        <label className="font-semibold">Toggle Hidden Files (Ctrl + )</label>
-        <input
-          data-testid="toggleHiddenTestInput"
-          type="text"
-          maxLength={1}
-          value={localShortcuts.toggleHiddenFiles}
-          onChange={(e) =>
-            setLocalShortcuts((prev) => ({
-              ...prev,
-              toggleHiddenFiles: e.target.value.toLowerCase(),
-            }))
-          }
-          className="border p-2 rounded w-16 text-center dark:bg-neutral-800 dark:border-neutral-700 place-self-end"
-        />
-      </div>
     </div>
   );
 };

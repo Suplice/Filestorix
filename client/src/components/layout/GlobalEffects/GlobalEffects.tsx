@@ -4,7 +4,7 @@ import useSettings from "@/hooks/use-settings";
 import { useModal } from "@/hooks/use-modal";
 
 const GlobalShortcuts = () => {
-  const { settings, toggleHidden } = useSettings();
+  const { settings } = useSettings();
   const { showModal, hideModal, isOpen, modalType } = useModal();
 
   const [isAvailable, setIsAvailable] = useState(true);
@@ -25,22 +25,13 @@ const GlobalShortcuts = () => {
               }
               break;
             }
-            case settings.shortcuts.toggleHiddenFiles: {
-              setIsAvailable(false);
-              toggleHidden({ state: !settings.generalOptions.showHiddenFiles });
-              break;
-            }
           }
         }
       }
     };
 
     const up = (e: KeyboardEvent) => {
-      if (
-        e.key === settings.shortcuts.openSearchBox ||
-        e.key === settings.shortcuts.toggleHiddenFiles
-      )
-        setIsAvailable(true);
+      if (e.key === settings.shortcuts.openSearchBox) setIsAvailable(true);
     };
 
     document.addEventListener("keydown", down);
@@ -50,15 +41,7 @@ const GlobalShortcuts = () => {
       document.removeEventListener("keydown", down);
       document.removeEventListener("keyup", up);
     };
-  }, [
-    settings,
-    isOpen,
-    modalType,
-    showModal,
-    hideModal,
-    toggleHidden,
-    isAvailable,
-  ]);
+  }, [settings, isOpen, modalType, showModal, hideModal, isAvailable]);
 
   return null;
 };

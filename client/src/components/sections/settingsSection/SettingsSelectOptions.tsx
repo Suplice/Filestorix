@@ -41,27 +41,6 @@ const SettingsSelectOptions: React.FC<SettingsSelectOptionsProps> = ({
           </SelectContent>
         </Select>
       </div>
-
-      <div className="space-y-2">
-        <label className="font-semibold">Show hidden files</label>
-        <Select
-          value={localGeneralOptions.showHiddenFiles ? "True" : "False"}
-          onValueChange={(value: "True" | "False") =>
-            setLocalGeneralOptions((prev) => ({
-              ...prev,
-              showHiddenFiles: value === "True",
-            }))
-          }
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select theme" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="True">True</SelectItem>
-            <SelectItem value="False">False</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
     </>
   );
 };

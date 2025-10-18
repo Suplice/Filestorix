@@ -1,37 +1,4 @@
 import { z } from "zod";
-import { providers } from "../types/provider";
-import { roles } from "../types/role";
-
-/**
- * Schema for user object
- *
- * User object must have the following properties:
- * - id: number
- * - username: string
- * - email: string
- * - createdAt: string
- * - updatedAt: string
- * - provider: Provider
- * - avatarURL: string | null | undefined
- * - role: Role
- * - passwordHash: string | null | undefined
- * - lastLoginAt: string
- *
- */
-export const userSchema = z.object({
-  ID: z.number(),
-  username: z.string(),
-  email: z.string(),
-  createdAt: z.string().transform((value) => new Date(value)),
-  updatedAt: z.string().transform((value) => new Date(value)),
-  provider: z.enum(providers),
-  avatarURL: z.string().url().optional().nullable(),
-  role: z.enum(roles),
-  passwordHash: z.string().optional().nullable(),
-  lastLoginAt: z.string().transform((value) => new Date(value)),
-  GoogleId: z.string(),
-  GithubId: z.string(),
-});
 
 /**
  * Schema for password validation

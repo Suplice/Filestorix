@@ -1,13 +1,10 @@
-export type ActivityLog = {
-  id: number;
-  userId: number;
-  fileId: number;
-  action: string;
-  details: string;
-  performedAt: Date;
-};
+import { BaseModel } from "./common";
 
-export type FetchActivityLogResponse = {
-  logs?: ActivityLog[];
-  error?: string;
+export type ActivityLog = BaseModel & {
+  userId: number;
+  actionType: string;
+  description?: string;
+  pointsEarned?: number;
+  xpEarned?: number;
+  timestamp: string;
 };

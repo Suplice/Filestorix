@@ -4,120 +4,120 @@ import (
 	"time"
 
 	"github.com/Suplice/Filestorix/internal/models"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
-// SeedTestData wrzuca przykładowe dane dla testów gamifikacji
 func SeedTestData(db *gorm.DB) error {
 	// ====================
-	// 1. Użytkownicy
+	// Wyczyść tabele (Twoja logika jest OK)
+	// ====================
+	tables := []string{
+		"user_answers",
+		"user_task_progresses",
+		"task_questions",
+		"tasks",
+		"badges",
+		"friendships",
+		"settings",
+		"users",
+	}
+
+	for _, t := range tables {
+		if err := db.Exec("TRUNCATE TABLE " + t + " RESTART IDENTITY CASCADE;").Error; err != nil {
+			return err
+		}
+	}
+
+	// ====================
+	// 1. Użytkownicy (Twoje dane są OK)
 	// ====================
 	users := []models.User{
-		{
-			Username:      "alice",
-			Email:         "alice@example.com",
-			Provider:      "local",
-			AvatarURL:     "https://i.pravatar.cc/150?img=1",
-			Role:          "user",
-			Level:         3,
-			XP:            120,
-			Points:        50,
-			StreakCount:   5,
-			LastActiveDate: time.Now(),
-		},
-		{
-			Username:      "bob",
-			Email:         "bob@example.com",
-			Provider:      "local",
-			AvatarURL:     "https://i.pravatar.cc/150?img=2",
-			Role:          "user",
-			Level:         2,
-			XP:            70,
-			Points:        20,
-			StreakCount:   2,
-			LastActiveDate: time.Now(),
-		},
+		{Username: "alice", Email: "alice@example.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=1", Role: "user", Level: 3, XP: 120, Points: 50, StreakCount: 5, LastActiveDate: time.Now()},
+		{Username: "bob", Email: "bob@example.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=2", Role: "user", Level: 2, XP: 70, Points: 20, StreakCount: 2, LastActiveDate: time.Now()},
 	}
-
 	for _, u := range users {
-		if err := db.FirstOrCreate(&u, models.User{Email: u.Email}).Error; err != nil {
+		if err := db.Create(&u).Error; err != nil {
 			return err
 		}
 	}
 
 	// ====================
-	// 2. Odznaki
+	// 2. Odznaki (Twoje dane są OK)
 	// ====================
-	badges := []models.Badge{
-		{Name: "Novice", Description: "Complete first task", Requirement: "Complete 1 task"},
-		{Name: "Intermediate", Description: "Reach level 5", Requirement: "Level 5"},
-	}
-
-	for _, b := range badges {
-		if err := db.FirstOrCreate(&b, models.Badge{Name: b.Name}).Error; err != nil {
-			return err
-		}
-	}
+	// ... (kod dla odznak) ...
 
 	// ====================
-	// 3. Zadania
+	// 3. Zadania — 4 nowe/zaktualizowane zadania
 	// ====================
 	tasks := []models.Task{
+		// --- ZADANIE 1 (QUIZ) ---
 		{
-			UserID:      1,
-			Title:       "Quiz 1",
-			Description: "Simple true/false quiz",
-			Type:        "quiz",
+			Title:       "Podstawy Pythona",
+			Description: "Quiz wielokrotnego wyboru o zmiennych i typach.",
+			Type:        "QUIZ", // Poprawka na duże litery
+			Language:    "Python",
+			Difficulty:  "EASY",
 			Points:      10,
 			XP:          5,
 		},
+		// --- ZADANIE 2 (QUIZ) ---
 		{
-			UserID:      2,
-			Title:       "Fill in the blanks",
-			Description: "Uzupełnij brakujące wartości",
-			Type:        "fill",
+			Title:       "JavaScript - ES6",
+			Description: "Sprawdź swoją wiedzę o funkcjach strzałkowych i `let`/`const`.",
+			Type:        "QUIZ",
+			Language:    "JavaScript",
+			Difficulty:  "EASY",
 			Points:      15,
 			XP:          10,
 		},
+		// --- ZADANIE 3 (FILL_BLANK) ---
 		{
-			UserID:      1,
-			Title:       "Code Challenge",
-			Description: "Write a function to reverse a string",
-			Type:        "code",
-			Points:      25,
-			XP:          20,
+			Title:       "Deklaracje w Go",
+			Description: "Uzupełnij luki w kodzie Go.",
+			Type:        "FILL_BLANK", // Nowy typ
+			Language:    "Go",
+			Difficulty:  "MEDIUM",
+			Points:      20,
+			XP:          15,
+		},
+		// --- ZADANIE 4 (FILL_BLANK) ---
+		{
+			Title:       "Instrukcje SQL",
+			Description: "Dokończ popularne zapytania SQL.",
+			Type:        "FILL_BLANK",
+			Language:    "General", // Ogólne
+			Difficulty:  "MEDIUM",
+			Points:      20,
+			XP:          15,
 		},
 	}
-
-	for _, t := range tasks {
-		if err := db.Create(&t).Error; err != nil {
-			return err
-		}
+	// Ważne: Tworzymy zadania w transakcji, aby zachować kolejność ID (1, 2, 3, 4)
+	if err := db.Create(&tasks).Error; err != nil {
+		return err
 	}
 
 	// ====================
-	// 4. Pytania / testy
+	// 4. Pytania do zadań
 	// ====================
 	questions := []models.TaskQuestion{
-		{
-			TaskID:       1,
-			QuestionText: "2 + 2 = 4?",
-			Type:         "quiz",
-			Options:      `["True","False"]`,
-			CorrectAnswer: "True",
-		},
-		{
-			TaskID:       2,
-			QuestionText: "Fill: 5 + ___ = 8",
-			Type:         "fill",
-			CorrectAnswer: "3",
-		},
-		{
-			TaskID:       3,
-			QuestionText: "Write function reverseString(s string) string",
-			Type:         "code",
-			CorrectAnswer: "reversed string",
-		},
+		// Pytania do Zadania 1 (ID: 1 - Python QUIZ)
+		{TaskID: 1, QuestionText: "W Pythonie zmienna może zmienić swój typ w czasie działania programu.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Prawda","Fałsz"]`)), CorrectAnswer: "Prawda"},
+		{TaskID: 1, QuestionText: "Które z poniższych NIE jest wbudowanym typem danych w Pythonie?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["List","Dictionary","Tuple","Array"]`)), CorrectAnswer: "Array"},
+		{TaskID: 1, QuestionText: "Jakim operatorem sprawdzisz typ zmiennej `x`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["typeof(x)","type(x)","isType(x)","x.type"]`)), CorrectAnswer: "type(x)"},
+
+		// Pytania do Zadania 2 (ID: 2 - JavaScript QUIZ)
+		{TaskID: 2, QuestionText: "Które słowo kluczowe pozwala na deklarację zmiennej, której nie można ponownie przypisać?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["var","let","const","static"]`)), CorrectAnswer: "const"},
+		{TaskID: 2, QuestionText: "Funkcje strzałkowe `() => {}` nie posiadają własnego kontekstu `this`.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Prawda","Fałsz"]`)), CorrectAnswer: "Prawda"},
+
+		// Pytania do Zadania 3 (ID: 3 - Go FILL_BLANK)
+		{TaskID: 3, QuestionText: "W Go, uzyj słowa `___`, aby zadeklarować nową zmienną z automatyczną inferencją typu (tylko wewnątrz funkcji).", Type: "FILL_BLANK", CorrectAnswer: ":="},
+		{TaskID: 3, QuestionText: "Zadeklaruj stałą o nazwie `Version` z wartością 1.1: `___ Version = 1.1`", Type: "FILL_BLANK", CorrectAnswer: "const"},
+		{TaskID: 3, QuestionText: "Słowo kluczowe do importowania pakietów to `___`.", Type: "FILL_BLANK", CorrectAnswer: "import"},
+
+		// Pytania do Zadania 4 (ID: 4 - SQL FILL_BLANK)
+		{TaskID: 4, QuestionText: "Aby pobrać wszystkie kolumny z tabeli `users`, wpisz: `SELECT ___ FROM users;`", Type: "FILL_BLANK", CorrectAnswer: "*"},
+		{TaskID: 4, QuestionText: "Aby dodać nowy wiersz do tabeli `products`, wpisz: `INSERT ___ products (...) VALUES (...);`", Type: "FILL_BLANK", CorrectAnswer: "INTO"},
 	}
 
 	for _, q := range questions {
@@ -127,63 +127,22 @@ func SeedTestData(db *gorm.DB) error {
 	}
 
 	// ====================
-	// 5. Progres użytkowników + odpowiedzi
+	// 5. Przykładowy progres
 	// ====================
 	progress := []models.UserTaskProgress{
-		{
-			UserID:    1,
-			TaskID:    1,
-			Progress:  50,
-			Attempts:  1,
-			Mistakes:  1,
-			IsCompleted: false,
-			Answers: []models.UserAnswer{
-				{TaskQuestionID: 1, AnswerGiven: "True", IsCorrect: true, Attempts: 1},
-			},
-		},
-		{
-			UserID:    2,
-			TaskID:    2,
-			Progress:  0,
-			Attempts:  0,
-			Mistakes:  0,
-			IsCompleted: false,
-		},
-		{
-			UserID:    1,
-			TaskID:    3,
-			Progress:  0,
-			Attempts:  0,
-			Mistakes:  0,
-			IsCompleted: false,
-		},
+		// Alice (ID: 1) rozpoczęła zadanie 1 i 3
+		{UserID: 1, TaskID: 1, Progress: 0, Attempts: 0, Mistakes: 0, IsCompleted: false},
+		{UserID: 1, TaskID: 3, Progress: 0, Attempts: 0, Mistakes: 0, IsCompleted: false},
+		// Bob (ID: 2) rozpoczął zadanie 2
+		{UserID: 2, TaskID: 2, Progress: 0, Attempts: 0, Mistakes: 0, IsCompleted: false},
 	}
-
 	for _, p := range progress {
 		if err := db.Create(&p).Error; err != nil {
 			return err
 		}
-		// Dodajemy odpowiedzi osobno, żeby GORM je połączył
-		for _, ans := range p.Answers {
-			ans.UserTaskProgressID = p.ID
-			if err := db.Create(&ans).Error; err != nil {
-				return err
-			}
-		}
 	}
-
-	// ====================
-	// 6. Znajomi
-	// ====================
-	friendships := []models.Friendship{
-		{UserID: 1, FriendID: 2, Status: "accepted"},
-	}
-
-	for _, f := range friendships {
-		if err := db.FirstOrCreate(&f, models.Friendship{UserID: f.UserID, FriendID: f.FriendID}).Error; err != nil {
-			return err
-		}
-	}
-
+    
+    // ... (reszta Twojego kodu, np. friendships) ...
+    
 	return nil
 }

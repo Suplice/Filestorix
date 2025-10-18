@@ -1,7 +1,9 @@
 "use client";
 
+import TaskGrid from "@/components/ui/taskList/tasksList";
+
 const Home = () => {
-  return <div>courses</div>;
+  return <TaskGrid />;
 };
 
 export default Home;

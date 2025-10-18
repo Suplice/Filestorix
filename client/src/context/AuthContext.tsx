@@ -72,6 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated(true);
         setUser(result.user!);
       } else {
+        router.push("/auth/signin");
         removeCredentials();
       }
     } catch (error) {
@@ -117,7 +118,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(result.user!);
       setIsAuthenticated(true);
 
-      router.push("/drive");
+      router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
@@ -144,7 +145,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setUser(result.user!);
       setIsAuthenticated(true);
-      router.push("/drive");
+      router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
@@ -165,7 +166,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(result.user!);
       setIsAuthenticated(true);
 
-      router.push("/drive");
+      router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
       router.push("/auth/signin");
@@ -187,7 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(result.user!);
       setIsAuthenticated(true);
 
-      router.push("/drive");
+      router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
       router.push("/auth/signin");

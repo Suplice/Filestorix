@@ -26,7 +26,6 @@ func Connect(databaseURL string) (*gorm.DB, error) {
 	println(databaseURL)
 
 	db, err := gorm.Open(postgres.Open(databaseURL), &gorm.Config{})
-
 	if err != nil {
 		return nil, err
 	}

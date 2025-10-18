@@ -1,11 +1,39 @@
-import { z } from "zod";
-import { userSchema } from "../schemas/userRelatedSchemas";
-import { BaseResponse } from "./common";
+import { BaseResponse, BaseModel } from "./common";
+import { UserTaskProgress, Task } from "./task";
+import { UserBadge } from "./badge";
+import { ActivityLog } from "./activityLog";
 
-/**
- * User object
- */
-export type User = z.infer<typeof userSchema>;
+export type User = BaseModel & {
+  username: string;
+  email: string;
+  provider: string;
+  avatarURL: string;
+  role: string;
+  passwordHash?: string;
+  lastLoginAt?: string;
+  googleId?: string;
+  githubId?: string;
+  level: number;
+  xp: number;
+  points: number;
+  streakCount: number;
+  lastActiveDate?: string;
+
+  taskProgress?: UserTaskProgress[];
+  friends?: Friendship[];
+  badges?: UserBadge[];
+  activities?: ActivityLog[];
+  tasks?: Task[];
+};
+
+export type Friendship = {
+  ID: number;
+  userId: number;
+  friendId: number;
+  status: "pending" | "accepted" | "blocked";
+  createdAt: string;
+  friend?: User;
+};
 
 export type fetchUserResponse = BaseResponse & {
   user?: User;
@@ -15,26 +43,10 @@ export type fetchUserResult = fetchUserResponse & {
   ok?: boolean;
 };
 
-/**
- * Represents the response from a sign form submission.
- *
- * @property {User} [user] - The user object if the sign form submission is successful.
- * @property {string} [message] - An optional message providing additional information about the response.
- * @property {string} [error] - A string describing the error if the sign form submission fails.
- * @property {number} [sessionExpiresAt] - A number which describes date when auth cookie will expire
- */
 export type signFormResponse = BaseResponse & {
   user?: User;
 };
 
-/**
- * Represents the result of a sign form operation.
- *
- * @property {boolean} ok - Indicates whether the operation was successful.
- * @property {string} [error] - An optional error message if the operation failed.
- * @property {User} [user] - An optional user object if the operation was successful.
- * @property {string} [message] - An optional message received after success
- */
 export type signFormResult = signFormResponse & {
   ok?: boolean;
 };

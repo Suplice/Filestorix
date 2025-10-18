@@ -21,3 +21,10 @@ export enum ScreenSize {
   XXL = 1536,
   ALL = 999999,
 }
+
+export type BaseModel = {
+  ID: number;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
+};

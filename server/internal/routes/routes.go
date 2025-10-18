@@ -24,15 +24,17 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	authRepository := repositories.NewAuthRepository(db, logger)
 	userRepository := repositories.NewUserRepository(db, logger)
 	settingRepository := repositories.NewSettingRepository(db, logger)
+	taskRepository := repositories.NewTaskRepository(db, logger)
 
 	// Setup Services
 	userService := services.NewUserService(userRepository, logger)
 	authService := services.NewAuthService(logger, userService, authRepository)
 	settingService := services.NewSettingService(settingRepository, logger)
-
+	taskService := services.NewTaskService(taskRepository, logger)
 	// Setup Controllers
 	authController := controllers.NewAuthController(logger, authService)
 	settingController := controllers.NewSettingsController(logger, settingService)
+	taskController := controllers.NewTaskController(logger, taskService)
 
 	authRoutes := router.Group("/auth") 
 	{
@@ -49,5 +51,16 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	{
 		settingRoutes.GET("/", middleware.ValidateJWT(), settingController.GetAllUserSettings)
 		settingRoutes.PUT("/update", middleware.ValidateJWT(), settingController.UpdateSettingsForUser)
+	}
+
+	userRoutes := router.Group("users")
+	{
+		userRoutes.GET("/:id/tasks", middleware.ValidateJWT(), taskController.GetAllTasksForUser)
+	}
+
+	taskRoutes := router.Group("tasks")
+	{
+		taskRoutes.GET("/:taskId/tasks/:userId",middleware.ValidateJWT(), taskController.GetTaskForUser)
+		taskRoutes.POST("/submit-answer",middleware.ValidateJWT(), taskController.SubmitAnswer)
 	}
 }

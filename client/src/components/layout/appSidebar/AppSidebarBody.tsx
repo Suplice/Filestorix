@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import TooltipBox from "@/components/ui/tooltipBox";
+import { useAuth } from "@/context/AuthContext";
 import { ScreenSize } from "@/lib/types/common";
 import { Section } from "@/lib/utils/utils";
 import { Book, Home, Trophy, User, Users } from "lucide-react";
@@ -46,6 +47,7 @@ const secondGroup = [
 
 const AppSidebarBody = () => {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   return (
     <>
@@ -58,7 +60,11 @@ const AppSidebarBody = () => {
                   <TooltipBox message={item.title} visibleUntil={ScreenSize.SM}>
                     <SidebarMenuButton asChild>
                       <Link
-                        href={item.url}
+                        href={
+                          item.url === "/profile"
+                            ? `${item.url}/${user?.ID}`
+                            : item.url
+                        }
                         className="items-center justify-center flex sm:justify-normal p-0 gap-0 select-none overflow-auto "
                       >
                         <item.icon

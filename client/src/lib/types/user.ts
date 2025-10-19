@@ -26,6 +26,11 @@ export type User = BaseModel & {
   tasks?: Task[];
 };
 
+export type UserDTO = Pick<
+  User,
+  "ID" | "username" | "avatarURL" | "level" | "points"
+>;
+
 export type Friendship = {
   ID: number;
   userId: number;
@@ -34,6 +39,15 @@ export type Friendship = {
   createdAt: string;
   friend?: User;
 };
+
+export type FriendshipInfo = {
+  ID: number;
+  status: "pending" | "accepted" | "blocked";
+  createdAt: string;
+  otherUser: UserDTO;
+};
+
+export type SearchedUser = UserDTO;
 
 export type fetchUserResponse = BaseResponse & {
   user?: User;

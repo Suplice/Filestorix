@@ -189,9 +189,7 @@ var xpThresholds = map[int]int{
 	// ...dodaj więcej poziomów
 }
 
-// NOWA FUNKCJA POMOCNICZA: Przelicza progres, przyznaje nagrody i zwraca (czyUkończono, zaktualizowanyUser, błąd)
 func (tr *TaskRepository) recalculateProgressAndGrantRewards(tx *gorm.DB, progress *models.UserTaskProgress) (bool, *models.User, error) {
-	// 4.1: Oblicz procentowy postęp
 	var totalQuestions int64
 	if err := tx.Model(&models.TaskQuestion{}).Where("task_id = ?", progress.TaskID).Count(&totalQuestions).Error; err != nil {
 		return false, nil, err

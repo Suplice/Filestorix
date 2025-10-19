@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Task, TaskQuestion } from "@/lib/types/task";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, XCircle, Lightbulb, LogOut } from "lucide-react";
+import { CheckCircle, XCircle, Lightbulb, LogOut, Info } from "lucide-react";
 import { QuestionRenderer } from "./questionRenderer";
 
 // Definiujemy propsy, które komponent będzie przyjmować
@@ -18,6 +18,7 @@ type QuizViewProps = {
   totalQuestions: number;
   progressPercent: number;
   isHintUsed: boolean;
+  isPracticeMode: boolean;
   feedback: "correct" | "incorrect" | null;
   isSubmitting: boolean;
   currentAnswer: string;
@@ -35,6 +36,7 @@ export function QuizView({
   progressPercent,
   isHintUsed,
   feedback,
+  isPracticeMode,
   isSubmitting,
   currentAnswer,
   handleUseHint,
@@ -67,9 +69,17 @@ export function QuizView({
           className="flex items-center gap-2"
         >
           <Lightbulb className="w-4 h-4" />
-          {isHintUsed ? "Podpowiedź wykorzystana" : "Użyj podpowiedzi (1)"}
+          {isHintUsed ? "Hint used" : "Use hint (1)"}
         </Button>
       </div>
+      {isPracticeMode && (
+        <div className="mb-6 p-3 bg-blue-100 dark:bg-blue-900/50 border border-blue-500 rounded-lg text-center flex items-center justify-center gap-2">
+          <Info className="w-5 h-5 text-blue-700 dark:text-blue-300" />
+          <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+            Training mode, no xp nor points will be gained after completion.
+          </p>
+        </div>
+      )}
 
       <div
         className={`border rounded-lg p-6 mb-6 transition-all ${feedbackBg}`}

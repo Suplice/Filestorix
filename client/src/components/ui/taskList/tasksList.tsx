@@ -5,12 +5,16 @@ import { TaskListSkeleton } from "./taskListSkeleton";
 import { useTasks } from "@/hooks/use-tasks";
 import { TaskFilterControls } from "./taskFilterControls";
 import { TaskItem } from "./taskItem";
+import { useAuth } from "@/context/AuthContext";
 
 export default function TasksListWithFilters() {
   const { tasks, loading } = useTasks();
+  const { user } = useAuth();
 
-  const { filteredTasks, filters, setters, clearFilters } =
-    useTaskFilters(tasks);
+  const { filteredTasks, filters, setters, clearFilters } = useTaskFilters(
+    tasks,
+    user
+  );
 
   if (loading) {
     return <TaskListSkeleton />;

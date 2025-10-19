@@ -25,16 +25,28 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	userRepository := repositories.NewUserRepository(db, logger)
 	settingRepository := repositories.NewSettingRepository(db, logger)
 	taskRepository := repositories.NewTaskRepository(db, logger)
+	friendshipRepository := repositories.NewFriendshipRepository(db, logger)
+	leaderboardRepository := repositories.NewLeaderboardRepository(db, logger)
+	profileRepository := repositories.NewProfileRepository(db, logger)
+	searchRepository := repositories.NewSearchRepository(db, logger)
 
 	// Setup Services
 	userService := services.NewUserService(userRepository, logger)
 	authService := services.NewAuthService(logger, userService, authRepository)
 	settingService := services.NewSettingService(settingRepository, logger)
 	taskService := services.NewTaskService(taskRepository, logger)
+	friendshipService := services.NewFriendshipService(friendshipRepository, logger)
+	leaderboardService := services.NewLeaderboardService(leaderboardRepository, logger)
+	profileService := services.NewProfileService(logger, profileRepository)
+	searchService := services.NewSearchService(searchRepository, logger)
 	// Setup Controllers
 	authController := controllers.NewAuthController(logger, authService)
 	settingController := controllers.NewSettingsController(logger, settingService)
 	taskController := controllers.NewTaskController(logger, taskService)
+	friendshipController := controllers.NewFriendshipController(friendshipService, logger)
+	leaderboardController := controllers.NewLeaderboardController(leaderboardService, logger)
+	profileController := controllers.NewProfileController(profileService, logger)
+	searchController := controllers.NewSearchController(searchService, logger)
 
 	authRoutes := router.Group("/auth") 
 	{
@@ -56,11 +68,38 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	userRoutes := router.Group("users")
 	{
 		userRoutes.GET("/:id/tasks", middleware.ValidateJWT(), taskController.GetAllTasksForUser)
+		userRoutes.GET("/search",middleware.ValidateJWT(), friendshipController.SearchUsers)
 	}
 
 	taskRoutes := router.Group("tasks")
 	{
 		taskRoutes.GET("/:taskId/tasks/:userId",middleware.ValidateJWT(), taskController.GetTaskForUser)
 		taskRoutes.POST("/submit-answer",middleware.ValidateJWT(), taskController.SubmitAnswer)
+	}
+
+	friendshipRoutes := router.Group("friends")
+	{
+		friendshipRoutes.POST("/request",middleware.ValidateJWT(), friendshipController.SendFriendRequest)
+		friendshipRoutes.GET("/accepted",middleware.ValidateJWT(), friendshipController.GetAcceptedFriends)
+		friendshipRoutes.GET("/sent",middleware.ValidateJWT(), friendshipController.GetSentRequests)
+		friendshipRoutes.GET("/incoming",middleware.ValidateJWT(), friendshipController.GetIncomingRequests)
+		friendshipRoutes.DELETE("/request/:friendshipId",middleware.ValidateJWT(), friendshipController.CancelFriendRequest )
+		friendshipRoutes.PATCH("/request/:friendshipId",middleware.ValidateJWT(), friendshipController.RespondToFriendRequest)
+		friendshipRoutes.DELETE("/:friendshipId",middleware.ValidateJWT(), friendshipController.RemoveFriend)
+	}
+
+	leaderboardRoutes := router.Group("leaderboard")
+	{
+		leaderboardRoutes.GET(":criteria",middleware.ValidateJWT(), leaderboardController.GetLeaderboard)
+	}
+
+	profileRoutes := router.Group("/profile")
+	{
+		profileRoutes.GET("/:id",middleware.ValidateJWT(), profileController.GetProfile )
+	}
+
+	searchRoutes := router.Group("search")
+	{
+		searchRoutes.GET("", middleware.ValidateJWT(), searchController.Search )
 	}
 }

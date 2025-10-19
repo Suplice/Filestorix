@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, Star } from "lucide-react";
 // Usunięto import useTheme
 // import { useTheme } from "next-themes";
 
@@ -21,6 +21,8 @@ type TaskFilterControlsProps = {
     diffFilter: string;
     sortBy: string;
     searchQuery: string;
+    hideCompleted: boolean; // Nowy prop
+    recommendationFilter: string; // Nowy prop ("all" | "recommended")
   };
   setters: {
     setTypeFilter: (value: string) => void;
@@ -28,6 +30,8 @@ type TaskFilterControlsProps = {
     setDiffFilter: (value: string) => void;
     setSortBy: (value: string) => void;
     setSearchQuery: (value: string) => void;
+    setHideCompleted: (checked: boolean) => void; // Nowy prop
+    setRecommendationFilter: (value: "all" | "recommended") => void; // Nowy prop
   };
   clearFilters: () => void;
 };
@@ -50,6 +54,27 @@ export function TaskFilterControls({
         dark:bg-zinc-900 dark:border-zinc-800
       `}
     >
+      {/* --- NOWY SELECT: Rekomendowane / Wszystkie --- */}
+      <Select
+        value={filters.recommendationFilter}
+        onValueChange={
+          setters.setRecommendationFilter as (value: string) => void
+        } // Mały trick typów
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Show tasks" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Tasks</SelectItem>
+          <SelectItem value="recommended">
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4 text-yellow-500" />
+              <span>Recomended</span>
+            </div>
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
       <Input
         type="text"
         placeholder="Search by title..."
@@ -59,13 +84,12 @@ export function TaskFilterControls({
       />
 
       <Select value={filters.typeFilter} onValueChange={setters.setTypeFilter}>
-        <SelectTrigger className="w-[150px]">
+        <SelectTrigger className="w-[130px]">
           <SelectValue placeholder="Select type" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="QUIZ">Quiz</SelectItem>
-          <SelectItem value="CODE">Code</SelectItem>
-          <SelectItem value="COMPLETE">Complete</SelectItem>
+          <SelectItem value="FILL_BLANK">Fill Blank</SelectItem>
         </SelectContent>
       </Select>
 
@@ -122,6 +146,18 @@ export function TaskFilterControls({
           <SelectItem value="xp_desc">
             <div className="flex items-center gap-2">
               <span>XP</span>
+              <ArrowDown className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </SelectItem>
+          <SelectItem value="points_asc">
+            <div className="flex items-center gap-2">
+              <span>Points</span>
+              <ArrowUp className="w-4 h-4 text-muted-foreground" />
+            </div>
+          </SelectItem>
+          <SelectItem value="points_desc">
+            <div className="flex items-center gap-2">
+              <span>Points</span>
               <ArrowDown className="w-4 h-4 text-muted-foreground" />
             </div>
           </SelectItem>

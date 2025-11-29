@@ -23,12 +23,12 @@ export const middleware = async (req: NextRequest) => {
   }
 
   if (pathname.startsWith("/auth") && isLoggedIn) {
-    return NextResponse.redirect(new URL("/drive", req.url));
+    return NextResponse.redirect(new URL("/home", req.url));
   }
 
   return NextResponse.next();
 };
 
 export const config = {
-  matcher: ["/", "/drive/:path*", "/auth/:path*"],
+  matcher: ["/", "/home/:path*", "/auth/:path*"],
 };

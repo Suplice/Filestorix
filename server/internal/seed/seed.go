@@ -35,6 +35,7 @@ func SeedTestData(db *gorm.DB) error {
 	users := []models.User{
 		{Username: "alice", Email: "alice@example.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=1", Role: "user", Level: 3, XP: 120, Points: 50, StreakCount: 5, LastActiveDate: time.Now()},
 		{Username: "bob", Email: "bob@example.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=2", Role: "user", Level: 2, XP: 70, Points: 20, StreakCount: 2, LastActiveDate: time.Now()},
+		{Username: "admin", Email: "admin@admin.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=3", Role: "admin", PasswordHash: "$2a$10$K1Ap8iJfIq8APieGy5G3qukIAqP6ZfFc16uLxWcBPFf8TBjqzGnAq", Level: 2, XP: 70, Points: 20, StreakCount: 2, LastActiveDate: time.Now()},
 	}
 	for _, u := range users {
 		if err := db.Create(&u).Error; err != nil {

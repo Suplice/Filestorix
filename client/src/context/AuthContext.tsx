@@ -30,6 +30,7 @@ interface AuthContextType {
   setUser: Dispatch<SetStateAction<User | null>>;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   isAuthenticated: boolean;
+  isLoading: boolean; // <--- 1. DODANO: Flaga ładowania początkowego
   handleRegisterWithEmail: (data: signUpForm) => Promise<void>;
   handleLoginWithEmail: (data: signInForm) => Promise<void>;
   handleLogout: () => Promise<void>;
@@ -43,10 +44,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  // 2. DODANO: Inicjalizujemy jako true, bo przy starcie aplikacji nie wiemy kim jest user
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const queryClient = useQueryClient();
-
-  const [isPending, startTransition] = useTransition();
-
+  const [isPending, startTransition] = useTransition(); // To służy tylko do akcji (np. logout)
   const router = useRouter();
 
   useEffect(() => {
@@ -57,53 +59,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     fetchCredentials();
   }, []);
 
-  /**
-   * Asynchronously checks user credentials by fetching user data.
-   *
-   * If the fetch is successful and the result is ok, it sets the user as authenticated
-   * and updates the user state. If the fetch is unsuccessful or the result is not ok,
-   * it removes the credentials.
-   */
   const checkCredentials = async () => {
     try {
+      // Upewniamy się, że loading jest true przed startem (choć domyślnie jest)
+      setIsLoading(true);
+
       const result: fetchUserResult = await fetchUser();
 
       if (result.ok) {
         setIsAuthenticated(true);
         setUser(result.user!);
       } else {
-        router.push("/auth/signin");
+        // Opcjonalnie: Tutaj możesz zdecydować czy redirectować automatycznie.
+        // Czasami lepiej zostawić redirect poszczególnym stronom (Protected Routes).
+        // router.push("/auth/signin");
         removeCredentials();
       }
     } catch (error) {
       console.error(error);
       removeCredentials();
-      router.push("/auth/signin");
+      // router.push("/auth/signin");
+    } finally {
+      // 3. DODANO: Kluczowe - zawsze kończymy ładowanie, nawet jak błąd
+      setIsLoading(false);
     }
   };
 
-  /**
-   * Removes the user's authentication credentials.
-   *
-   * This function sets the authentication state to false and clears the user information.
-   */
   const removeCredentials = () => {
     setIsAuthenticated(false);
     setUser(null);
-
     queryClient.invalidateQueries({ queryKey: ["files"] });
   };
 
-  /**
-   * Handles user registration using email.
-   *
-   * This function attempts to register a user with the provided sign-up form data.
-   * If the registration is successful, it sets the user state, marks the user as authenticated,
-   * and redirects to the home page. If an error occurs, it displays an appropriate error message.
-   *
-   * @param {signUpForm} data - The sign-up form data containing user information.
-   * @returns {Promise<void>} - A promise that resolves when the registration process is complete.
-   */
   const handleRegisterWithEmail = async (data: signUpForm) => {
     try {
       const result = await signUpUsingEmail(data);
@@ -114,22 +101,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       toast.success(result.message);
-
       setUser(result.user!);
       setIsAuthenticated(true);
-
       router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
     }
   };
 
-  /**
-   * Handles user login using email and password.
-   *
-   * @param {signInForm} data - The sign-in form data containing email and password.
-   * @returns {Promise<void>} - A promise that resolves when the login process is complete.
-   */
   const handleLoginWithEmail = async (data: signInForm) => {
     try {
       const result = await signInUsingEmail(data);
@@ -140,9 +119,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       toast.success(result.message);
-
-      console.log("result user", result.user);
-
       setUser(result.user!);
       setIsAuthenticated(true);
       router.push("/home");
@@ -162,10 +138,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       toast.success(result.message);
-
       setUser(result.user!);
       setIsAuthenticated(true);
-
       router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
@@ -184,10 +158,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       toast.success(result.message);
-
       setUser(result.user!);
       setIsAuthenticated(true);
-
       router.push("/home");
     } catch {
       toast.error(ErrorMessage.UNEXPECTED_ERROR);
@@ -195,22 +167,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  /**
-   * Handles the user logout process.
-   *
-   * This function attempts to log out the user by calling the `logout` function.
-   * If the logout is successful, it removes the user's credentials, displays a success message,
-   * and redirects the user to the sign-in page.
-   * If the logout fails, it displays an error message.
-   * If an unexpected error occurs during the process, it displays a generic error message.
-   *
-   * @returns {Promise<void>} A promise that resolves when the logout process is complete.
-   */
   const handleLogout = async () => {
     startTransition(async () => {
       try {
         const result = await logout();
-
         if (result) {
           toast.success(SuccessMessage.LOGGED_OUT);
           router.push("/auth/signin");
@@ -231,6 +191,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser,
         setIsAuthenticated,
         isAuthenticated,
+        isLoading, // <--- 4. DODANO: Eksportujemy zmienną
         handleRegisterWithEmail,
         handleLoginWithEmail,
         handleLogout,
@@ -238,6 +199,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleLoginWithGithub,
       }}
     >
+      {/* UWAGA: isPending pochodzi z useTransition (logout). 
+         Dla initial load używamy teraz isLoading.
+         Możesz tu zostawić jak jest, ale layouty będą same obsługiwać isLoading.
+      */}
       {isPending ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
@@ -247,7 +212,7 @@ export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useUser must be used within an AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
   return context;

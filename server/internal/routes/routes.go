@@ -29,6 +29,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	leaderboardRepository := repositories.NewLeaderboardRepository(db, logger)
 	profileRepository := repositories.NewProfileRepository(db, logger)
 	searchRepository := repositories.NewSearchRepository(db, logger)
+	adminRepository := repositories.NewAdminRepository(db, logger);
 
 	// Setup Services
 	userService := services.NewUserService(userRepository, logger)
@@ -39,6 +40,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	leaderboardService := services.NewLeaderboardService(leaderboardRepository, logger)
 	profileService := services.NewProfileService(logger, profileRepository)
 	searchService := services.NewSearchService(searchRepository, logger)
+	adminService := services.NewAdminService(adminRepository, logger)
 	// Setup Controllers
 	authController := controllers.NewAuthController(logger, authService)
 	settingController := controllers.NewSettingsController(logger, settingService)
@@ -47,6 +49,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	leaderboardController := controllers.NewLeaderboardController(leaderboardService, logger)
 	profileController := controllers.NewProfileController(profileService, logger)
 	searchController := controllers.NewSearchController(searchService, logger)
+	adminController := controllers.NewAdminController(logger, adminService)
 
 	authRoutes := router.Group("/auth") 
 	{
@@ -101,5 +104,14 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	searchRoutes := router.Group("search")
 	{
 		searchRoutes.GET("", middleware.ValidateJWT(), searchController.Search )
+	}
+
+	adminRoutes := router.Group("/admin")
+	adminRoutes.Use(middleware.ValidateJWT(), middleware.AdminOnly(userService)) 
+	{
+		adminRoutes.GET("/stats", adminController.GetStats)       // Statystyki dashboardu
+		adminRoutes.DELETE("/users/:id", adminController.DeleteUser) // Usuwanie użytkownika
+		adminRoutes.DELETE("/tasks/:id", adminController.DeleteTask) // Usuwanie zadania
+		adminRoutes.GET("/users", adminController.GetAllUsers)
 	}
 }

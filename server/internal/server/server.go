@@ -33,7 +33,7 @@ func NewServer(db *gorm.DB, logger *slog.Logger) *Server {
 	}
 
 	server.router.Use(cors.New(cors.Config{
-		AllowOrigins: 		[]string{"http://localhost:3000"},
+		AllowOrigins: 		[]string{"http://localhost:3000", "http://localhost:8081"},
 		AllowMethods: 		[]string{"GET","POST","PUT","DELETE","PATCH","OPTIONS"},
 		AllowHeaders: 		[]string{"Origin","Content-Type","Authorization"},
 		AllowCredentials: true,

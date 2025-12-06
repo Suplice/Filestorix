@@ -33,7 +33,7 @@ export default function LeaderboardPage() {
     setError(null); // Clear previous errors
     const data = await fetchLeaderboard(activeTab, filter);
     if (data) {
-      setLeaderboardData(data);
+      setLeaderboardData(data.filter((i) => i.user.username !== "admin"));
     } else {
       setError(`Failed to load ${activeTab} leaderboard.`);
       toast.error(`Failed to load ${activeTab} leaderboard.`);

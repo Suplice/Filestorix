@@ -19,6 +19,7 @@ import { RNButton, RNSkeleton } from "@/components/nativeComponents";
 import { FriendListItem } from "@/components/friends/FriendListItem";
 import { IncomingRequestItem } from "@/components/friends/IncomingRequestItem";
 import { AddFriendModal } from "@/components/friends/AddFriendModal";
+import { Stack } from "expo-router";
 
 export default function FriendsScreen() {
   const { user } = useAuth();
@@ -94,6 +95,14 @@ export default function FriendsScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: "Friends",
+          headerStyle: { backgroundColor: "#020617" },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold" },
+        }}
+      />
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Friends</Text>

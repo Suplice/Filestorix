@@ -18,6 +18,7 @@ import {
 import { RNSkeleton } from "@/components/nativeComponents";
 import { Square, CheckSquare } from "lucide-react-native";
 import { LeaderboardItem } from "@/components/ui/leaderboard/LeaderboardItem";
+import { Stack } from "expo-router";
 
 export default function LeaderboardScreen() {
   const { user: currentUser } = useAuth();
@@ -39,7 +40,7 @@ export default function LeaderboardScreen() {
     try {
       const data = await fetchLeaderboard(activeTab, filter);
       if (data) {
-        setLeaderboardData(data);
+        setLeaderboardData(data.filter((i) => i.user.username !== "admin"));
       } else {
         // Obsługa błędu cicha lub toast, tutaj Alert dla RN
         setLeaderboardData([]);
@@ -90,6 +91,14 @@ export default function LeaderboardScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: "Leaderboard",
+          headerStyle: { backgroundColor: "#020617" },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold" },
+        }}
+      />
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Leaderboard</Text>

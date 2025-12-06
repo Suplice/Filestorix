@@ -13,7 +13,7 @@ type CodeSubmission struct {
 	TaskID      uint      `gorm:"not null;index" json:"task_id"`
 	Code        string    `gorm:"type:text" json:"code"`
 	Language    string    `gorm:"size:50" json:"language"`
-	Status      string    `gorm:"size:50" json:"status"` // "pending", "success", "error"
+	Status      string    `gorm:"size:50" json:"status"` 
 	Output      string    `gorm:"type:text" json:"output"`
 	ErrorMsg    string    `gorm:"type:text" json:"error_msg"`
 	SubmittedAt time.Time `gorm:"autoCreateTime" json:"submitted_at"`

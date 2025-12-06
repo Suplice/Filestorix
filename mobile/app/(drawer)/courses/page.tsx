@@ -9,7 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import { useAuth } from "@/context/AuthContext";
-import { useFocusEffect } from "expo-router"; // DODANO useFocusEffect
+import { Stack, useFocusEffect } from "expo-router"; // DODANO useFocusEffect
 import { GetAllTasksForUser } from "@/lib/api/task"; // Bezpośrednie API
 import { Task } from "@/lib/types/task";
 import { useTaskFilters } from "@/hooks/use-task-filters";
@@ -99,6 +99,14 @@ export default function CoursesScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: "Courses",
+          headerStyle: { backgroundColor: "#020617" },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold" },
+        }}
+      />
       {/* Header */}
       <View style={styles.header}>
         {/* Ładny Input Wyszukiwania */}

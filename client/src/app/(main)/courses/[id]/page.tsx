@@ -1,11 +1,8 @@
-// Ścieżka pliku: app/courses/[id]/page.tsx
-
 "use client";
 
-// Importuj 'use' z React
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext"; // Importuj useAuth
+import { useAuth } from "@/context/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import { LevelUpModal } from "@/components/ui/quiz/levelUpModal";
@@ -17,7 +14,6 @@ import { Task, UserAnswer } from "@/lib/types/task";
 import { useParams, useSearchParams } from "next/navigation";
 
 export default function CoursePage() {
-  // ✅ Pobierz parametry bezpośrednio z routera Next.js
   const params = useParams();
   const searchParams = useSearchParams();
 
@@ -26,8 +22,6 @@ export default function CoursePage() {
   const isPracticeMode = mode === "practice";
 
   const { user, setUser } = useAuth();
-
-  // --- Stany ---
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -42,101 +36,76 @@ export default function CoursePage() {
   const [showLevelUpModal, setShowLevelUpModal] = useState(false);
   const [newLevel, setNewLevel] = useState(0);
 
-  // --- ZAKTUALIZOWANY EFEKT ŁADOWANIA ---
   useEffect(() => {
-    // Czekaj na załadowanie użytkownika i ID
     if (!user || !id) {
-      // Jeśli nie ma użytkownika, ale jest ID, możemy ustawić ładowanie na false,
-      // aby uniknąć nieskończonego spinnera (AuthProvider powinien przekierować)
       if (id && !user) setLoading(false);
       return;
     }
 
     (async () => {
       setLoading(true);
-      // Resetuj stany quizu przy każdej zmianie ID, użytkownika lub trybu
       setCurrentQuestionIndex(0);
       setIsFinished(false);
       setHintedOptions(null);
       setIsHintUsed(false);
-      setShowLevelUpModal(false); // Ukryj modal na wypadek nawigacji wstecz/dalej
-      setTask(null); // Wyczyść stare zadanie na czas ładowania
+      setShowLevelUpModal(false);
+      setTask(null);
 
       try {
-        // Sprawdź czy ID jest poprawną liczbą
         const taskId = parseInt(id, 10);
         if (isNaN(taskId)) {
           console.error("Invalid task ID:", id);
           setLoading(false);
-          // Można tu ustawić stan błędu do wyświetlenia
           return;
         }
 
         const data = await GetTaskByIdForUser(taskId, user.ID);
 
         if (data) {
-          setTask(data); // Ustaw nowe zadanie
+          setTask(data);
           const questions = data.task_questions || [];
           const progress = data.user_progress;
 
-          // --- KLUCZOWA ZMIANA: Logika wznawiania ---
           if (progress) {
-            // Jeśli ukończony I NIE jest to tryb treningowy -> pokaż ekran "Ukończono"
             if (progress.is_completed && !isPracticeMode) {
               setIsFinished(true);
-            }
-            // Jeśli NIE jest to tryb treningowy -> znajdź pierwsze niepoprawnie odpowiedziane pytanie
-            else if (!isPracticeMode && !progress.is_completed) {
-              // Dodano !progress.is_completed
+            } else if (!isPracticeMode && !progress.is_completed) {
               const answers = progress.answers || [];
-              // Stwórz zbiór ID pytań, na które odpowiedziano POPRAWNIE
               const correctlyAnsweredIds = new Set(
                 answers
                   .filter((a: UserAnswer) => a.is_correct)
                   .map((a: UserAnswer) => a.task_question_id)
               );
 
-              // Znajdź indeks pierwszego pytania, którego ID NIE MA w zbiorze poprawnych
               let firstUnansweredIndex = -1;
               for (let i = 0; i < questions.length; i++) {
-                // Sprawdź czy pytanie istnieje (na wypadek usunięcia pytania z zadania)
                 if (
                   questions[i] &&
                   !correctlyAnsweredIds.has(questions[i].ID)
                 ) {
                   firstUnansweredIndex = i;
-                  break; // Znaleziono pierwsze nieodpowiedziane poprawnie
+                  break;
                 }
               }
 
               if (firstUnansweredIndex !== -1) {
-                // Ustaw indeks na znalezione pytanie
                 setCurrentQuestionIndex(firstUnansweredIndex);
               } else if (questions.length > 0) {
-                // Jeśli nie znaleziono (-1), a są pytania, to znaczy, że wszystkie są poprawnie odpowiedziane
-                // Ustaw status na ukończony (nawet jeśli backend tego nie zwrócił - failsafe)
                 setIsFinished(true);
               }
-              // Jeśli nie ma pytań (questions.length === 0), isFinished pozostaje false
             }
-            // Jeśli jest to tryb treningowy, currentQuestionIndex pozostaje 0
           }
-          // Jeśli nie ma progresu (nowe zadanie dla usera), currentQuestionIndex pozostaje 0
         } else {
           console.error("Task data not received for ID:", taskId);
-          // Można ustawić stan błędu
         }
       } catch (error) {
         console.error("Failed to fetch task details:", error);
-        // Można ustawić stan błędu
       } finally {
         setLoading(false);
       }
     })();
-    // Zależności useEffect - wykonaj ponownie, gdy zmieni się user, id lub tryb
-  }, [user, id, isPracticeMode, setUser]); // Dodano setUser do zależności, aby uniknąć ostrzeżeń lintera
+  }, [user, id, isPracticeMode, setUser]);
 
-  // Logika podpowiedzi (bez zmian)
   const handleUseHint = () => {
     if (isHintUsed || !task) return;
 
@@ -162,7 +131,6 @@ export default function CoursePage() {
     }
   };
 
-  // Logika sprawdzania odpowiedzi (bez zmian w stosunku do poprzedniej wersji)
   const handleCheckAnswer = async () => {
     if (isSubmitting || !task || !user || !currentAnswer) return;
 
@@ -177,7 +145,6 @@ export default function CoursePage() {
     let didLevelUp = false;
     let isTaskCompleted = false;
 
-    // --- LOGIKA DLA TRYBU TRENINGOWEGO ---
     if (isPracticeMode) {
       const correctAnswer = currentQuestion.correct_answer;
       isCorrect = stringsEqualFold(currentAnswer, correctAnswer);
@@ -209,7 +176,6 @@ export default function CoursePage() {
       return;
     }
 
-    // --- NORMALNA LOGIKA (gdy nie jest to tryb treningowy) ---
     try {
       const response = await SubmitAnswerForTask(
         task.ID,
@@ -233,9 +199,7 @@ export default function CoursePage() {
       } else {
         setFeedback("incorrect");
         isCorrect = false;
-        // Jeśli odpowiedź jest niepoprawna, a backend zwrócił błąd (np. zadanie już ukończone), obsłuż to
         if (!response) {
-          // Można tu dodać logikę sprawdzania statusu błędu z fetch, jeśli API go zwraca
           console.error(
             "API did not return a valid response for incorrect answer."
           );
@@ -261,17 +225,14 @@ export default function CoursePage() {
             setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
           }
         }
-        // Jeśli !isCorrect, nic nie rób
       }, 1500);
     } catch (error) {
       console.error("Błąd podczas wysyłania odpowiedzi:", error);
-      // Sprawdź czy błąd zawiera informację z backendu
-      // (zakładając, że backend zwraca błąd z `errors.New("task already completed")`)
       if (
         error instanceof Error &&
         error.message?.includes("task already completed")
       ) {
-        setIsFinished(true); // Ustaw na ukończony, jeśli backend tak mówi
+        setIsFinished(true);
         console.warn(
           "Attempted to submit answer for an already completed task."
         );
@@ -280,27 +241,22 @@ export default function CoursePage() {
     }
   };
 
-  // Funkcja zamykania modala (bez zmian)
   const handleCloseLevelUpModal = () => {
     setShowLevelUpModal(false);
     setIsFinished(true);
   };
 
-  // Funkcja pomocnicza (bez zmian)
   const stringsEqualFold = (a: string, b: string): boolean => {
-    // Dodatkowe zabezpieczenie przed null/undefined
     if (typeof a !== "string" || typeof b !== "string") {
       return false;
     }
     return a.trim().toLowerCase() === b.trim().toLowerCase();
   };
 
-  // --- Renderowanie ---
   if (loading) {
     return <QuizLoadingSkeleton />;
   }
 
-  // Jeśli nie ma zadania po załadowaniu (np. błąd API lub zły ID)
   if (!task) {
     return (
       <div className="p-8 text-center text-red-500">
@@ -310,7 +266,6 @@ export default function CoursePage() {
   }
 
   const questions = task.task_questions || [];
-  // Bezpieczne pobranie aktualnego pytania
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
@@ -323,14 +278,13 @@ export default function CoursePage() {
 
       {isFinished ? (
         <QuizFinishedScreen task={task} isPracticeMode={isPracticeMode} />
-      ) : currentQuestion ? ( // Sprawdź, czy currentQuestion istnieje
+      ) : currentQuestion ? (
         <QuizView
           task={task}
           currentQuestion={currentQuestion}
           optionsForCurrentQuestion={hintedOptions || currentQuestion.options}
-          currentQuestionIndex={currentQuestionIndex} // Przekaż aktualny indeks
+          currentQuestionIndex={currentQuestionIndex}
           totalQuestions={questions.length}
-          // Oblicz postęp na podstawie aktualnego indeksu
           progressPercent={
             questions.length > 0
               ? (currentQuestionIndex / questions.length) * 100
@@ -346,7 +300,6 @@ export default function CoursePage() {
           isPracticeMode={isPracticeMode}
         />
       ) : (
-        // Ten widok pojawi się, jeśli zadanie istnieje, ale nie ma pytań
         <div className="p-8 text-center text-muted-foreground">
           To zadanie nie zawiera jeszcze żadnych pytań.
           <div className="mt-4">

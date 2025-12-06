@@ -13,17 +13,16 @@ const useScrollPosition = (offset: number = 50) => {
     scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
 
-  // Tę funkcję podpinasz pod prop `onScroll` w ScrollView
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     setIsScrolled(offsetY > offset);
   };
 
   return {
-    scrollRef, // Podepnij to pod ref ScrollView
+    scrollRef,
     isScrolled,
     scrollBackUp,
-    handleScroll, // Podepnij to pod onScroll={handleScroll} i ustaw scrollEventThrottle={16}
+    handleScroll,
   };
 };
 

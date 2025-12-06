@@ -14,11 +14,10 @@ import {
   MaterialCommunityIcons,
   FontAwesome5,
   AntDesign,
-  MaterialIcons, // Dodano dla ikony Admina
+  MaterialIcons,
 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// --- LOGIKA XP ---
 const xpThresholds: { [key: number]: number } = {
   1: 0,
   2: 100,
@@ -56,8 +55,6 @@ const getXpForNextLevel = (currentLevel: number, currentXp: number) => {
   };
 };
 
-// --- KOMPONENT DRAWERA ---
-
 export default function CustomDrawerContent(props: any) {
   const { user, handleLogout } = useAuth();
   const router = useRouter();
@@ -69,7 +66,6 @@ export default function CustomDrawerContent(props: any) {
 
   const xpStats = user ? getXpForNextLevel(user.level, user.xp) : null;
 
-  // Sprawdzamy, czy użytkownik jest adminem
   const isAdmin = user?.role?.toLowerCase() === "admin";
 
   const menuItems = [
@@ -98,18 +94,15 @@ export default function CustomDrawerContent(props: any) {
     if (cleanItemRoute.includes("/profile")) {
       return pathname.includes("/profile");
     }
-    // Dla admina sprawdzamy czy ścieżka zaczyna się od /admin
     if (itemRoute.includes("/(admin)")) {
-      return pathname.startsWith("/(admin)"); // lub po prostu "/admin"
+      return pathname.startsWith("/(admin)");
     }
     return pathname.includes(cleanItemRoute);
   };
 
   return (
     <View style={styles.container}>
-      {/* --- SEKCJA NAGŁÓWKA --- */}
       <SafeAreaView edges={["top"]} style={styles.headerContainer}>
-        {/* User Info Row */}
         <View style={styles.userInfo}>
           <View style={styles.avatarContainer}>
             {user?.avatarURL ? (
@@ -134,7 +127,6 @@ export default function CustomDrawerContent(props: any) {
           </View>
         </View>
 
-        {/* Stats Container */}
         {user && xpStats && (
           <View style={styles.statsCard}>
             <View style={styles.statsTopRow}>
@@ -179,7 +171,6 @@ export default function CustomDrawerContent(props: any) {
         )}
       </SafeAreaView>
 
-      {/* --- SEKCJA MENU --- */}
       <ScrollView
         style={styles.menuContainer}
         contentContainerStyle={{ paddingVertical: 10 }}
@@ -206,7 +197,6 @@ export default function CustomDrawerContent(props: any) {
           );
         })}
 
-        {/* --- PRZYCISK ADMINA (Tylko jeśli isAdmin) --- */}
         {isAdmin && (
           <>
             <View style={styles.menuDivider} />
@@ -215,7 +205,6 @@ export default function CustomDrawerContent(props: any) {
                 styles.menuItem,
                 isRouteActive("/(drawer)/admin/page") && styles.menuItemActive,
               ]}
-              // Przekierowanie do layoutu admina
               onPress={() => handleNavigation("/(drawer)/admin/page")}
             >
               <MaterialIcons
@@ -223,7 +212,7 @@ export default function CustomDrawerContent(props: any) {
                 size={22}
                 color={
                   isRouteActive("/(drawer)/admin/page") ? "#6366f1" : "#ef4444"
-                } // Czerwony wyróżnik dla admina
+                }
               />
               <Text
                 style={[
@@ -244,7 +233,6 @@ export default function CustomDrawerContent(props: any) {
         )}
       </ScrollView>
 
-      {/* --- SEKCJA STOPKI --- */}
       <View style={styles.footerContainer}>
         <TouchableOpacity
           style={styles.footerItem}
@@ -322,7 +310,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 
-  // --- Statystyki ---
   statsCard: {
     backgroundColor: "#1e293b",
     borderRadius: 16,
@@ -388,7 +375,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
 
-  // --- Menu ---
   menuContainer: {
     flex: 1,
     paddingHorizontal: 12,

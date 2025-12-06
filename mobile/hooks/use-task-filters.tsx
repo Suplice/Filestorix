@@ -13,7 +13,6 @@ type StoredFilters = {
   show?: "all" | "recommended";
 };
 
-// Funkcja pomocnicza do zapisu
 const saveFiltersToStorage = async (
   userId: number | undefined,
   filters: StoredFilters
@@ -49,7 +48,6 @@ const getIdealDifficulty = (level: number): "EASY" | "MEDIUM" | "HARD" => {
 export function useTaskFilters(tasks: Task[], user: User | null) {
   const userId = user?.ID;
 
-  // Stany inicjalizujemy puste/domyślne
   const [typeFilter, setTypeFilter] = useState("");
   const [langFilter, setLangFilter] = useState("");
   const [diffFilter, setDiffFilter] = useState("");
@@ -59,9 +57,8 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
   const [recommendationFilter, setRecommendationFilter] = useState<
     "all" | "recommended"
   >("all");
-  const [isLoaded, setIsLoaded] = useState(false); // Flaga czy wczytano z pamięci
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // 1. Odczyt z AsyncStorage przy starcie
   useEffect(() => {
     const loadFilters = async () => {
       if (!userId) return;
@@ -87,9 +84,8 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     loadFilters();
   }, [userId]);
 
-  // 2. Zapis do AsyncStorage przy zmianach
   useEffect(() => {
-    if (!isLoaded || !userId) return; // Nie zapisuj zanim nie wczytasz (żeby nie nadpisać pustymi)
+    if (!isLoaded || !userId) return;
 
     const currentFilters: StoredFilters = {
       type: typeFilter || undefined,
@@ -126,7 +122,6 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     }
   };
 
-  // Logika filtrowania (bez zmian, czysty JS)
   const filteredTasks = useMemo(() => {
     let result = [...tasks];
 
@@ -272,6 +267,6 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
       setRecommendationFilter,
     },
     clearFilters,
-    isLoaded, // Może się przydać w UI żeby pokazać spinner jak ładuje filtry
+    isLoaded,
   };
 }

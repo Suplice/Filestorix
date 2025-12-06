@@ -1,5 +1,3 @@
-// Ścieżka: lib/api/leaderboard.ts
-
 import {
   LeaderboardEntry,
   LeaderboardCriteria,

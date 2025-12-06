@@ -22,7 +22,6 @@ export function LeaderboardItem({
   const fallbackName =
     entry.user.username?.substring(0, 2).toUpperCase() ?? "?";
 
-  // Określenie, co wyświetlamy jako wartość (Level, Punkty czy Kursy)
   let ValueIcon;
   let valueColor;
   let displayValue = entry.value;
@@ -30,15 +29,15 @@ export function LeaderboardItem({
   switch (criteria) {
     case "level":
       ValueIcon = Star;
-      valueColor = "#facc15"; // Yellow-400
+      valueColor = "#facc15";
       break;
     case "points":
       ValueIcon = Coins;
-      valueColor = "#f59e0b"; // Amber-500
+      valueColor = "#f59e0b";
       break;
     case "completed":
       ValueIcon = CheckSquare;
-      valueColor = "#3b82f6"; // Blue-500
+      valueColor = "#3b82f6";
       displayValue = entry.completedCourses ?? entry.value;
       break;
     default:
@@ -56,26 +55,22 @@ export function LeaderboardItem({
   return (
     <TouchableOpacity
       onPress={handlePress}
-      style={[
-        styles.container,
-        isCurrentUser && styles.currentUserContainer, // Wyróżnienie zalogowanego usera
-      ]}
+      style={[styles.container, isCurrentUser && styles.currentUserContainer]}
     >
       <View style={styles.leftSide}>
         {/* Rank / Medal */}
         <View style={styles.rankContainer}>
           {entry.rank === 1 ? (
-            <Medal size={24} color="#eab308" /> // Gold
+            <Medal size={24} color="#eab308" />
           ) : entry.rank === 2 ? (
-            <Medal size={24} color="#94a3b8" /> // Silver/Slate
+            <Medal size={24} color="#94a3b8" />
           ) : entry.rank === 3 ? (
-            <Medal size={24} color="#a16207" /> // Bronze
+            <Medal size={24} color="#a16207" />
           ) : (
             <Text style={styles.rankText}>{entry.rank}</Text>
           )}
         </View>
 
-        {/* Avatar i Nazwa */}
         <RNAvatar
           src={entry.user.avatarURL}
           fallback={fallbackName}
@@ -91,7 +86,6 @@ export function LeaderboardItem({
         </View>
       </View>
 
-      {/* Wartość po prawej */}
       <View style={styles.valueContainer}>
         <ValueIcon size={16} color={valueColor} style={{ marginRight: 6 }} />
         <Text style={styles.valueText}>{displayValue}</Text>
@@ -108,16 +102,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#334155", // Slate border
+    borderBottomColor: "#334155",
     backgroundColor: "transparent",
   },
   currentUserContainer: {
-    backgroundColor: "rgba(99, 102, 241, 0.15)", // Indigo z przezroczystością
+    backgroundColor: "rgba(99, 102, 241, 0.15)",
     borderColor: "rgba(99, 102, 241, 0.3)",
     borderWidth: 1,
     borderRadius: 8,
-    borderBottomWidth: 1, // Reset borderu dolnego wewnątrz kontenera
-    marginVertical: 2, // Mały odstęp żeby border był widoczny
+    borderBottomWidth: 1,
+    marginVertical: 2,
   },
   leftSide: {
     flexDirection: "row",
@@ -133,7 +127,7 @@ const styles = StyleSheet.create({
   rankText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#94a3b8", // Muted text
+    color: "#94a3b8",
   },
   userInfo: {
     marginLeft: 12,
@@ -146,7 +140,7 @@ const styles = StyleSheet.create({
   },
   currentUserText: {
     fontWeight: "700",
-    color: "#818cf8", // Indigo-400
+    color: "#818cf8",
   },
   valueContainer: {
     flexDirection: "row",

@@ -6,7 +6,6 @@ import { Lightbulb, Info, CheckCircle, XCircle } from "lucide-react-native";
 import { QuestionRenderer } from "./QuestionRenderer";
 import { useRouter } from "expo-router";
 
-// ... (typy Props bez zmian)
 type QuizViewProps = {
   task: Task;
   currentQuestion: TaskQuestion;
@@ -136,9 +135,8 @@ export function QuizView({
           <RNButton
             title={isSubmitting ? "Checking..." : "Check"}
             onPress={handleCheckAnswer}
-            // --- NAPRAWA LOGIKI ---
-            loading={isSubmitting} // Spinner tylko gdy wysyła
-            disabled={!currentAnswer} // Disabled gdy puste
+            loading={isSubmitting}
+            disabled={!currentAnswer}
             style={{ minWidth: 100 }}
           />
         )}

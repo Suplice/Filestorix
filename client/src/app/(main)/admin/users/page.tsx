@@ -25,7 +25,6 @@ import { UserDTO } from "@/lib/types/user";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 
-// --- Custom Modal Component ---
 function DeleteConfirmationModal({
   isOpen,
   title,
@@ -82,16 +81,12 @@ export default function AdminUsersPage() {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState<UserDTO[]>([]);
 
-  // loading: pobieranie danych z API
   const [loading, setLoading] = useState(true);
-  // isTyping: użytkownik pisze, ale debounce jeszcze nie odpalił API
   const [isTyping, setIsTyping] = useState(false);
 
-  // Stan dla modala
   const [userToDelete, setUserToDelete] = useState<UserDTO | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Funkcja filtrująca wyniki (usuwa obecnego admina z listy)
   const filterResults = useCallback(
     (data: UserDTO[]) => {
       if (!currentUser) return data;
@@ -100,7 +95,6 @@ export default function AdminUsersPage() {
     [currentUser]
   );
 
-  // Funkcja pobierająca wszystkich
   const fetchAll = useCallback(async () => {
     setLoading(true);
     const results = await getAllUsers();
@@ -108,7 +102,6 @@ export default function AdminUsersPage() {
     setLoading(false);
   }, [filterResults]);
 
-  // Funkcja wyszukująca
   const fetchSearchResults = useCallback(
     async (searchQuery: string) => {
       setLoading(true);
@@ -119,7 +112,6 @@ export default function AdminUsersPage() {
     [filterResults]
   );
 
-  // --- DEBOUNCE EFFECT ---
   useEffect(() => {
     if (!currentUser) return;
 
@@ -137,7 +129,6 @@ export default function AdminUsersPage() {
     return () => clearTimeout(timer);
   }, [query, currentUser, fetchAll, fetchSearchResults]);
 
-  // Usuwanie użytkownika
   const confirmDelete = async () => {
     if (!userToDelete) return;
     setIsDeleting(true);
@@ -155,12 +146,10 @@ export default function AdminUsersPage() {
     setUserToDelete(null);
   };
 
-  // Obsługa zmiany inputa
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
-  // Ręczne odświeżenie
   const handleRefresh = () => {
     setQuery("");
     if (query === "") fetchAll();
@@ -186,7 +175,6 @@ export default function AdminUsersPage() {
           </Button>
         </div>
 
-        {/* Search Bar */}
         <div className="flex gap-2 max-w-md">
           <div className="relative flex-grow">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -205,7 +193,6 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
-        {/* Users Table */}
         <div className="border rounded-lg bg-card">
           <Table>
             <TableHeader>
@@ -246,7 +233,6 @@ export default function AdminUsersPage() {
                 >
                   <TableCell className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
-                      {/* POPRAWKA TUTAJ: || null */}
                       <AvatarImage src={user.avatarURL || undefined} />
                       <AvatarFallback>
                         {user.username
@@ -285,7 +271,6 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* Custom Modal */}
       <DeleteConfirmationModal
         isOpen={!!userToDelete}
         title="Delete User?"
@@ -293,7 +278,6 @@ export default function AdminUsersPage() {
           <>
             This action cannot be undone. This will permanently delete
             <strong className="text-foreground">
-              {" "}
               {userToDelete?.username}
             </strong>{" "}
             and remove all their data (progress, badges, settings).

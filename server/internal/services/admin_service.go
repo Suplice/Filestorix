@@ -22,8 +22,6 @@ func (as *AdminService) DeleteUser(adminID uint, targetUserID uint) error {
 		return errors.New("cannot delete yourself")
 	}
 	
-	// Tu można dodać sprawdzenie czy user istnieje, ale Delete w Gorm nie zwróci błędu jeśli ID nie ma,
-	// więc dla uproszczenia po prostu wołamy repo.
 	err := as.adminRepo.DeleteUser(targetUserID)
 	if err != nil {
 		as.logger.Error("Failed to delete user", "targetID", targetUserID, "error", err)

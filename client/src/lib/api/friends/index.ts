@@ -1,4 +1,4 @@
-import { FriendshipInfo, UserDTO } from "@/lib/types/user"; // Załóżmy, że typy są w types/user
+import { FriendshipInfo, UserDTO } from "@/lib/types/user";
 
 export const fetchAcceptedFriends = async (): Promise<
   FriendshipInfo[] | null
@@ -20,7 +20,6 @@ export const fetchAcceptedFriends = async (): Promise<
   }
 };
 
-// 1b. Pobierz wysłane zaproszenia
 export const fetchSentRequests = async (): Promise<FriendshipInfo[] | null> => {
   try {
     const response = await fetch(
@@ -39,7 +38,6 @@ export const fetchSentRequests = async (): Promise<FriendshipInfo[] | null> => {
   }
 };
 
-// 1c. Pobierz przychodzące zaproszenia
 export const fetchIncomingRequests = async (): Promise<
   FriendshipInfo[] | null
 > => {
@@ -60,8 +58,6 @@ export const fetchIncomingRequests = async (): Promise<
   }
 };
 
-// --- ZAKTUALIZOWANE WYSZUKIWANIE ---
-// 2. Wyszukaj użytkowników po nazwie - zwraca UserDTO[]
 export const searchUsers = async (query: string): Promise<UserDTO[] | null> => {
   if (!query.trim()) return [];
   try {
@@ -76,14 +72,13 @@ export const searchUsers = async (query: string): Promise<UserDTO[] | null> => {
       }
     );
     if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-    return await response.json(); // Zwraca UserDTO[]
+    return await response.json();
   } catch (error) {
     console.error("searchUsers error:", error);
     return null;
   }
 };
 
-// 3. Wyślij zaproszenie do znajomych
 export const sendFriendRequest = async (
   friendId: number
 ): Promise<{ success: boolean; message: string }> => {
@@ -94,24 +89,22 @@ export const sendFriendRequest = async (
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ friendId: friendId }), // Backend oczekuje 'friendId'
+        body: JSON.stringify({ friendId: friendId }),
       }
     );
 
-    const data = await response.json(); // Odczytaj odpowiedź JSON
+    const data = await response.json();
 
     if (!response.ok) {
       console.error(
         "Error sending friend request:",
         data.error || response.statusText
       );
-      // Zwróć błąd z backendu, jeśli istnieje
       return {
         success: false,
         message: data.error || "Failed to send request.",
       };
     }
-    // Zwróć sukces z wiadomością z backendu
     return {
       success: true,
       message: data.message || "Request sent successfully!",
@@ -165,14 +158,13 @@ export const respondToFriendRequest = async (
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/friends/request/${friendshipId}`,
       {
-        method: "PATCH", // Używamy PATCH do aktualizacji statusu
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ action: action }), // Backend oczekuje 'action'
+        body: JSON.stringify({ action: action }),
       }
     );
 
-    // Odczytaj odpowiedź JSON niezależnie od statusu ok
     const data = await response.json();
 
     if (!response.ok) {
@@ -199,7 +191,6 @@ export const removeFriend = async (
   friendshipId: number
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    // Upewnij się, że URL pasuje do definicji w routerze Go
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/friends/${friendshipId}`,
       {
@@ -209,14 +200,11 @@ export const removeFriend = async (
       }
     );
 
-    // Odpowiedź DELETE może nie mieć ciała JSON przy sukcesie (200 OK lub 204 No Content)
-    // Ale przy błędzie (4xx, 5xx) może mieć
-    let data = { message: "Friend removed successfully.", error: "" }; // Domyślna odpowiedź sukcesu
+    let data = { message: "Friend removed successfully.", error: "" };
     if (!response.ok) {
       try {
-        data = await response.json(); // Spróbuj odczytać błąd JSON
+        data = await response.json();
       } catch {
-        // Jeśli nie ma JSON, użyj statusText
         data = {
           message: "",
           error: response.statusText || "Failed to remove friend.",

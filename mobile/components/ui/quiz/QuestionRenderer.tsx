@@ -24,7 +24,6 @@ export function QuestionRenderer({
   onAnswerChange,
   disabled,
 }: QuestionRendererProps) {
-  // --- QUIZ (Radio Buttons) ---
   if (question.type === "QUIZ") {
     return (
       <View>
@@ -61,7 +60,6 @@ export function QuestionRenderer({
     );
   }
 
-  // --- FILL BLANK ---
   if (question.type === "FILL_BLANK") {
     const parts = question.question_text.split("___");
     const preText = parts[0];
@@ -86,7 +84,6 @@ export function QuestionRenderer({
     );
   }
 
-  // Fallback
   return (
     <View>
       <Text style={styles.questionText}>{question.question_text}</Text>

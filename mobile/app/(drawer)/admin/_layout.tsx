@@ -30,13 +30,12 @@ export default function AdminLayout() {
     );
   }
 
-  // Jeśli user nie jest adminem (a efekt jeszcze nie przekierował), nie renderuj nic
   if (!user || user.role.toLowerCase() !== "admin") return null;
 
   return (
     <Stack
       screenOptions={{
-        headerShown: false, // Ukrywamy systemowy header
+        headerShown: false,
         contentStyle: { backgroundColor: "#020617" },
       }}
     />

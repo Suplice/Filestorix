@@ -28,8 +28,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: "#334155",
-    // To sprawi, że karty będą zajmować ok. połowę szerokości minus odstępy
-    // lub dostosuj szerokość procentowo w zależności od preferencji
     minWidth: "47%",
     flex: 1,
   },

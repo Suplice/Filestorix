@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-// UserShortInfo - Podstawowe info o użytkowniku do wyświetlania na listach
 type UserShortInfo struct {
 	ID        uint   `json:"ID"`
 	Username  string `json:"username"`
@@ -13,10 +12,9 @@ type UserShortInfo struct {
 	Points    int    `json:"points"`
 }
 
-// FriendshipDTO - Struktura zwracana przez API dla znajomych i zaproszeń
 type FriendshipDTO struct {
-	ID        uint          `json:"ID"` // ID samej relacji Friendship
+	ID        uint          `json:"ID"`
 	Status    string        `json:"status"`
 	CreatedAt time.Time     `json:"createdAt"`
-	OtherUser UserShortInfo `json:"otherUser"` // Zawsze zawiera dane DRUGIEJ osoby
+	OtherUser UserShortInfo `json:"otherUser"` 
 }

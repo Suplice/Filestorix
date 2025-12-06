@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
 
   centeredContainer: {
     flex: 1,
-    justifyContent: "center", // <-- CENTER VERTICALLY
+    justifyContent: "center",
   },
 
   header: {

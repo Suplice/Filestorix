@@ -22,7 +22,7 @@ type TaskForUser struct {
 	CreatedAt     time.Time             `json:"created_at"`
 	UpdatedAt     time.Time             `json:"updated_at"`
 	TaskQuestions []models.TaskQuestion        `json:"task_questions"`
-	UserProgress  *models.UserTaskProgress     `json:"user_progress"` // single object
+	UserProgress  *models.UserTaskProgress     `json:"user_progress"` 
 }
 
 type TaskRepository struct {
@@ -110,7 +110,6 @@ func (tr *TaskRepository) GetTaskForUserDTO(taskID uint, userID uint) (*TaskForU
 
 func (tr *TaskRepository) GetCorrectAnswer(questionID uint) (string, error) {
 	var question models.TaskQuestion
-	// Pobieramy tylko pole `correct_answer`, żeby było wydajnie
 	err := tr.db.Select("correct_answer").First(&question, questionID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -149,7 +148,6 @@ func (tr *TaskRepository) SaveAnswerAttempt(userID, taskID, questionID uint, ans
 			return err
 		}
 
-		// Krok 3: Zaktualizuj statystyki (próby, błędy)
 		updates := map[string]interface{}{
 			"attempts": gorm.Expr("attempts + 1"),
 		}
@@ -161,32 +159,28 @@ func (tr *TaskRepository) SaveAnswerAttempt(userID, taskID, questionID uint, ans
 			return err
 		}
 
-		// Krok 4: Przelicz progres i przyznaj nagrody (tylko za poprawną odpowiedź)
 		if isCorrect {
 			isNowComplete, userAfterRewards, err := tr.recalculateProgressAndGrantRewards(tx, &progress)
 			if err != nil {
 				tr.logger.Error("Failed to recalculate progress or grant rewards", "err", err, "progressID", progress.ID)
 				return err
 			}
-			// Ustaw zmienne, które zwrócimy poza transakcją
 			isCompleted = isNowComplete
-			updatedUser = userAfterRewards // Będzie nil, jeśli zadanie nie jest ukończone
+			updatedUser = userAfterRewards 
 		}
 
-		return nil // Commituj transakcję
+		return nil 
 	})
 
 	return isCompleted, updatedUser, err
 }
 
-// Definicja progów XP dla poziomów
 var xpThresholds = map[int]int{
 	1: 0,
 	2: 100,
 	3: 250,
 	4: 500,
 	5: 1000,
-	// ...dodaj więcej poziomów
 }
 
 func (tr *TaskRepository) recalculateProgressAndGrantRewards(tx *gorm.DB, progress *models.UserTaskProgress) (bool, *models.User, error) {
@@ -206,13 +200,11 @@ func (tr *TaskRepository) recalculateProgressAndGrantRewards(tx *gorm.DB, progre
 	}
 	isNowComplete := (totalQuestions > 0 && correctAnswers == totalQuestions)
 
-	// 4.2: Jeśli zadanie NIE jest jeszcze ukończone
 	if !isNowComplete {
 		err := tx.Model(progress).Update("progress", newProgressPercent).Error
 		return false, nil, err
 	}
 
-	// 4.3: Jeśli zadanie WŁAŚNIE ZOSTAŁO UKOŃCZONE
 	tr.logger.Info("Task completed!", "userID", progress.UserID, "taskID", progress.TaskID)
 	now := time.Now()
 	if err := tx.Model(progress).Updates(map[string]interface{}{
@@ -223,7 +215,6 @@ func (tr *TaskRepository) recalculateProgressAndGrantRewards(tx *gorm.DB, progre
 		return false, nil, err
 	}
 
-	// 4.4: Pobierz Task (dla XP/Punktów) i User (do aktualizacji)
 	var task models.Task
 	if err := tx.Select("xp", "points").First(&task, progress.TaskID).Error; err != nil {
 		return true, nil, err
@@ -233,56 +224,44 @@ func (tr *TaskRepository) recalculateProgressAndGrantRewards(tx *gorm.DB, progre
 		return true, nil, err
 	}
 
-	// 4.5: Logika Streaka
 	todayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	// Sprawdź, czy ostatnia aktywność była PRZED dzisiejszym porankiem
 	if user.LastActiveDate.Before(todayStart) {
 		yesterdayStart := todayStart.AddDate(0, 0, -1)
-		// Sprawdź, czy ostatnia aktywność była wczoraj
 		if user.LastActiveDate.After(yesterdayStart) || user.LastActiveDate.Equal(yesterdayStart) {
-			user.StreakCount++ // Kontynuuj streaka
+			user.StreakCount++
 		} else {
-			user.StreakCount = 1 // Resetuj streaka (bo >1 dzień przerwy)
+			user.StreakCount = 1 
 		}
-		user.LastActiveDate = now // Ustaw nową datę aktywności
+		user.LastActiveDate = now
 	}
-	// Jeśli LastActiveDate jest dzisiaj, nie rób nic (już zdobył streaka)
 
-	// 4.6: Przyznaj nagrody (XP i Punkty)
 	user.XP += task.XP
 	user.Points += task.Points
 
-	// 4.7: Sprawdź awans (Level Up)
 	currentLevel := user.Level
 	for {
 		nextLevel := currentLevel + 1
 		xpNeeded, exists := xpThresholds[nextLevel]
 		if !exists || user.XP < xpNeeded {
-			break // Osiągnięto max poziom lub za mało XP
+			break 
 		}
-		currentLevel++ // AWANS!
+		currentLevel++ 
 	}
-	user.Level = currentLevel // Ustaw nowy (lub ten sam) poziom
+	user.Level = currentLevel 
 
-	// Zapisz zmiany w użytkowniku
 	if err := tx.Save(&user).Error; err != nil {
 		return true, nil, err
 	}
 
-	// 4.8: Sprawdź odznaki (w tle, błąd nie powinien zatrzymać transakcji)
 	go func(bgTx *gorm.DB, userID uint) {
-		// Użyj nowego połączenia DB lub klona transakcji dla operacji w tle
-		// Tu dla prostoty użyjemy tr.db, ale bezpieczniej byłoby przekazać nowe *gorm.DB
 		if err := tr.checkAndAwardBadges(tr.db, userID); err != nil {
 			tr.logger.Error("Failed to check badges in background", "err", err, "userID", userID)
 		}
-	}(tx.Session(&gorm.Session{}), user.ID) // Przekaż klon sesji transakcji
+	}(tx.Session(&gorm.Session{}), user.ID) 
 
-	// Zwróć info o ukończeniu ORAZ zaktualizowany obiekt użytkownika
 	return true, &user, nil
 }
 
-// NOWA FUNKCJA POMOCNICZA: Sprawdzanie odznak
 func (tr *TaskRepository) checkAndAwardBadges(db *gorm.DB, userID uint) error {
 	var completedTasksCount int64
 	if err := db.Model(&models.UserTaskProgress{}).Where("user_id = ? AND is_completed = ?", userID, true).Count(&completedTasksCount).Error; err != nil {
@@ -315,7 +294,6 @@ func (tr *TaskRepository) checkAndAwardBadges(db *gorm.DB, userID uint) error {
 		if earnedBadgeID > 0 {
 			tr.logger.Info("Badge earned!", "userID", userID, "badgeName", badge.Name)
 			newUserBadge := models.UserBadge{UserID: userID, BadgeID: earnedBadgeID}
-			// Użyj FirstOrCreate, aby uniknąć błędów duplikacji
 			if err := db.FirstOrCreate(&newUserBadge, newUserBadge).Error; err != nil {
 				tr.logger.Error("Failed to award badge", "err", err, "userID", userID, "badgeID", earnedBadgeID)
 			}

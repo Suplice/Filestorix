@@ -18,27 +18,24 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
   const attempts = userProgress?.attempts ?? 0;
   const mistakes = userProgress?.mistakes ?? 0;
 
-  // Sprawdzamy czy zadanie zostało rozpoczęte
   const hasStarted = !!userProgress;
 
-  // Kolory trudności
   const getDifficultyColor = (diff: string) => {
     switch (diff) {
       case "EASY":
-        return "#22c55e"; // Green-500
+        return "#22c55e";
       case "MEDIUM":
-        return "#eab308"; // Yellow-500
+        return "#eab308";
       case "HARD":
-        return "#ef4444"; // Red-500
+        return "#ef4444";
       default:
-        return "#94a3b8"; // Slate-400
+        return "#94a3b8";
     }
   };
 
   const handlePress = () => {
     if (!isMyTask) return;
 
-    // Nawigacja
     router.push({
       pathname: "/courses/[id]",
       params: { id: task.ID, mode: isCompleted ? "practice" : undefined },
@@ -47,13 +44,11 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
 
   return (
     <View style={styles.container}>
-      {/* Lewa strona: Ikona i Info */}
       <View style={styles.leftContent}>
         <View style={styles.iconContainer}>
           {isCompleted ? (
             <Feather name="check-circle" size={24} color="#22c55e" />
           ) : (
-            // Kolor ikony: Indigo jeśli w trakcie, szary jeśli nie
             <Feather
               name="clock"
               size={24}
@@ -68,7 +63,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
               {task.title}
             </Text>
 
-            {/* Badge Statusu */}
             {(isCompleted || hasStarted) && (
               <View
                 style={[
@@ -88,7 +82,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
             )}
           </View>
 
-          {/* Pasek postępu - Wyświetlaj tylko jeśli rozpoczęto */}
           {hasStarted && (
             <View style={styles.progressRow}>
               <View style={styles.progressBarBg}>
@@ -100,7 +93,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
             </View>
           )}
 
-          {/* Statystyki Prób */}
           {hasStarted && attempts > 0 && !isCompleted && (
             <View style={styles.statsRow}>
               <View style={styles.statItem}>
@@ -122,7 +114,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
         </View>
       </View>
 
-      {/* Prawa strona: Meta dane i przycisk */}
       <View style={styles.rightContent}>
         <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
           <Text
@@ -141,7 +132,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
           <TouchableOpacity
             style={[
               styles.actionButton,
-              // Jeśli "Continue" (nieukończone, ale zaczęte) dajemy primary style, w przeciwnym razie outline
               hasStarted && !isCompleted
                 ? styles.actionButtonPrimary
                 : styles.actionButtonOutline,
@@ -167,14 +157,14 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1e293b", // Dark Card BG
+    backgroundColor: "#1e293b",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 16,
     borderRadius: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#334155", // Slate Border
+    borderColor: "#334155",
   },
   leftContent: {
     flexDirection: "row",
@@ -199,7 +189,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ffffff", // White text
+    color: "#ffffff",
     flexShrink: 1,
   },
   badge: {
@@ -208,10 +198,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   badgeSuccess: {
-    backgroundColor: "rgba(34, 197, 94, 0.15)", // Green background alpha
+    backgroundColor: "rgba(34, 197, 94, 0.15)",
   },
   badgeProgress: {
-    backgroundColor: "rgba(99, 102, 241, 0.15)", // Indigo background alpha
+    backgroundColor: "rgba(99, 102, 241, 0.15)",
   },
   badgeText: {
     fontSize: 10,
@@ -226,18 +216,18 @@ const styles = StyleSheet.create({
   progressBarBg: {
     flex: 1,
     height: 6,
-    backgroundColor: "#334155", // Slate-700
+    backgroundColor: "#334155",
     borderRadius: 3,
     overflow: "hidden",
     maxWidth: 100,
   },
   progressBarFill: {
     height: "100%",
-    backgroundColor: "#6366f1", // Indigo-500
+    backgroundColor: "#6366f1",
   },
   progressText: {
     fontSize: 12,
-    color: "#94a3b8", // Muted text
+    color: "#94a3b8",
     fontWeight: "600",
   },
   statsRow: {
@@ -256,7 +246,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  // Right Content
   rightContent: {
     alignItems: "flex-end",
     justifyContent: "space-between",
@@ -276,7 +265,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#e2e8f0",
   },
-  // Przyciski
   actionButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,

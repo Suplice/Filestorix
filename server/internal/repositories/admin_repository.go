@@ -17,24 +17,18 @@ func NewAdminRepository(db *gorm.DB, logger *slog.Logger) *AdminRepository {
 	return &AdminRepository{db: db, logger: logger}
 }
 
-// DeleteUser usuwa użytkownika i jego powiązane dane
 func (ar *AdminRepository) DeleteUser(userID uint) error {
 	return ar.db.Transaction(func(tx *gorm.DB) error {
-		// Najpierw usuwamy zależności, jeśli kaskada w bazie nie jest ustawiona na 'CASCADE'
-		// Usuń postęp w zadaniach
 		if err := tx.Where("user_id = ?", userID).Delete(&models.UserTaskProgress{}).Error; err != nil {
 			return err
 		}
-		// Usuń odznaki
 		if err := tx.Where("user_id = ?", userID).Delete(&models.UserBadge{}).Error; err != nil {
 			return err
 		}
-		// Usuń ustawienia
 		if err := tx.Where("user_id = ?", userID).Delete(&models.Settings{}).Error; err != nil {
 			return err
 		}
 		
-		// Ostatecznie usuń użytkownika
 		if err := tx.Select(clause.Associations).Delete(&models.User{}, userID).Error; err != nil {
 			return err
 		}
@@ -82,7 +76,6 @@ func (ar *AdminRepository) GetSystemStats() (*SystemStats, error) {
 
 func (ar *AdminRepository) GetAllUsers() ([]models.User, error) {
 	var users []models.User
-	// Pobieramy wybrane pola
 	result := ar.db.Select("id", "username", "email", "avatar_url", "role", "level", "points").Find(&users)
 	return users, result.Error
 }

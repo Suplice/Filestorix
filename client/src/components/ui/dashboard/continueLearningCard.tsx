@@ -1,4 +1,3 @@
-// Ścieżka: components/dashboard/ContinueLearningCard.tsx
 "use client";
 import { Task } from "@/lib/types/task";
 import {
@@ -15,7 +14,7 @@ import Link from "next/link";
 import { ArrowRight, Play } from "lucide-react";
 
 type ContinueLearningCardProps = {
-  task: Task | null; // null, jeśli nie ma zadania do kontynuacji
+  task: Task | null;
 };
 
 export function ContinueLearningCard({ task }: ContinueLearningCardProps) {
@@ -28,7 +27,6 @@ export function ContinueLearningCard({ task }: ContinueLearningCardProps) {
   return (
     <Card className="col-span-1 md:col-span-2 flex flex-col h-full">
       {" "}
-      {/* Zajmuje 2 kolumny na md+ */}
       <CardHeader>
         <CardTitle>Continue Learning</CardTitle>
         <CardDescription>

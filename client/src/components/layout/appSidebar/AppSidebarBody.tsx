@@ -45,13 +45,12 @@ const secondGroup = [
   },
 ];
 
-// Definiujemy grupę admina jako stałą tablicę
 const adminGroup = [
   {
     title: "Admin Panel",
     url: "/admin",
     icon: Shield,
-    section: "Admin", // Tutaj nadal może być potrzebny @ts-ignore w zależności od Twojego typu Section
+    section: "Admin",
   },
 ];
 
@@ -61,7 +60,6 @@ const AppSidebarBody = () => {
 
   const isAdmin = user?.role?.toLowerCase() === "admin";
 
-  // Funkcja pomocnicza do renderowania elementu menu (aby nie powielać kodu JSX)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderMenuItem = (item: any) => (
     <SidebarMenuItem key={item.title}>
@@ -100,7 +98,6 @@ const AppSidebarBody = () => {
 
   return (
     <>
-      {/* Renderowanie standardowych grup */}
       {[mainGroup, secondGroup].map((group, idx) => (
         <SidebarGroup key={idx}>
           <SidebarGroupContent>
@@ -111,7 +108,6 @@ const AppSidebarBody = () => {
         </SidebarGroup>
       ))}
 
-      {/* Renderowanie warunkowe grupy Admina */}
       {isAdmin && (
         <SidebarGroup>
           <SidebarGroupContent>

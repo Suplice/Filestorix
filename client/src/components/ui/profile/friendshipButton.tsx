@@ -15,7 +15,7 @@ import { toast } from "sonner";
 type FriendshipButtonProps = {
   profileUserId: number;
   friendshipStatus: FriendshipStatus;
-  onActionComplete: () => void; // Callback do odświeżenia profilu
+  onActionComplete: () => void;
 };
 
 export function FriendshipButton({

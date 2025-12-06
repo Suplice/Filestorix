@@ -10,10 +10,6 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { ArrowDown, ArrowUp, Star } from "lucide-react";
-// Usunięto import useTheme
-// import { useTheme } from "next-themes";
-
-// Definiujemy propsy dla komponentu
 type TaskFilterControlsProps = {
   filters: {
     typeFilter: string;
@@ -21,8 +17,8 @@ type TaskFilterControlsProps = {
     diffFilter: string;
     sortBy: string;
     searchQuery: string;
-    hideCompleted: boolean; // Nowy prop
-    recommendationFilter: string; // Nowy prop ("all" | "recommended")
+    hideCompleted: boolean;
+    recommendationFilter: string;
   };
   setters: {
     setTypeFilter: (value: string) => void;
@@ -30,8 +26,8 @@ type TaskFilterControlsProps = {
     setDiffFilter: (value: string) => void;
     setSortBy: (value: string) => void;
     setSearchQuery: (value: string) => void;
-    setHideCompleted: (checked: boolean) => void; // Nowy prop
-    setRecommendationFilter: (value: "all" | "recommended") => void; // Nowy prop
+    setHideCompleted: (checked: boolean) => void;
+    setRecommendationFilter: (value: "all" | "recommended") => void;
   };
   clearFilters: () => void;
 };
@@ -41,9 +37,6 @@ export function TaskFilterControls({
   setters,
   clearFilters,
 }: TaskFilterControlsProps) {
-  // Usunięto hook useTheme
-  // const { theme } = useTheme();
-
   return (
     <div
       className={`
@@ -54,12 +47,11 @@ export function TaskFilterControls({
         dark:bg-zinc-900 dark:border-zinc-800
       `}
     >
-      {/* --- NOWY SELECT: Rekomendowane / Wszystkie --- */}
       <Select
         value={filters.recommendationFilter}
         onValueChange={
           setters.setRecommendationFilter as (value: string) => void
-        } // Mały trick typów
+        }
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Show tasks" />
@@ -123,7 +115,6 @@ export function TaskFilterControls({
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
-        {/* Usunięto zagnieżdżony <SelectContent> */}
         <SelectContent>
           <SelectItem value="alpha_asc">
             <div className="flex items-center gap-2">

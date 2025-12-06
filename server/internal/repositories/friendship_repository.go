@@ -3,7 +3,7 @@ package repositories
 import (
 	"errors"
 	"log/slog"
-	"strings" // Do wyszukiwania case-insensitive
+	"strings" 
 
 	"github.com/Suplice/Filestorix/internal/dto"
 	"github.com/Suplice/Filestorix/internal/models"
@@ -23,10 +23,9 @@ func (fr *FriendshipRepository) GetAcceptedFriends(currentUserID uint) ([]dto.Fr
 	var friendships []models.Friendship
 	var results []dto.FriendshipDTO
 
-	// Znajdź zaakceptowane relacje, gdzie jesteśmy UserID lub FriendID
 	err := fr.db.
-		Preload("User").   // Załaduj dane UserID
-		Preload("Friend"). // Załaduj dane FriendID
+		Preload("User").  
+		Preload("Friend"). 
 		Where("(user_id = ? OR friend_id = ?) AND status = ?", currentUserID, currentUserID, "accepted").
 		Find(&friendships).Error
 
@@ -35,11 +34,10 @@ func (fr *FriendshipRepository) GetAcceptedFriends(currentUserID uint) ([]dto.Fr
 		return nil, err
 	}
 
-	// Przekształć na DTO
 	results = make([]dto.FriendshipDTO, 0, len(friendships))
 	for _, f := range friendships {
-		otherUser := f.Friend // Domyślnie druga osoba to Friend
-		if f.FriendID == currentUserID { // Jeśli my jesteśmy FriendID, to User jest drugą osobą
+		otherUser := f.Friend 
+		if f.FriendID == currentUserID { 
 			otherUser = f.User
 		}
 		results = append(results, dto.FriendshipDTO{
@@ -58,14 +56,12 @@ func (fr *FriendshipRepository) GetAcceptedFriends(currentUserID uint) ([]dto.Fr
 	return results, nil
 }
 
-// GetSentRequests pobiera wysłane przez nas zaproszenia jako DTO
 func (fr *FriendshipRepository) GetSentRequests(currentUserID uint) ([]dto.FriendshipDTO, error) {
 	var friendships []models.Friendship
 	var results []dto.FriendshipDTO
 
-	// Znajdź relacje 'pending', gdzie my jesteśmy UserID
 	err := fr.db.
-		Preload("Friend"). // Potrzebujemy danych odbiorcy (Friend)
+		Preload("Friend"). 
 		Where("user_id = ? AND status = ?", currentUserID, "pending").
 		Find(&friendships).Error
 
@@ -74,10 +70,8 @@ func (fr *FriendshipRepository) GetSentRequests(currentUserID uint) ([]dto.Frien
 		return nil, err
 	}
 
-	// Przekształć na DTO
 	results = make([]dto.FriendshipDTO, 0, len(friendships))
 	for _, f := range friendships {
-		// Druga osoba (odbiorca) jest w f.Friend
 		results = append(results, dto.FriendshipDTO{
 			ID:        f.ID,
 			Status:    f.Status,
@@ -94,14 +88,12 @@ func (fr *FriendshipRepository) GetSentRequests(currentUserID uint) ([]dto.Frien
 	return results, nil
 }
 
-// GetIncomingRequests pobiera otrzymane przez nas zaproszenia jako DTO
 func (fr *FriendshipRepository) GetIncomingRequests(currentUserID uint) ([]dto.FriendshipDTO, error) {
 	var friendships []models.Friendship
 	var results []dto.FriendshipDTO
 
-	// Znajdź relacje 'pending', gdzie my jesteśmy FriendID
 	err := fr.db.
-		Preload("User"). // Potrzebujemy danych nadawcy (User)
+		Preload("User"). 
 		Where("friend_id = ? AND status = ?", currentUserID, "pending").
 		Find(&friendships).Error
 
@@ -110,10 +102,8 @@ func (fr *FriendshipRepository) GetIncomingRequests(currentUserID uint) ([]dto.F
 		return nil, err
 	}
 
-	// Przekształć na DTO
 	results = make([]dto.FriendshipDTO, 0, len(friendships))
 	for _, f := range friendships {
-		// Druga osoba (nadawca) jest w f.User
 		results = append(results, dto.FriendshipDTO{
 			ID:        f.ID,
 			Status:    f.Status,
@@ -130,34 +120,29 @@ func (fr *FriendshipRepository) GetIncomingRequests(currentUserID uint) ([]dto.F
 	return results, nil
 }
 
-// --- Funkcje Wyszukiwania i Akcji (BEZ ZMIAN w logice, tylko zwracany typ dla Search) ---
-
-// SearchUsersByUsername zwraca teraz dtos.UserShortInfo
 func (fr *FriendshipRepository) SearchUsersByUsername(query string, currentUserID uint) ([]dto.UserShortInfo, error) {
-	var users []dto.UserShortInfo // Zmieniono typ slice'a
+	var users []dto.UserShortInfo 
 	trimmedQuery := strings.TrimSpace(query)
 	if trimmedQuery == "" {
 		return users, nil
 	}
-	// ... (logika znajdowania relatedUserIDs - bez zmian) ...
 	var results []struct{ OtherUserID uint }
 	err := fr.db.Model(&models.Friendship{}).
 		Where("user_id = ? OR friend_id = ?", currentUserID, currentUserID).
 		Select("CASE WHEN user_id = ? THEN friend_id ELSE user_id END AS other_user_id", currentUserID).
 		Scan(&results).Error
-    if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) { /* ... obsłuż błąd ... */ return nil, err }
+    if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) { return nil, err }
     relatedUserIDs := make([]uint, 0, len(results))
 	for _, res := range results { relatedUserIDs = append(relatedUserIDs, res.OtherUserID) }
 	relatedUserIDs = append(relatedUserIDs, currentUserID)
-	// --- Koniec logiki relatedUserIDs ---
 
 
 	searchPattern := "%" + trimmedQuery + "%"
-	err = fr.db.Model(&models.User{}). // Wyszukuj w modelu User
+	err = fr.db.Model(&models.User{}). 
 		Where("username ILIKE ? AND id NOT IN ?", searchPattern, relatedUserIDs).
-		Select("id as ID, username, avatar_url as AvatarURL, level, points"). // Mapuj na pola UserShortInfo
+		Select("id as ID, username, avatar_url as AvatarURL, level, points"). 
 		Limit(10).
-		Find(&users).Error // Zapisz wyniki bezpośrednio do slice'a UserShortInfo
+		Find(&users).Error 
 
 	if err != nil {
 		fr.logger.Error("Failed to search users", "err", err, "query", query)
@@ -165,13 +150,11 @@ func (fr *FriendshipRepository) SearchUsersByUsername(query string, currentUserI
 	}
 	return users, nil
 }
-// CreateFriendRequest tworzy nowe zaproszenie do znajomych
 func (fr *FriendshipRepository) CreateFriendRequest(userID, friendID uint) error {
 	if userID == friendID {
 		return errors.New("cannot add yourself as a friend")
 	}
 
-	// Sprawdź, czy relacja już istnieje (w dowolnym statusie, w dowolną stronę)
 	var existing int64
 	fr.db.Model(&models.Friendship{}).
 		Where("(user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?)",
@@ -182,10 +165,9 @@ func (fr *FriendshipRepository) CreateFriendRequest(userID, friendID uint) error
 		return errors.New("friendship already exists or request is pending")
 	}
 
-	// Stwórz nowe zaproszenie
 	request := models.Friendship{
-		UserID:   userID, // Osoba wysyłająca
-		FriendID: friendID, // Osoba zapraszana
+		UserID:   userID, 
+		FriendID: friendID, 
 		Status:   "pending",
 	}
 
@@ -198,24 +180,21 @@ func (fr *FriendshipRepository) CreateFriendRequest(userID, friendID uint) error
 }
 
 func (fr *FriendshipRepository) CancelFriendRequest(friendshipID uint, userID uint) error {
-	// Znajdź zaproszenie i sprawdź, czy należy do użytkownika i ma status 'pending'
 	var request models.Friendship
 	err := fr.db.Where("id = ? AND user_id = ? AND status = ?", friendshipID, userID, "pending").First(&request).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return errors.New("request not found or you are not authorized to cancel it")
 		}
-		return err // Inny błąd bazy danych
+		return err 
 	}
 
-	// Usuń znalezione zaproszenie
 	result := fr.db.Delete(&request)
 	if result.Error != nil {
 		fr.logger.Error("Failed to delete friend request", "err", result.Error, "friendshipID", friendshipID)
 		return result.Error
 	}
 	if result.RowsAffected == 0 {
-		// Teoretycznie nie powinno się zdarzyć po First(), ale dla pewności
 		return errors.New("failed to cancel request, record might have changed")
 	}
 
@@ -223,43 +202,33 @@ func (fr *FriendshipRepository) CancelFriendRequest(friendshipID uint, userID ui
 }
 
 func (fr *FriendshipRepository) UpdateFriendshipStatus(friendshipID uint, currentUserID uint, newStatus string) error {
-	// 1. Walidacja statusu (już jest w serwisie, ale double check nie zaszkodzi)
-	if newStatus != "accepted" && newStatus != "declined" { // Na razie obsługujemy tylko te dwa
+	if newStatus != "accepted" && newStatus != "declined" { 
 		return errors.New("invalid status provided to repository")
 	}
 
-	// 2. Rozpocznij transakcję (opcjonalne, ale dobre dla atomowości, jeśli dodasz np. powiadomienia)
 	return fr.db.Transaction(func(tx *gorm.DB) error {
-		// 3. Znajdź zaproszenie, które jest skierowane DO nas (currentUserID = FriendID)
-		//    i ma status 'pending'. To jest kluczowe zabezpieczenie.
 		var request models.Friendship
 		result := tx.Where("id = ? AND friend_id = ? AND status = ?", friendshipID, currentUserID, "pending").First(&request)
 
 		if result.Error != nil {
 			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-				// Nie znaleziono pasującego zaproszenia (może już zaakceptowane/odrzucone, albo nie dla nas)
 				return errors.New("incoming friend request not found or you are not authorized to respond")
 			}
-			// Inny błąd bazy danych
 			fr.logger.Error("DB error finding friend request to update", "err", result.Error, "friendshipID", friendshipID, "userID", currentUserID)
 			return result.Error
 		}
 
-		// 4. Wykonaj akcję: Usuń (dla 'declined') lub Zaktualizuj (dla 'accepted')
 		var actionErr error
 		if newStatus == "declined" {
-			// Odrzucenie = Usunięcie rekordu zaproszenia
 			actionResult := tx.Delete(&request)
 			actionErr = actionResult.Error
 			if actionErr == nil && actionResult.RowsAffected == 0 {
-				// Jeśli nie usunięto wiersza, mimo że go znaleźliśmy (dziwne, ale możliwe)
 				actionErr = errors.New("failed to decline request, record might have changed unexpectedly")
 			}
 			if actionErr == nil {
 				fr.logger.Info("Friend request declined (deleted)", "friendshipID", friendshipID, "userID", currentUserID)
 			}
-		} else { // newStatus == "accepted"
-			// Akceptacja = Zmiana statusu na 'accepted'
+		} else { 
 			actionResult := tx.Model(&request).Update("status", "accepted")
 			actionErr = actionResult.Error
 			if actionErr == nil && actionResult.RowsAffected == 0 {
@@ -267,17 +236,14 @@ func (fr *FriendshipRepository) UpdateFriendshipStatus(friendshipID uint, curren
 			}
 			if actionErr == nil {
 				fr.logger.Info("Friend request accepted", "friendshipID", friendshipID, "userID", currentUserID)
-				// TODO: W tym miejscu można by dodać logikę tworzenia powiadomienia dla osoby wysyłającej
 			}
 		}
 
-		// Obsłuż błędy z akcji Update/Delete
 		if actionErr != nil {
 			fr.logger.Error("Failed to perform action on friendship status", "err", actionErr, "friendshipID", friendshipID, "newStatus", newStatus)
-			return actionErr // Transakcja zostanie wycofana (Rollback)
+			return actionErr 
 		}
 
-		// Jeśli wszystko OK, zatwierdź transakcję
 		return nil
 	})
 }
@@ -293,10 +259,9 @@ func (fr *FriendshipRepository) DeleteFriendship(friendshipID uint, currentUserI
 			return errors.New("friendship not found or you are not part of this friendship")
 		}
 		fr.logger.Error("DB error finding friendship to delete", "err", err, "friendshipID", friendshipID, "userID", currentUserID)
-		return err // Inny błąd bazy danych
+		return err 
 	}
 
-	// Usuń znalezioną relację
 	result := fr.db.Delete(&friendship)
 	if result.Error != nil {
 		fr.logger.Error("Failed to delete friendship", "err", result.Error, "friendshipID", friendshipID)

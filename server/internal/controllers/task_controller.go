@@ -68,7 +68,6 @@ func (tc *TaskController) GetTaskForUser(ctx *gin.Context) {
 		return
 	}
 
-	// Krok 3: Zwróć wynik
 	ctx.JSON(http.StatusOK, task)
 }
 
@@ -79,7 +78,6 @@ type SubmitAnswerRequest struct {
 	AnswerGiven string `json:"answer" binding:"required"`
 }
 
-// NOWA METODA: SubmitAnswer
 func (tc *TaskController) SubmitAnswer(ctx *gin.Context) {
 	userID64 := ctx.GetUint64("userID")
 

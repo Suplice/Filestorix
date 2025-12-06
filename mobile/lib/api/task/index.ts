@@ -90,7 +90,7 @@ export async function SubmitAnswerForTask(
 
     if (response.ok) {
       const responseData = await response.json();
-      return responseData as SubmitAnswerResponse; // Zwróć pełną odpowiedź
+      return responseData as SubmitAnswerResponse;
     } else {
       const errorText = await response.text();
       console.error(`API error on submit: ${response.status} - ${errorText}`);

@@ -30,7 +30,7 @@ interface AuthContextType {
   setUser: Dispatch<SetStateAction<User | null>>;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   isAuthenticated: boolean;
-  isLoading: boolean; // <--- 1. DODANO: Flaga ładowania początkowego
+  isLoading: boolean;
   handleRegisterWithEmail: (data: signUpForm) => Promise<void>;
   handleLoginWithEmail: (data: signInForm) => Promise<void>;
   handleLogout: () => Promise<void>;
@@ -44,11 +44,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  // 2. DODANO: Inicjalizujemy jako true, bo przy starcie aplikacji nie wiemy kim jest user
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const queryClient = useQueryClient();
-  const [isPending, startTransition] = useTransition(); // To służy tylko do akcji (np. logout)
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
@@ -61,7 +60,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const checkCredentials = async () => {
     try {
-      // Upewniamy się, że loading jest true przed startem (choć domyślnie jest)
       setIsLoading(true);
 
       const result: fetchUserResult = await fetchUser();
@@ -70,17 +68,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated(true);
         setUser(result.user!);
       } else {
-        // Opcjonalnie: Tutaj możesz zdecydować czy redirectować automatycznie.
-        // Czasami lepiej zostawić redirect poszczególnym stronom (Protected Routes).
-        // router.push("/auth/signin");
         removeCredentials();
       }
     } catch (error) {
       console.error(error);
       removeCredentials();
-      // router.push("/auth/signin");
     } finally {
-      // 3. DODANO: Kluczowe - zawsze kończymy ładowanie, nawet jak błąd
       setIsLoading(false);
     }
   };
@@ -191,7 +184,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser,
         setIsAuthenticated,
         isAuthenticated,
-        isLoading, // <--- 4. DODANO: Eksportujemy zmienną
+        isLoading,
         handleRegisterWithEmail,
         handleLoginWithEmail,
         handleLogout,
@@ -199,10 +192,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         handleLoginWithGithub,
       }}
     >
-      {/* UWAGA: isPending pochodzi z useTransition (logout). 
-         Dla initial load używamy teraz isLoading.
-         Możesz tu zostawić jak jest, ale layouty będą same obsługiwać isLoading.
-      */}
       {isPending ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );

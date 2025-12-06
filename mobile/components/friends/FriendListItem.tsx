@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 14,
-    paddingHorizontal: 16, // Dodane bo jesteśmy wewnątrz Card
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#334155", // Slate border
+    borderBottomColor: "#334155",
   },
   leftSide: {
     flexDirection: "row",
@@ -135,11 +135,11 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: "600",
     fontSize: 16,
-    color: "#ffffff", // White Text
+    color: "#ffffff",
   },
   details: {
     fontSize: 12,
-    color: "#94a3b8", // Secondary Text
+    color: "#94a3b8",
   },
   rightSide: { flexDirection: "row", alignItems: "center" },
 });

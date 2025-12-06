@@ -1,8 +1,5 @@
-// Ścieżka: components/friends/IncomingRequestItem.tsx
-
 "use client";
 
-// Użyj typu FriendshipInfo
 import { FriendshipInfo } from "@/lib/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,7 +9,7 @@ import { respondToFriendRequest } from "@/lib/api/friends";
 import { toast } from "sonner";
 
 type IncomingRequestItemProps = {
-  requestInfo: FriendshipInfo; // Zmieniono nazwę i typ propsa
+  requestInfo: FriendshipInfo;
   onActionComplete: () => void;
 };
 
@@ -20,13 +17,11 @@ export function IncomingRequestItem({
   requestInfo,
   onActionComplete,
 }: IncomingRequestItemProps) {
-  // Dane nadawcy są zawsze w 'otherUser'
   const senderData = requestInfo.otherUser;
   const [loadingAction, setLoadingAction] = useState<
     "accept" | "decline" | null
   >(null);
 
-  // Failsafe
   if (!senderData) {
     console.error(
       "IncomingRequestItem: Missing otherUser data for request ID:",
@@ -43,22 +38,20 @@ export function IncomingRequestItem({
     ? senderData.username.substring(0, 2).toUpperCase()
     : "?";
 
-  // Handler odpowiedzi (używa ID relacji)
   const handleResponse = async (action: "accept" | "decline") => {
     setLoadingAction(action);
     const result = await respondToFriendRequest(requestInfo.ID, action);
     if (result.success) {
       toast.success(result.message);
-      onActionComplete(); // Odśwież listę
+      onActionComplete();
     } else {
       toast.error(result.message);
-      setLoadingAction(null); // Odblokuj przy błędzie
+      setLoadingAction(null);
     }
   };
 
   return (
     <div className="flex items-center justify-between p-3 border-b dark:border-zinc-700 min-h-[68px]">
-      {/* Lewa strona: Dane nadawcy z otherUser */}
       <div className="flex items-center gap-3 overflow-hidden mr-2">
         <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage src={senderData.avatarURL} alt={senderData.username} />
@@ -77,7 +70,6 @@ export function IncomingRequestItem({
         </div>
       </div>
 
-      {/* Prawa strona: Przyciski Akceptuj / Odrzuć */}
       <div className="flex gap-2 flex-shrink-0">
         <Button
           size="icon"

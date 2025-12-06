@@ -1,51 +1,42 @@
-// Ścieżka: hooks/useTaskFilters.ts
-
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
 import { Task } from "@/lib/types/task";
 import { User } from "@/lib/types/user";
 
-// Definicja typu dla zapisywanego stanu filtrów w localStorage
 type StoredFilters = {
   type?: string;
   lang?: string;
   diff?: string;
   sort?: string;
-  q?: string; // 'q' for query (search)
+  q?: string;
   hideCompleted?: boolean;
   show?: "all" | "recommended";
 };
 
-// --- Funkcja pomocnicza do odczytu z localStorage ---
 const loadFiltersFromStorage = (userId: number | undefined): StoredFilters => {
-  // Sprawdź, czy jesteśmy po stronie klienta i czy mamy ID użytkownika
   if (typeof window === "undefined" || !userId) {
-    return {}; // Zwróć pusty obiekt, jeśli SSR lub brak userId
+    return {};
   }
-  const key = `taskFilters_${userId}`; // Klucz specyficzny dla użytkownika
+  const key = `taskFilters_${userId}`;
   try {
     const stored = localStorage.getItem(key);
-    // Jeśli coś jest zapisane, sparsuj JSON, w przeciwnym razie zwróć pusty obiekt
     return stored ? (JSON.parse(stored) as StoredFilters) : {};
   } catch (error) {
     console.error("Error loading filters from localStorage:", error);
-    return {}; // Zwróć pusty obiekt w razie błędu parsowania
+    return {};
   }
 };
 
-// --- Funkcja pomocnicza do zapisu w localStorage ---
 const saveFiltersToStorage = (
   userId: number | undefined,
   filters: StoredFilters
 ) => {
-  // Sprawdź, czy jesteśmy po stronie klienta i czy mamy ID użytkownika
   if (typeof window === "undefined" || !userId) {
-    return; // Nie zapisuj, jeśli SSR lub brak userId
+    return;
   }
-  const key = `taskFilters_${userId}`; // Klucz specyficzny dla użytkownika
+  const key = `taskFilters_${userId}`;
   try {
-    // Usuń klucze z wartościami undefined, aby nie zaśmiecać localStorage
     const filtersToSave: Partial<StoredFilters> = {};
     for (const k in filters) {
       const key = k as keyof StoredFilters;
@@ -60,7 +51,6 @@ const saveFiltersToStorage = (
   }
 };
 
-// --- Stałe do ważenia rekomendacji (można je dostosować) ---
 const SCORE_WEIGHTS = {
   NOT_ATTEMPTED_BONUS: 50,
   DIFFICULTY_MATCH_BONUS: 25,
@@ -69,7 +59,6 @@ const SCORE_WEIGHTS = {
   ATTEMPT_PENALTY: -2,
 };
 
-// --- Funkcje pomocnicze do rekomendacji ---
 const getTargetDifficulty = (level: number): ("EASY" | "MEDIUM" | "HARD")[] => {
   if (level <= 2) return ["EASY"];
   if (level <= 4) return ["EASY", "MEDIUM"];
@@ -81,16 +70,11 @@ const getIdealDifficulty = (level: number): "EASY" | "MEDIUM" | "HARD" => {
   return "HARD";
 };
 
-// --- Główny Hook ---
 export function useTaskFilters(tasks: Task[], user: User | null) {
-  const userId = user?.ID; // Pobierz ID użytkownika
+  const userId = user?.ID;
 
-  // --- Odczyt stanu początkowego z localStorage ---
-  // Używamy funkcji anonimowej w useState, aby odczyt był tylko raz przy montowaniu
   const [initialFilters] = useState(() => loadFiltersFromStorage(userId));
 
-  // --- Stany ---
-  // Inicjalizuj stany wartościami z localStorage lub domyślnymi
   const [typeFilter, setTypeFilter] = useState(initialFilters.type || "");
   const [langFilter, setLangFilter] = useState(initialFilters.lang || "");
   const [diffFilter, setDiffFilter] = useState(initialFilters.diff || "");
@@ -103,21 +87,17 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     "all" | "recommended"
   >(initialFilters.show || "all");
 
-  // --- Efekt do zapisu stanu w localStorage ---
   useEffect(() => {
-    // Zbierz aktualny stan filtrów do obiektu
     const currentFilters: StoredFilters = {
-      type: typeFilter || undefined, // Zapisz undefined zamiast ""
+      type: typeFilter || undefined,
       lang: langFilter || undefined,
       diff: diffFilter || undefined,
       sort: sortBy || undefined,
       q: searchQuery || undefined,
-      hideCompleted: hideCompleted || undefined, // Zapisz undefined zamiast false
-      show: recommendationFilter === "recommended" ? "recommended" : undefined, // Zapisz undefined dla "all"
+      hideCompleted: hideCompleted || undefined,
+      show: recommendationFilter === "recommended" ? "recommended" : undefined,
     };
-    // Zapisz zebrane filtry w localStorage
     saveFiltersToStorage(userId, currentFilters);
-    // Wykonaj ten efekt za każdym razem, gdy zmieni się którykolwiek filtr LUB userId
   }, [
     typeFilter,
     langFilter,
@@ -129,9 +109,7 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     userId,
   ]);
 
-  // --- Funkcja clearFilters ---
   const clearFilters = () => {
-    // Resetuj stany komponentu
     setTypeFilter("");
     setLangFilter("");
     setDiffFilter("");
@@ -139,17 +117,14 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     setSearchQuery("");
     setHideCompleted(false);
     setRecommendationFilter("all");
-    // Wyczyść localStorage dla tego użytkownika
     if (typeof window !== "undefined" && userId) {
       localStorage.removeItem(`taskFilters_${userId}`);
     }
   };
 
-  // --- Logika filtrowania i sortowania ---
   const filteredTasks = useMemo(() => {
-    let result = [...tasks]; // Pracuj na kopii
+    let result = [...tasks];
 
-    // --- Logika rekomendacji ---
     if (recommendationFilter === "recommended" && user) {
       const targetDifficulties = getTargetDifficulty(user.level);
       const idealDifficulty = getIdealDifficulty(user.level);
@@ -166,7 +141,6 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
           if (!progress || progress.attempts === 0) {
             score += SCORE_WEIGHTS.NOT_ATTEMPTED_BONUS;
           } else if (!progress.is_completed) {
-            // Kary tylko dla nieukończonych
             score += (progress.mistakes || 0) * SCORE_WEIGHTS.MISTAKE_PENALTY;
             score +=
               Math.max(0, (progress.attempts || 0) - 1) *
@@ -184,23 +158,20 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
             }
           }
 
-          score += (Math.random() - 0.5) * 0.1; // Losowość
-          score += t.xp * 0.1; // Waga XP
+          score += (Math.random() - 0.5) * 0.1;
+          score += t.xp * 0.1;
 
           return { ...t, recommendationScore: score };
         })
         .sort((a, b) => b.recommendationScore - a.recommendationScore);
 
-      // Dodatkowe filtrowanie PO rekomendacji
       if (typeFilter) result = result.filter((t) => t.type === typeFilter);
       if (langFilter) result = result.filter((t) => t.language === langFilter);
       if (searchQuery)
         result = result.filter((t) =>
           t.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
-      // Filtr 'diffFilter' już zastosowany przez targetDifficulties
     } else {
-      // --- Standardowe filtry dla trybu "Wszystkie" ---
       if (typeFilter) result = result.filter((t) => t.type === typeFilter);
       if (langFilter) result = result.filter((t) => t.language === langFilter);
       if (diffFilter)
@@ -209,16 +180,12 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
         result = result.filter((t) =>
           t.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
-    } // Koniec bloku if/else dla recommendationFilter
+    }
 
-    // --- Filtr ukrywania ukończonych ---
-    // Stosowany zawsze, jeśli zaznaczony (w rekomendacjach też, jako dodatkowy failsafe)
     if (hideCompleted) {
       result = result.filter((t) => !t.user_progress?.is_completed);
     }
 
-    // --- Sortowanie ---
-    // Stosowane tylko w trybie "Wszystkie"
     if (recommendationFilter === "all") {
       switch (sortBy) {
         case "xp_asc":
@@ -253,10 +220,8 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
         case "alpha_desc":
           result.sort((a, b) => b.title.localeCompare(a.title));
           break;
-        // Domyślne sortowanie (np. ostatnio utworzone na górze), jeśli sortBy jest pusty
         default:
           if (!sortBy) {
-            // Stosuj domyślne tylko jeśli sortBy nie jest wybrane
             result.sort(
               (a, b) =>
                 new Date(b.created_at).getTime() -
@@ -266,11 +231,9 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
           break;
       }
     }
-    // W trybie rekomendacji sortowanie jest już ustalone przez 'recommendationScore'
 
     return result;
   }, [
-    // Zależności dla useMemo
     tasks,
     typeFilter,
     langFilter,
@@ -279,13 +242,11 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     searchQuery,
     hideCompleted,
     recommendationFilter,
-    user, // User jest potrzebny do rekomendacji
+    user,
   ]);
 
-  // --- Zwracana wartość hooka ---
   return {
     filteredTasks,
-    // Przekaż aktualne wartości stanów
     filters: {
       typeFilter,
       langFilter,
@@ -295,14 +256,12 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
       hideCompleted,
       recommendationFilter,
     },
-    // Settery po prostu ustawiają stan (useEffect zajmie się localStorage)
     setters: {
       setTypeFilter,
       setLangFilter,
       setDiffFilter,
       setSortBy,
       setSearchQuery,
-      // Dla checkboxa shadcn/ui przekazuje boolean lub 'indeterminate'
       setHideCompleted: (checked: boolean | "indeterminate") =>
         setHideCompleted(checked === true),
       setRecommendationFilter,

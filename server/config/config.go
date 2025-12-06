@@ -11,8 +11,6 @@ type Config struct {
 	DatabaseURL string
 }
 
-// LoadConfig loads the configuration for the application.
-// It returns a pointer to a Config struct containing the database URL.
 func LoadConfig() *Config {
 
 	if os.Getenv("IN_DOCKER") != "true" {
@@ -28,8 +26,6 @@ func LoadConfig() *Config {
 	 }
 }
 
-// getDatabaseURL constructs a database connection URL from environment variables.
-// The function prints the constructed URL and returns it as a string.
 func getDatabaseURL() string {
 	databaseUrl := "host=" + os.Getenv("DATABASE_HOST") +
 	" user=" + os.Getenv("DATABASE_USER") + " password=" +

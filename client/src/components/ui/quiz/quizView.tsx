@@ -1,5 +1,3 @@
-// Ścieżka pliku: components/quiz/QuizView.tsx
-
 "use client";
 
 import Link from "next/link";
@@ -9,7 +7,6 @@ import { Progress } from "@/components/ui/progress";
 import { CheckCircle, XCircle, Lightbulb, LogOut, Info } from "lucide-react";
 import { QuestionRenderer } from "./questionRenderer";
 
-// Definiujemy propsy, które komponent będzie przyjmować
 type QuizViewProps = {
   task: Task;
   currentQuestion: TaskQuestion;

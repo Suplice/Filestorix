@@ -17,7 +17,6 @@ import {
   AntDesign,
 } from "@expo/vector-icons";
 
-// Importy z Twojego API (zakładam, że ścieżki są poprawne)
 import { fetchIncomingRequests } from "@/lib/api/friends";
 import { fetchLeaderboard } from "@/lib/api/leaderboard";
 import { GetAllTasksForUser } from "@/lib/api/task";
@@ -25,9 +24,6 @@ import { FriendshipInfo } from "@/lib/types/user";
 import { LeaderboardEntry } from "@/lib/types/leaderboard";
 import { Task } from "@/lib/types/task";
 
-// --- KOMPONENTY POMOCNICZE (W tym samym pliku dla ułatwienia) ---
-
-// 1. StatCard
 const StatCard = ({ title, value, icon, color }: any) => (
   <View style={styles.card}>
     <View style={styles.cardHeader}>
@@ -42,7 +38,6 @@ const StatCard = ({ title, value, icon, color }: any) => (
   </View>
 );
 
-// 2. FriendRequestsWidget (Uproszczony)
 const FriendRequestsWidget = ({
   requests,
   isLoading,
@@ -84,7 +79,6 @@ const FriendRequestsWidget = ({
                   {req.otherUser.username}
                 </Text>
               </View>
-              {/* Tutaj normalnie byłyby przyciski akceptacji, na razie placeholder */}
               <TouchableOpacity
                 onPress={() => router.push("/(drawer)/friends/page")}
                 style={styles.smallButton}
@@ -106,7 +100,6 @@ const FriendRequestsWidget = ({
   );
 };
 
-// 3. LeaderboardWidget (Uproszczony)
 const LeaderboardWidget = ({ topEntries, currentUser, isLoading }: any) => {
   const router = useRouter();
   const displayEntries = topEntries.slice(0, 3);
@@ -174,7 +167,6 @@ const LeaderboardWidget = ({ topEntries, currentUser, isLoading }: any) => {
   );
 };
 
-// 4. ContinueLearningCard (Uproszczony)
 const ContinueLearningCard = ({ task }: { task: Task | null }) => {
   const router = useRouter();
 
@@ -205,13 +197,10 @@ const ContinueLearningCard = ({ task }: { task: Task | null }) => {
   );
 };
 
-// --- GŁÓWNY EKRAN ---
-
 export default function HomeScreen() {
   const { user: currentUser, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  // Stany
   const [incomingRequests, setIncomingRequests] = useState<FriendshipInfo[]>(
     []
   );
@@ -231,21 +220,18 @@ export default function HomeScreen() {
         GetAllTasksForUser(currentUser.ID),
       ]);
 
-      // Obsługa Friendship
       if (results[0].status === "fulfilled" && results[0].value) {
         setIncomingRequests(results[0].value);
       } else {
         setIncomingRequests([]);
       }
 
-      // Obsługa Leaderboard
       if (results[1].status === "fulfilled" && results[1].value) {
         setLeaderboard(results[1].value);
       } else {
         setLeaderboard([]);
       }
 
-      // Obsługa Tasks
       if (results[2].status === "fulfilled" && results[2].value) {
         setUserTasks(results[2].value);
       } else {
@@ -263,7 +249,6 @@ export default function HomeScreen() {
     if (isAuthenticated && currentUser) {
       loadDashboardData();
     } else if (!isAuthenticated) {
-      // Jeśli wylogowany, przekieruj lub wyczyść (tutaj zakładamy, że AuthContext przekieruje)
       setLoading(false);
     }
   }, [isAuthenticated, currentUser, loadDashboardData]);
@@ -277,7 +262,6 @@ export default function HomeScreen() {
     (task) => task.user_progress && !task.user_progress.is_completed
   );
 
-  // Renderowanie ładowania początkowego
   if (loading && !refreshing) {
     return (
       <View style={[styles.container, styles.center]}>
@@ -306,7 +290,6 @@ export default function HomeScreen() {
         />
       }
     >
-      {/* Header Powitalny */}
       <View style={styles.headerSection}>
         <Text style={styles.greeting}>
           Welcome back, {currentUser.username}!
@@ -316,7 +299,6 @@ export default function HomeScreen() {
         </Text>
       </View>
 
-      {/* Statystyki - Grid 3 kolumny */}
       <View style={styles.statsContainer}>
         <View style={styles.statWrapper}>
           <StatCard
@@ -346,14 +328,12 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Sekcja Continue Learning */}
       {taskToContinue && (
         <View style={styles.section}>
           <ContinueLearningCard task={taskToContinue} />
         </View>
       )}
 
-      {/* Widgety */}
       <View style={styles.widgetsContainer}>
         <View style={styles.widgetWrapper}>
           <FriendRequestsWidget
@@ -372,7 +352,6 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Padding na dole, żeby content nie chował się za dolnym paskiem jeśli taki jest */}
       <View style={{ height: 40 }} />
     </ScrollView>
   );
@@ -405,7 +384,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#94a3b8",
   },
-  // Style dla Statystyk
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -441,7 +419,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "800",
   },
-  // Style dla Sekcji i Widgetów
   section: {
     marginBottom: 24,
   },
@@ -452,7 +429,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   widgetCard: {
-    backgroundColor: "#0f172a", // Ciemniejsze tło dla widgetów
+    backgroundColor: "#0f172a",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#1e293b",
@@ -485,7 +462,7 @@ const styles = StyleSheet.create({
     borderTopColor: "#334155",
   },
   footerLink: {
-    color: "#818cf8", // Indigo-400
+    color: "#818cf8",
     fontWeight: "600",
     fontSize: 14,
   },
@@ -495,7 +472,6 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     paddingVertical: 10,
   },
-  // List Items Styles
   listItem: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -505,7 +481,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#1e293b",
   },
   listItemHighlight: {
-    backgroundColor: "rgba(99, 102, 241, 0.1)", // Light Indigo bg
+    backgroundColor: "rgba(99, 102, 241, 0.1)",
     marginHorizontal: -16,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -544,7 +520,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-  // Task specific
   taskTitle: {
     color: "white",
     fontSize: 18,

@@ -9,9 +9,6 @@ import (
 )
 
 func SeedTestData(db *gorm.DB) error {
-	// ====================
-	// Wyczyść tabele (Twoja logika jest OK)
-	// ====================
 	tables := []string{
 		"user_answers",
 		"user_task_progresses",
@@ -29,13 +26,10 @@ func SeedTestData(db *gorm.DB) error {
 		}
 	}
 
-	// ====================
-	// 1. Użytkownicy (Twoje dane są OK)
-	// ====================
 	users := []models.User{
 		{Username: "alice", Email: "alice@example.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=1", Role: "user", Level: 3, XP: 120, Points: 50, StreakCount: 5, LastActiveDate: time.Now()},
 		{Username: "bob", Email: "bob@example.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=2", Role: "user", Level: 2, XP: 70, Points: 20, StreakCount: 2, LastActiveDate: time.Now()},
-		{Username: "admin", Email: "admin@admin.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=3", Role: "admin", PasswordHash: "$2a$10$K1Ap8iJfIq8APieGy5G3qukIAqP6ZfFc16uLxWcBPFf8TBjqzGnAq", Level: 2, XP: 70, Points: 20, StreakCount: 2, LastActiveDate: time.Now()},
+		{Username: "admin", Email: "admin@admin.com", Provider: "EMAIL", AvatarURL: "https://i.pravatar.cc/150?img=3", Role: "admin", PasswordHash: "$2a$10$K1Ap8iJfIq8APieGy5G3qukIAqP6ZfFc16uLxWcBPFf8TBjqzGnAq", Level: 0, XP: 0, Points: 0, StreakCount: 0, LastActiveDate: time.Now()},
 	}
 	for _, u := range users {
 		if err := db.Create(&u).Error; err != nil {
@@ -43,329 +37,265 @@ func SeedTestData(db *gorm.DB) error {
 		}
 	}
 
-	// ====================
-	// 2. Odznaki (Twoje dane są OK)
-	// ====================
-	// ... (kod dla odznak) ...
-
-	// ====================
-	// 3. Zadania — 4 nowe/zaktualizowane zadania
-	// ====================
 	tasks := []models.Task{
-		// === Istniejące ===
-		{Title: "Podstawy Pythona", Description: "Quiz wielokrotnego wyboru o zmiennych i typach.", Type: "QUIZ", Language: "Python", Difficulty: "EASY", Points: 10, XP: 5},                                    // ID: 1
-		{Title: "JavaScript - ES6", Description: "Sprawdź swoją wiedzę o funkcjach strzałkowych i `let`/`const`.", Type: "QUIZ", Language: "JavaScript", Difficulty: "EASY", Points: 15, XP: 10},        // ID: 2
-		{Title: "Deklaracje w Go", Description: "Uzupełnij luki w kodzie Go.", Type: "FILL_BLANK", Language: "Go", Difficulty: "MEDIUM", Points: 20, XP: 15},                                           // ID: 3
-		{Title: "Instrukcje SQL", Description: "Dokończ popularne zapytania SQL.", Type: "FILL_BLANK", Language: "General", Difficulty: "MEDIUM", Points: 20, XP: 15},                                 // ID: 4
+    {Title: "Python Basics", Description: "Multiple-choice quiz about variables and types.", Type: "QUIZ", Language: "Python", Difficulty: "EASY", Points: 10, XP: 5},                                     
+    {Title: "JavaScript - ES6", Description: "Test your knowledge of arrow functions and `let`/`const`.", Type: "QUIZ", Language: "JavaScript", Difficulty: "EASY", Points: 15, XP: 10},       
+    {Title: "Declarations in Go", Description: "Fill in the blanks in Go code.", Type: "FILL_BLANK", Language: "Go", Difficulty: "MEDIUM", Points: 20, XP: 15},                                                              
+    {Title: "SQL Statements", Description: "Complete popular SQL queries.", Type: "FILL_BLANK", Language: "General", Difficulty: "MEDIUM", Points: 20, XP: 15},                                                              
 
-		// === Nowe zadania ===
+    {Title: "Python - Loops and Lists", Description: "Quiz regarding for/while loops and list operations.", Type: "QUIZ", Language: "Python", Difficulty: "MEDIUM", Points: 25, XP: 15},            
+    {Title: "Python - Functions", Description: "Complete definitions of simple functions in Python.", Type: "FILL_BLANK", Language: "Python", Difficulty: "MEDIUM", Points: 30, XP: 20},             
+    {Title: "Python - Classes and Objects", Description: "Quiz on the basics of object-oriented programming in Python.", Type: "QUIZ", Language: "Python", Difficulty: "HARD", Points: 45, XP: 30},        
 
-		// --- Python ---
-		{Title: "Python - Pętle i Listy", Description: "Quiz dotyczący pętli for/while i operacji na listach.", Type: "QUIZ", Language: "Python", Difficulty: "MEDIUM", Points: 25, XP: 15},            // ID: 5
-		{Title: "Python - Funkcje", Description: "Uzupełnij definicje prostych funkcji w Pythonie.", Type: "FILL_BLANK", Language: "Python", Difficulty: "MEDIUM", Points: 30, XP: 20},              // ID: 6
-		{Title: "Python - Klasy i Obiekty", Description: "Quiz o podstawach programowania obiektowego w Pythonie.", Type: "QUIZ", Language: "Python", Difficulty: "HARD", Points: 45, XP: 30},        // ID: 7
+    {Title: "Go - Structs and Methods", Description: "Quiz on defining structs and methods in Go.", Type: "QUIZ", Language: "Go", Difficulty: "MEDIUM", Points: 30, XP: 20},                 
+    {Title: "Go - Goroutines", Description: "Complete the code related to concurrency basics.", Type: "FILL_BLANK", Language: "Go", Difficulty: "HARD", Points: 50, XP: 35},               
 
-		// --- Go ---
-		{Title: "Go - Struktury i Metody", Description: "Quiz o definiowaniu struktur i metod w Go.", Type: "QUIZ", Language: "Go", Difficulty: "MEDIUM", Points: 30, XP: 20},                       // ID: 8
-		{Title: "Go - Goroutines", Description: "Uzupełnij kod związany z podstawami współbieżności.", Type: "FILL_BLANK", Language: "Go", Difficulty: "HARD", Points: 50, XP: 35},                 // ID: 9
+    {Title: "JavaScript - Array Operations", Description: "Quiz on array methods like map, filter, reduce.", Type: "QUIZ", Language: "JavaScript", Difficulty: "MEDIUM", Points: 35, XP: 25}, 
+    {Title: "JavaScript - Asynchrony", Description: "Complete the code using async/await and Promises.", Type: "FILL_BLANK", Language: "JavaScript", Difficulty: "HARD", Points: 55, XP: 40}, 
 
-		// --- JavaScript ---
-		{Title: "JavaScript - Operacje na Tablicach", Description: "Quiz o metodach tablicowych jak map, filter, reduce.", Type: "QUIZ", Language: "JavaScript", Difficulty: "MEDIUM", Points: 35, XP: 25}, // ID: 10
-		{Title: "JavaScript - Asynchroniczność", Description: "Uzupełnij kod używając async/await i Promises.", Type: "FILL_BLANK", Language: "JavaScript", Difficulty: "HARD", Points: 55, XP: 40}, // ID: 11
+    {Title: "TypeScript - Basic Types", Description: "Quiz on basic types and interfaces.", Type: "QUIZ", Language: "TypeScript", Difficulty: "EASY", Points: 15, XP: 10},            
+    {Title: "TypeScript - Generics", Description: "Complete the code using generic types.", Type: "FILL_BLANK", Language: "TypeScript", Difficulty: "MEDIUM", Points: 30, XP: 20},          
+    {Title: "TypeScript - Advanced Types", Description: "Quiz on union, conditional, and utility types.", Type: "QUIZ", Language: "TypeScript", Difficulty: "HARD", Points: 50, XP: 35}, 
 
-		// --- TypeScript ---
-		{Title: "TypeScript - Podstawowe Typy", Description: "Quiz o typach podstawowych i interfejsach.", Type: "QUIZ", Language: "TypeScript", Difficulty: "EASY", Points: 15, XP: 10},               // ID: 12
-		{Title: "TypeScript - Generics", Description: "Uzupełnij kod z użyciem typów generycznych.", Type: "FILL_BLANK", Language: "TypeScript", Difficulty: "MEDIUM", Points: 30, XP: 20},          // ID: 13
-		{Title: "TypeScript - Zaawansowane Typy", Description: "Quiz o typach unijnych, warunkowych i utility types.", Type: "QUIZ", Language: "TypeScript", Difficulty: "HARD", Points: 50, XP: 35}, // ID: 14
+    {Title: "C# - Syntax Basics", Description: "Quiz on variables, types, and conditional statements.", Type: "QUIZ", Language: "C#", Difficulty: "EASY", Points: 10, XP: 5},                  
+    {Title: "C# - Classes and Methods", Description: "Complete class and method definitions in C#.", Type: "FILL_BLANK", Language: "C#", Difficulty: "MEDIUM", Points: 25, XP: 15},                  
+    {Title: "C# - LINQ", Description: "Quiz on basic LINQ queries.", Type: "QUIZ", Language: "C#", Difficulty: "HARD", Points: 45, XP: 30},                                                               
 
-		// --- C# ---
-		{Title: "C# - Podstawy Składni", Description: "Quiz o zmiennych, typach i instrukcjach warunkowych.", Type: "QUIZ", Language: "C#", Difficulty: "EASY", Points: 10, XP: 5},                     // ID: 15
-		{Title: "C# - Klasy i Metody", Description: "Uzupełnij definicje klas i metod w C#.", Type: "FILL_BLANK", Language: "C#", Difficulty: "MEDIUM", Points: 25, XP: 15},                      // ID: 16
-		{Title: "C# - LINQ", Description: "Quiz o podstawowych zapytaniach LINQ.", Type: "QUIZ", Language: "C#", Difficulty: "HARD", Points: 45, XP: 30},                                          // ID: 17
+    {Title: "Algorithms - Big O Notation", Description: "Quiz on the basics of computational complexity.", Type: "QUIZ", Language: "Algorithms", Difficulty: "EASY", Points: 20, XP: 15},             
+    {Title: "Algorithms - Sorting", Description: "Fill in the names of popular sorting algorithms.", Type: "FILL_BLANK", Language: "Algorithms", Difficulty: "MEDIUM", Points: 35, XP: 25}, 
+    {Title: "Algorithms - Data Structures", Description: "Quiz on stacks, queues, and linked lists.", Type: "QUIZ", Language: "Algorithms", Difficulty: "HARD", Points: 60, XP: 45},     
+    {Title: "Python - Dictionaries", Description: "Quiz on creating and modifying dictionaries.", Type: "QUIZ", Language: "Python", Difficulty: "EASY", Points: 15, XP: 10},                                                              
+    {Title: "Python - Exception Handling", Description: "Complete try/except blocks.", Type: "FILL_BLANK", Language: "Python", Difficulty: "MEDIUM", Points: 30, XP: 20},                                                                 
+    {Title: "Python - List Comprehensions", Description: "Quiz on creating lists in a concise form.", Type: "QUIZ", Language: "Python", Difficulty: "HARD", Points: 50, XP: 35},                                                        
 
-		// --- General / Algorithms ---
-		{Title: "Algorytmy - Notacja Big O", Description: "Quiz o podstawach złożoności obliczeniowej.", Type: "QUIZ", Language: "Algorithms", Difficulty: "EASY", Points: 20, XP: 15},              // ID: 18
-		{Title: "Algorytmy - Sortowanie", Description: "Uzupełnij nazwy popularnych algorytmów sortowania.", Type: "FILL_BLANK", Language: "Algorithms", Difficulty: "MEDIUM", Points: 35, XP: 25}, // ID: 19
-		{Title: "Algorytmy - Struktury Danych", Description: "Quiz o stosach, kolejkach i listach powiązanych.", Type: "QUIZ", Language: "Algorithms", Difficulty: "HARD", Points: 60, XP: 45},     // ID: 20
-		{Title: "Python - Słowniki", Description: "Quiz o tworzeniu i modyfikowaniu słowników.", Type: "QUIZ", Language: "Python", Difficulty: "EASY", Points: 15, XP: 10},                                         // ID: 21
-		{Title: "Python - Obsługa Wyjątków", Description: "Uzupełnij bloki try/except.", Type: "FILL_BLANK", Language: "Python", Difficulty: "MEDIUM", Points: 30, XP: 20},                                  // ID: 22
-		{Title: "Python - List Comprehensions", Description: "Quiz o tworzeniu list w skróconej formie.", Type: "QUIZ", Language: "Python", Difficulty: "HARD", Points: 50, XP: 35},                        // ID: 23
+    {Title: "Go - Interfaces", Description: "Quiz on defining and implementing interfaces.", Type: "QUIZ", Language: "Go", Difficulty: "MEDIUM", Points: 35, XP: 25},                                                              
+    {Title: "Go - Error Handling", Description: "Complete the typical error handling pattern in Go.", Type: "FILL_BLANK", Language: "Go", Difficulty: "EASY", Points: 15, XP: 10},                                                      
 
-		// --- Go ---
-		{Title: "Go - Interfejsy", Description: "Quiz o definiowaniu i implementacji interfejsów.", Type: "QUIZ", Language: "Go", Difficulty: "MEDIUM", Points: 35, XP: 25},                                 // ID: 24
-		{Title: "Go - Obsługa Błędów", Description: "Uzupełnij typowy wzorzec obsługi błędów w Go.", Type: "FILL_BLANK", Language: "Go", Difficulty: "EASY", Points: 15, XP: 10},                            // ID: 25
+    {Title: "JavaScript - DOM Manipulation", Description: "Quiz on the basics of DOM tree manipulation.", Type: "QUIZ", Language: "JavaScript", Difficulty: "MEDIUM", Points: 30, XP: 20},            
+    {Title: "JavaScript - Hoisting", Description: "Fill in the blanks regarding variable and function hoisting.", Type: "FILL_BLANK", Language: "JavaScript", Difficulty: "HARD", Points: 45, XP: 30},      
+    {Title: "JavaScript - Promises", Description: "Quiz regarding creating and handling Promises.", Type: "QUIZ", Language: "JavaScript", Difficulty: "HARD", Points: 55, XP: 40},                                                       
 
-		// --- JavaScript ---
-		{Title: "JavaScript - DOM Manipulation", Description: "Quiz o podstawach manipulacji drzewem DOM.", Type: "QUIZ", Language: "JavaScript", Difficulty: "MEDIUM", Points: 30, XP: 20},              // ID: 26
-		{Title: "JavaScript - Hoisting", Description: "Uzupełnij luki dotyczące hoistingu zmiennych i funkcji.", Type: "FILL_BLANK", Language: "JavaScript", Difficulty: "HARD", Points: 45, XP: 30},        // ID: 27
-		{Title: "JavaScript - Promises", Description: "Quiz dotyczący tworzenia i obsługi Promises.", Type: "QUIZ", Language: "JavaScript", Difficulty: "HARD", Points: 55, XP: 40},                       // ID: 28
+    {Title: "TypeScript - Classes", Description: "Quiz on access modifiers and class inheritance.", Type: "QUIZ", Language: "TypeScript", Difficulty: "MEDIUM", Points: 30, XP: 20},            
+    {Title: "TypeScript - Enums", Description: "Complete the definitions and usage of enums.", Type: "FILL_BLANK", Language: "TypeScript", Difficulty: "EASY", Points: 15, XP: 10},                                                           
 
-		// --- TypeScript ---
-		{Title: "TypeScript - Klasy", Description: "Quiz o modyfikatorach dostępu i dziedziczeniu w klasach.", Type: "QUIZ", Language: "TypeScript", Difficulty: "MEDIUM", Points: 30, XP: 20},            // ID: 29
-		{Title: "TypeScript - Enums", Description: "Uzupełnij definicje i użycie enumów.", Type: "FILL_BLANK", Language: "TypeScript", Difficulty: "EASY", Points: 15, XP: 10},                            // ID: 30
-
-		// --- C# ---
-		{Title: "C# - Kolekcje", Description: "Quiz o List<T>, Dictionary<TKey, TValue>.", Type: "QUIZ", Language: "C#", Difficulty: "MEDIUM", Points: 35, XP: 25},                                     // ID: 31
-		{Title: "C# - Properties", Description: "Uzupełnij definicje właściwości (get/set).", Type: "FILL_BLANK", Language: "C#", Difficulty: "EASY", Points: 20, XP: 15},                                 // ID: 32
-		{Title: "C# - Async/Await", Description: "Quiz o programowaniu asynchronicznym w C#.", Type: "QUIZ", Language: "C#", Difficulty: "HARD", Points: 60, XP: 45},                                  // ID: 33
-
-		// --- General / Algorithms ---
-		{Title: "Podstawy HTML", Description: "Quiz o podstawowych znacznikach HTML.", Type: "QUIZ", Language: "General", Difficulty: "EASY", Points: 10, XP: 5},                                          // ID: 34
-		{Title: "Podstawy CSS", Description: "Uzupełnij selektory i właściwości CSS.", Type: "FILL_BLANK", Language: "General", Difficulty: "EASY", Points: 15, XP: 10},                                  // ID: 35
-		{Title: "Wzorce Projektowe - Singleton", Description: "Quiz o wzorcu Singleton.", Type: "QUIZ", Language: "General", Difficulty: "MEDIUM", Points: 30, XP: 20},                                  // ID: 36
-		{Title: "Algorytmy - Rekurencja", Description: "Quiz o podstawach rekurencji.", Type: "QUIZ", Language: "Algorithms", Difficulty: "MEDIUM", Points: 40, XP: 25},                                 // ID: 37
-		{Title: "Algorytmy - Drzewa Binarne", Description: "Uzupełnij terminy związane z drzewami binarnymi.", Type: "FILL_BLANK", Language: "Algorithms", Difficulty: "HARD", Points: 55, XP: 40},       // ID: 38
-		{Title: "Algorytmy - Grafy", Description: "Quiz o podstawach teorii grafów i algorytmach grafowych.", Type: "QUIZ", Language: "Algorithms", Difficulty: "HARD", Points: 70, XP: 50},               // ID: 39
-		{Title: "Sieci Komputerowe - Model OSI", Description: "Uzupełnij nazwy warstw modelu OSI.", Type: "FILL_BLANK", Language: "General", Difficulty: "MEDIUM", Points: 40, XP: 25},                   // ID: 40
-	}
+    {Title: "C# - Collections", Description: "Quiz on List<T>, Dictionary<TKey, TValue>.", Type: "QUIZ", Language: "C#", Difficulty: "MEDIUM", Points: 35, XP: 25},                                                                   
+    {Title: "C# - Properties", Description: "Complete property definitions (get/set).", Type: "FILL_BLANK", Language: "C#", Difficulty: "EASY", Points: 20, XP: 15},                                                                 
+    {Title: "C# - Async/Await", Description: "Quiz on asynchronous programming in C#.", Type: "QUIZ", Language: "C#", Difficulty: "HARD", Points: 60, XP: 45},                                                                
+    {Title: "HTML Basics", Description: "Quiz on basic HTML tags.", Type: "QUIZ", Language: "General", Difficulty: "EASY", Points: 10, XP: 5},                                                                                                
+    {Title: "CSS Basics", Description: "Complete CSS selectors and properties.", Type: "FILL_BLANK", Language: "General", Difficulty: "EASY", Points: 15, XP: 10},                                                               
+    {Title: "Design Patterns - Singleton", Description: "Quiz on the Singleton pattern.", Type: "QUIZ", Language: "General", Difficulty: "MEDIUM", Points: 30, XP: 20},                                                                  
+    {Title: "Algorithms - Recursion", Description: "Quiz on the basics of recursion.", Type: "QUIZ", Language: "Algorithms", Difficulty: "MEDIUM", Points: 40, XP: 25},                                                                 
+    {Title: "Algorithms - Binary Trees", Description: "Fill in terms related to binary trees.", Type: "FILL_BLANK", Language: "Algorithms", Difficulty: "HARD", Points: 55, XP: 40},       
+    {Title: "Algorithms - Graphs", Description: "Quiz on the basics of graph theory and graph algorithms.", Type: "QUIZ", Language: "Algorithms", Difficulty: "HARD", Points: 70, XP: 50},              
+    {Title: "Computer Networks - OSI Model", Description: "Fill in the names of the OSI model layers.", Type: "FILL_BLANK", Language: "General", Difficulty: "MEDIUM", Points: 40, XP: 25},                   
+}
 
 
-	// Ważne: Tworzymy zadania w transakcji, aby zachować kolejność ID (1, 2, 3, 4)
 	if err := db.Create(&tasks).Error; err != nil {
 		return err
 	}
 
-	// ====================
-	// 4. Pytania do zadań
-	// ====================
-	questions := []models.TaskQuestion{
-		// === Istniejące ===
-		// Task 1 (Python EASY QUIZ)
-		{TaskID: 1, QuestionText: "W Pythonie zmienna może zmienić swój typ w czasie działania programu.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Prawda","Fałsz"]`)), CorrectAnswer: "Prawda"},
-		{TaskID: 1, QuestionText: "Które z poniższych NIE jest wbudowanym typem danych w Pythonie?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["List","Dictionary","Tuple","Array"]`)), CorrectAnswer: "Array"},
-		{TaskID: 1, QuestionText: "Jakim operatorem sprawdzisz typ zmiennej `x`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["typeof(x)","type(x)","isType(x)","x.type"]`)), CorrectAnswer: "type(x)"},
-		// Task 2 (JavaScript EASY QUIZ)
-		{TaskID: 2, QuestionText: "Które słowo kluczowe pozwala na deklarację zmiennej, której nie można ponownie przypisać?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["var","let","const","static"]`)), CorrectAnswer: "const"},
-		{TaskID: 2, QuestionText: "Funkcje strzałkowe `() => {}` nie posiadają własnego kontekstu `this`.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Prawda","Fałsz"]`)), CorrectAnswer: "Prawda"},
-		// Task 3 (Go MEDIUM FILL_BLANK)
-		{TaskID: 3, QuestionText: "W Go, uzyj słowa `___`, aby zadeklarować nową zmienną z automatyczną inferencją typu (tylko wewnątrz funkcji).", Type: "FILL_BLANK", CorrectAnswer: ":="},
-		{TaskID: 3, QuestionText: "Zadeklaruj stałą o nazwie `Version` z wartością 1.1: `___ Version = 1.1`", Type: "FILL_BLANK", CorrectAnswer: "const"},
-		{TaskID: 3, QuestionText: "Słowo kluczowe do importowania pakietów to `___`.", Type: "FILL_BLANK", CorrectAnswer: "import"},
-		// Task 4 (General MEDIUM FILL_BLANK - SQL)
-		{TaskID: 4, QuestionText: "Aby pobrać wszystkie kolumny z tabeli `users`, wpisz: `SELECT ___ FROM users;`", Type: "FILL_BLANK", CorrectAnswer: "*"},
-		{TaskID: 4, QuestionText: "Aby dodać nowy wiersz do tabeli `products`, wpisz: `INSERT ___ products (...) VALUES (...);`", Type: "FILL_BLANK", CorrectAnswer: "INTO"},
-		{TaskID: 4, QuestionText: "Klauzula do filtrowania wyników zapytania to `___`.", Type: "FILL_BLANK", CorrectAnswer: "WHERE"},
+questions := []models.TaskQuestion{
+    {TaskID: 1, QuestionText: "In Python, a variable can change its type during program execution.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["True","False"]`)), CorrectAnswer: "True"},
+    {TaskID: 1, QuestionText: "Which of the following is NOT a built-in data type in Python?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["List","Dictionary","Tuple","Array"]`)), CorrectAnswer: "Array"},
+    {TaskID: 1, QuestionText: "Which operator checks the type of variable `x`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["typeof(x)","type(x)","isType(x)","x.type"]`)), CorrectAnswer: "type(x)"},
 
-		// === Nowe pytania ===
+    {TaskID: 2, QuestionText: "Which keyword allows declaring a variable that cannot be reassigned?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["var","let","const","static"]`)), CorrectAnswer: "const"},
+    {TaskID: 2, QuestionText: "Arrow functions `() => {}` do not have their own `this` context.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["True","False"]`)), CorrectAnswer: "True"},
 
-		// Task 5 (Python MEDIUM QUIZ - Pętle i Listy)
-		{TaskID: 5, QuestionText: "Która pętla jest lepsza, gdy znamy dokładną liczbę iteracji?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["for","while","do...while","repeat"]`)), CorrectAnswer: "for"},
-		{TaskID: 5, QuestionText: "Jak dodać element `5` na koniec listy `my_list`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["my_list.add(5)","my_list.append(5)","my_list.push(5)","my_list.insert(5)"]`)), CorrectAnswer: "my_list.append(5)"},
-		{TaskID: 5, QuestionText: "Co zwróci `my_list[-1]` dla listy `my_list = [1, 2, 3]`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["1","2","3","Błąd"]`)), CorrectAnswer: "3"},
+    {TaskID: 3, QuestionText: "In Go, use the `___` operator to declare a new variable with automatic type inference (only inside functions).", Type: "FILL_BLANK", CorrectAnswer: ":="},
+    {TaskID: 3, QuestionText: "Declare a constant named `Version` with value 1.1: `___ Version = 1.1`", Type: "FILL_BLANK", CorrectAnswer: "const"},
+    {TaskID: 3, QuestionText: "The keyword for importing packages is `___`.", Type: "FILL_BLANK", CorrectAnswer: "import"},
 
-		// Task 6 (Python MEDIUM FILL_BLANK - Funkcje)
-		{TaskID: 6, QuestionText: "Zdefiniuj funkcję o nazwie `greet` przyjmującą jeden argument `name`: `___ greet(name):`", Type: "FILL_BLANK", CorrectAnswer: "def"},
-		{TaskID: 6, QuestionText: "Zwróć wartość `result` z funkcji: `___ result`", Type: "FILL_BLANK", CorrectAnswer: "return"},
-		{TaskID: 6, QuestionText: "Jak zdefiniować parametr `age` z wartością domyślną 30? `def person(name, age=___):`", Type: "FILL_BLANK", CorrectAnswer: "30"},
+    {TaskID: 4, QuestionText: "To select all columns from the table `users`, type: `SELECT ___ FROM users;`", Type: "FILL_BLANK", CorrectAnswer: "*"},
+    {TaskID: 4, QuestionText: "To add a new row to the table `products`, type: `INSERT ___ products (...) VALUES (...);`", Type: "FILL_BLANK", CorrectAnswer: "INTO"},
+    {TaskID: 4, QuestionText: "The clause for filtering query results is `___`.", Type: "FILL_BLANK", CorrectAnswer: "WHERE"},
 
-		// Task 7 (Python HARD QUIZ - Klasy i Obiekty)
-		{TaskID: 7, QuestionText: "Jak nazywa się specjalna metoda inicjalizująca obiekt klasy w Pythonie?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["__init__","__new__","__create__","__constructor__"]`)), CorrectAnswer: "__init__"},
-		{TaskID: 7, QuestionText: "Słowo kluczowe używane do odwołania się do instancji obiektu wewnątrz metody klasy to:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["this","object","instance","self"]`)), CorrectAnswer: "self"},
-		{TaskID: 7, QuestionText: "Co oznacza dziedziczenie w programowaniu obiektowym?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Klasa może używać metod innej klasy","Klasa tworzy instancje innej klasy","Klasa przejmuje właściwości i metody innej klasy","Klasa ukrywa swoje wewnętrzne działanie"]`)), CorrectAnswer: "Klasa przejmuje właściwości i metody innej klasy"},
 
-		// Task 8 (Go MEDIUM QUIZ - Struktury i Metody)
-		{TaskID: 8, QuestionText: "Jakim słowem kluczowym definiujemy nową strukturę w Go?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["struct","type","class","define"]`)), CorrectAnswer: "type"},
-		{TaskID: 8, QuestionText: "Jak deklaruje się metodę `Print` dla typu `*Point`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["func (p *Point) Print()","func Print(p *Point)","method Print(p *Point)","def (p *Point) Print()"]`)), CorrectAnswer: "func (p *Point) Print()"},
-		{TaskID: 8, QuestionText: "Czy struktura w Go może zawierać metody?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Tak, bezpośrednio w definicji struct","Nie, metody są oddzielne","Tak, ale tylko jako wskaźniki do funkcji","Tak, definiuje się je poza struct z odbiornikiem (receiver)"]`)), CorrectAnswer: "Tak, definiuje się je poza struct z odbiornikiem (receiver)"},
+    {TaskID: 5, QuestionText: "Which loop is better when the exact number of iterations is known?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["for","while","do...while","repeat"]`)), CorrectAnswer: "for"},
+    {TaskID: 5, QuestionText: "How to add element `5` to the end of list `my_list`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["my_list.add(5)","my_list.append(5)","my_list.push(5)","my_list.insert(5)"]`)), CorrectAnswer: "my_list.append(5)"},
+    {TaskID: 5, QuestionText: "What will `my_list[-1]` return for `my_list = [1, 2, 3]`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["1","2","3","Error"]`)), CorrectAnswer: "3"},
 
-		// Task 9 (Go HARD FILL_BLANK - Goroutines)
-		{TaskID: 9, QuestionText: "Aby uruchomić funkcję `myFunc` jako goroutine, napisz: `___ myFunc()`", Type: "FILL_BLANK", CorrectAnswer: "go"},
-		{TaskID: 9, QuestionText: "Zadeklaruj kanał (channel) dla typu `int`: `myChan := ___ chan int`", Type: "FILL_BLANK", CorrectAnswer: "make"},
-		{TaskID: 9, QuestionText: "Wyślij wartość `10` do kanału `ch`: `ch ___ 10`", Type: "FILL_BLANK", CorrectAnswer: "<-"},
-		{TaskID: 9, QuestionText: "Odbierz wartość z kanału `ch` do zmiennej `val`: `val ___ ___ ch`", Type: "FILL_BLANK", CorrectAnswer: ":= <-"}, // Przyjmuję ":= <-" jako poprawną odpowiedź
+    {TaskID: 6, QuestionText: "Define a function named `greet` taking one argument `name`: `___ greet(name):`", Type: "FILL_BLANK", CorrectAnswer: "def"},
+    {TaskID: 6, QuestionText: "Return the value `result` from a function: `___ result`", Type: "FILL_BLANK", CorrectAnswer: "return"},
+    {TaskID: 6, QuestionText: "How to define parameter `age` with a default value of 30? `def person(name, age=___):`", Type: "FILL_BLANK", CorrectAnswer: "30"},
 
-		// Task 10 (JavaScript MEDIUM QUIZ - Operacje na Tablicach)
-		{TaskID: 10, QuestionText: "Która metoda tworzy nową tablicę z wynikami wywołania funkcji dla każdego elementu?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["forEach","map","filter","reduce"]`)), CorrectAnswer: "map"},
-		{TaskID: 10, QuestionText: "Która metoda tworzy nową tablicę zawierającą tylko elementy spełniające warunek?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["forEach","map","filter","reduce"]`)), CorrectAnswer: "filter"},
-		{TaskID: 10, QuestionText: "Która metoda wykonuje funkcję 'redukującą' na każdym elemencie, zwracając pojedynczą wartość?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["forEach","map","filter","reduce"]`)), CorrectAnswer: "reduce"},
+    {TaskID: 7, QuestionText: "What is the name of the special method that initializes a class object in Python?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["__init__","__new__","__create__","__constructor__"]`)), CorrectAnswer: "__init__"},
+    {TaskID: 7, QuestionText: "The keyword used to refer to the object instance within a class method is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["this","object","instance","self"]`)), CorrectAnswer: "self"},
+    {TaskID: 7, QuestionText: "What does inheritance mean in object-oriented programming?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["A class can use methods of another class","A class creates instances of another class","A class acquires the properties and methods of another class","A class hides its internal workings"]`)), CorrectAnswer: "A class acquires the properties and methods of another class"},
 
-		// Task 11 (JavaScript HARD FILL_BLANK - Asynchroniczność)
-		{TaskID: 11, QuestionText: "Oznacz funkcję jako asynchroniczną słowem kluczowym: `___ function myAsyncFunc() { ... }`", Type: "FILL_BLANK", CorrectAnswer: "async"},
-		{TaskID: 11, QuestionText: "Poczekaj na zakończenie Promise `myPromise` wewnątrz funkcji async: `const result = ___ myPromise;`", Type: "FILL_BLANK", CorrectAnswer: "await"},
-		{TaskID: 11, QuestionText: "Obsłuż błąd w bloku `async/await` za pomocą `___ { ... } catch(err) { ... }`", Type: "FILL_BLANK", CorrectAnswer: "try"},
-		{TaskID: 11, QuestionText: "Metoda obiektu Promise do obsługi pomyślnego zakończenia to `___`.", Type: "FILL_BLANK", CorrectAnswer: ".then()"}, // Przyjmuję ".then()" lub "then"
+    {TaskID: 8, QuestionText: "Which keyword is used to define a new struct in Go?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["struct","type","class","define"]`)), CorrectAnswer: "type"},
+    {TaskID: 8, QuestionText: "How do you declare a method `Print` for type `*Point`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["func (p *Point) Print()","func Print(p *Point)","method Print(p *Point)","def (p *Point) Print()"]`)), CorrectAnswer: "func (p *Point) Print()"},
+    {TaskID: 8, QuestionText: "Can a struct in Go contain methods?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Yes, directly inside struct definition","No, methods are separate","Yes, but only as function pointers","Yes, defined outside struct with a receiver"]`)), CorrectAnswer: "Yes, defined outside struct with a receiver"},
 
-		// Task 12 (TypeScript EASY QUIZ - Podstawowe Typy)
-		{TaskID: 12, QuestionText: "Jak zadeklarować zmienną `age` typu liczbowego w TypeScript?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["let age: number;","let age = number;","let age: Number;","let age: int;"]`)), CorrectAnswer: "let age: number;"},
-		{TaskID: 12, QuestionText: "Słowo kluczowe do zdefiniowania własnego kształtu obiektu to:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["type","struct","interface","object"]`)), CorrectAnswer: "interface"}, // Lub 'type'
-		{TaskID: 12, QuestionText: "Jak zdefiniować tablicę stringów `names`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["let names: string[];","let names: Array<string>;","Oba powyższe","Żadne z powyższych"]`)), CorrectAnswer: "Oba powyższe"},
+    {TaskID: 9, QuestionText: "To run function `myFunc` as a goroutine, write: `___ myFunc()`", Type: "FILL_BLANK", CorrectAnswer: "go"},
+    {TaskID: 9, QuestionText: "Declare a channel for type `int`: `myChan := ___ chan int`", Type: "FILL_BLANK", CorrectAnswer: "make"},
+    {TaskID: 9, QuestionText: "Send value `10` to channel `ch`: `ch ___ 10`", Type: "FILL_BLANK", CorrectAnswer: "<-"},
+    {TaskID: 9, QuestionText: "Receive value from channel `ch` into variable `val`: `val ___ ___ ch`", Type: "FILL_BLANK", CorrectAnswer: ":= <-"},
 
-		// Task 13 (TypeScript MEDIUM FILL_BLANK - Generics)
-		{TaskID: 13, QuestionText: "Zdefiniuj funkcję generyczną `identity`, która przyjmuje argument typu `T` i zwraca wartość tego samego typu: `function identity<___>(arg: T): T { return arg; }`", Type: "FILL_BLANK", CorrectAnswer: "T"},
-		{TaskID: 13, QuestionText: "Użyj typu generycznego `Array` do zadeklarowania tablicy liczb: `let list: Array<___> = [1, 2, 3];`", Type: "FILL_BLANK", CorrectAnswer: "number"},
+    {TaskID: 10, QuestionText: "Which method creates a new array with the results of calling a function for every element?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["forEach","map","filter","reduce"]`)), CorrectAnswer: "map"},
+    {TaskID: 10, QuestionText: "Which method creates a new array with all elements that pass the test implemented by the provided function?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["forEach","map","filter","reduce"]`)), CorrectAnswer: "filter"},
+    {TaskID: 10, QuestionText: "Which method executes a 'reducer' function on each element of the array, resulting in a single output value?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["forEach","map","filter","reduce"]`)), CorrectAnswer: "reduce"},
 
-		// Task 14 (TypeScript HARD QUIZ - Zaawansowane Typy)
-		{TaskID: 14, QuestionText: "Jak zdefiniować typ `Result`, który może być stringiem LUB liczbą?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["type Result = string | number;","type Result = string & number;","type Result = string or number;","interface Result { string; number; }"]`)), CorrectAnswer: "type Result = string | number;"},
-		{TaskID: 14, QuestionText: "Który 'Utility Type' tworzy typ, w którym wszystkie właściwości typu `T` są opcjonalne?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Required<T>","Partial<T>","Readonly<T>","Pick<T>"]`)), CorrectAnswer: "Partial<T>"},
-		{TaskID: 14, QuestionText: "Typ `never` w TypeScript reprezentuje:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Wartość null lub undefined","Wartość, która nigdy nie wystąpi","Dowolny typ","Typ nieznany"]`)), CorrectAnswer: "Wartość, która nigdy nie wystąpi"},
+    {TaskID: 11, QuestionText: "Mark a function as asynchronous with keyword: `___ function myAsyncFunc() { ... }`", Type: "FILL_BLANK", CorrectAnswer: "async"},
+    {TaskID: 11, QuestionText: "Wait for a Promise `myPromise` to resolve inside an async function: `const result = ___ myPromise;`", Type: "FILL_BLANK", CorrectAnswer: "await"},
+    {TaskID: 11, QuestionText: "Handle errors in an `async/await` block using `___ { ... } catch(err) { ... }`", Type: "FILL_BLANK", CorrectAnswer: "try"},
+    {TaskID: 11, QuestionText: "The Promise method to handle successful resolution is `___`.", Type: "FILL_BLANK", CorrectAnswer: ".then()"},
 
-		// Task 15 (C# EASY QUIZ - Podstawy Składni)
-		{TaskID: 15, QuestionText: "Jak zadeklarować zmienną całkowitoliczbową `count` w C#?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["var count;","int count;","integer count;","count: int;"]`)), CorrectAnswer: "int count;"},
-		{TaskID: 15, QuestionText: "Który operator służy do porównania równości wartości w C#?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["=","==",":=","==="]`)), CorrectAnswer: "=="},
-		{TaskID: 15, QuestionText: "Jak wypisać tekst 'Hello' na konsoli?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["print('Hello');","Console.WriteLine(\"Hello\");","echo 'Hello';","System.out.println(\"Hello\");"]`)), CorrectAnswer: "Console.WriteLine(\"Hello\");"},
+    {TaskID: 12, QuestionText: "How to declare a variable `age` of number type in TypeScript?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["let age: number;","let age = number;","let age: Number;","let age: int;"]`)), CorrectAnswer: "let age: number;"},
+    {TaskID: 12, QuestionText: "The keyword to define a custom object shape is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["type","struct","interface","object"]`)), CorrectAnswer: "interface"},
+    {TaskID: 12, QuestionText: "How to define an array of strings `names`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["let names: string[];","let names: Array<string>;","Both above","None of above"]`)), CorrectAnswer: "Both above"},
 
-		// Task 16 (C# MEDIUM FILL_BLANK - Klasy i Metody)
-		{TaskID: 16, QuestionText: "Zdefiniuj publiczną klasę o nazwie `Person`: `___ class Person { ... }`", Type: "FILL_BLANK", CorrectAnswer: "public"},
-		{TaskID: 16, QuestionText: "Zadeklaruj publiczną metodę `Speak`, która nic nie zwraca (void): `public ___ Speak() { ... }`", Type: "FILL_BLANK", CorrectAnswer: "void"},
-		{TaskID: 16, QuestionText: "Słowo kluczowe do stworzenia nowej instancji klasy `Car`: `Car myCar = ___ Car();`", Type: "FILL_BLANK", CorrectAnswer: "new"},
+    {TaskID: 13, QuestionText: "Define a generic function `identity` that takes an argument of type `T` and returns a value of the same type: `function identity<___>(arg: T): T { return arg; }`", Type: "FILL_BLANK", CorrectAnswer: "T"},
+    {TaskID: 13, QuestionText: "Use the generic `Array` type to declare an array of numbers: `let list: Array<___> = [1, 2, 3];`", Type: "FILL_BLANK", CorrectAnswer: "number"},
 
-		// Task 17 (C# HARD QUIZ - LINQ)
-		{TaskID: 17, QuestionText: "Która klauzula LINQ służy do filtrowania kolekcji?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Select","Where","OrderBy","GroupBy"]`)), CorrectAnswer: "Where"},
-		{TaskID: 17, QuestionText: "Która klauzula LINQ służy do transformacji elementów kolekcji?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Select","Where","OrderBy","GroupBy"]`)), CorrectAnswer: "Select"},
-		{TaskID: 17, QuestionText: "Która metoda LINQ zwraca pierwszy element kolekcji lub wartość domyślną, jeśli kolekcja jest pusta?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["First()","Single()","FirstOrDefault()","ElementAt(0)"]`)), CorrectAnswer: "FirstOrDefault()"},
+    {TaskID: 14, QuestionText: "How to define a type `Result` that can be a string OR a number?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["type Result = string | number;","type Result = string & number;","type Result = string or number;","interface Result { string; number; }"]`)), CorrectAnswer: "type Result = string | number;"},
+    {TaskID: 14, QuestionText: "Which 'Utility Type' constructs a type with all properties of `T` set to optional?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Required<T>","Partial<T>","Readonly<T>","Pick<T>"]`)), CorrectAnswer: "Partial<T>"},
+    {TaskID: 14, QuestionText: "The `never` type in TypeScript represents:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Value null or undefined","Value that never occurs","Any type","Unknown type"]`)), CorrectAnswer: "Value that never occurs"},
 
-		// Task 18 (Algorithms EASY QUIZ - Big O)
-		{TaskID: 18, QuestionText: "Co opisuje notacja Big O?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Dokładny czas wykonania algorytmu","Złożoność pamięciową algorytmu","Jak czas wykonania algorytmu rośnie wraz z rozmiarem danych wejściowych","Liczbę linii kodu w algorytmie"]`)), CorrectAnswer: "Jak czas wykonania algorytmu rośnie wraz z rozmiarem danych wejściowych"},
-		{TaskID: 18, QuestionText: "Która złożoność jest najbardziej efektywna (najszybsza) dla dużych N?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["O(N^2)","O(N log N)","O(N)","O(1)"]`)), CorrectAnswer: "O(1)"},
-		{TaskID: 18, QuestionText: "Jaka jest typowa złożoność czasowa przeszukiwania liniowego nieposortowanej tablicy?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["O(1)","O(log N)","O(N)","O(N log N)"]`)), CorrectAnswer: "O(N)"},
+    {TaskID: 15, QuestionText: "How to declare an integer variable `count` in C#?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["var count;","int count;","integer count;","count: int;"]`)), CorrectAnswer: "int count;"},
+    {TaskID: 15, QuestionText: "Which operator is used to compare equality in C#?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["=","==",":=","==="]`)), CorrectAnswer: "=="},
+    {TaskID: 15, QuestionText: "How to print 'Hello' to the console?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["print('Hello');","Console.WriteLine(\"Hello\");","echo 'Hello';","System.out.println(\"Hello\");"]`)), CorrectAnswer: "Console.WriteLine(\"Hello\");"},
 
-		// Task 19 (Algorithms MEDIUM FILL_BLANK - Sortowanie)
-		{TaskID: 19, QuestionText: "Algorytm sortowania, który wielokrotnie przechodzi przez listę, porównując sąsiednie elementy i zamieniając je miejscami, jeśli są w złej kolejności, to sortowanie ___.", Type: "FILL_BLANK", CorrectAnswer: "bąbelkowe"}, // bubble sort
-		{TaskID: 19, QuestionText: "Algorytm sortowania 'dziel i zwyciężaj', który dzieli listę na dwie połowy, sortuje je rekurencyjnie, a następnie scala, to sortowanie przez ___.", Type: "FILL_BLANK", CorrectAnswer: "scalanie"}, // merge sort
-		{TaskID: 19, QuestionText: "Algorytm sortowania, który wybiera 'pivot' i dzieli listę na elementy mniejsze i większe od pivota, to ___ sort.", Type: "FILL_BLANK", CorrectAnswer: "szybkie"}, // quick sort
+    {TaskID: 16, QuestionText: "Define a public class named `Person`: `___ class Person { ... }`", Type: "FILL_BLANK", CorrectAnswer: "public"},
+    {TaskID: 16, QuestionText: "Declare a public method `Speak` that returns nothing (void): `public ___ Speak() { ... }`", Type: "FILL_BLANK", CorrectAnswer: "void"},
+    {TaskID: 16, QuestionText: "Keyword to create a new instance of class `Car`: `Car myCar = ___ Car();`", Type: "FILL_BLANK", CorrectAnswer: "new"},
 
-		// Task 20 (Algorithms HARD QUIZ - Struktury Danych)
-		{TaskID: 20, QuestionText: "Która struktura danych działa na zasadzie LIFO (Last-In, First-Out)?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Kolejka (Queue)","Stos (Stack)","Lista powiązana (Linked List)","Drzewo binarne (Binary Tree)"]`)), CorrectAnswer: "Stos (Stack)"},
-		{TaskID: 20, QuestionText: "Która struktura danych działa na zasadzie FIFO (First-In, First-Out)?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Kolejka (Queue)","Stos (Stack)","Lista powiązana (Linked List)","Tablica (Array)"]`)), CorrectAnswer: "Kolejka (Queue)"},
-		{TaskID: 20, QuestionText: "W jakiej strukturze danych każdy element (węzeł) przechowuje wskaźnik do następnego elementu?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Tablica (Array)","Stos (Stack)","Mapa (Map)","Lista powiązana (Linked List)"]`)), CorrectAnswer: "Lista powiązana (Linked List)"},
-		{TaskID: 21, QuestionText: "Jak utworzyć pusty słownik w Pythonie?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["{}","dict()","Oba powyższe","[]"]`)), CorrectAnswer: "Oba powyższe"},
-		{TaskID: 21, QuestionText: "Jak dodać parę klucz-wartość ('name': 'Alice') do słownika `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["d.add('name', 'Alice')","d['name'] = 'Alice'","d.insert('name', 'Alice')","d.append({'name': 'Alice'})"]`)), CorrectAnswer: "d['name'] = 'Alice'"},
-		{TaskID: 21, QuestionText: "Jak sprawdzić, czy klucz 'age' istnieje w słowniku `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["'age' in d","d.contains('age')","d.has_key('age')","exists(d, 'age')"]`)), CorrectAnswer: "'age' in d"},
-		{TaskID: 21, QuestionText: "Jak uzyskać wartość powiązaną z kluczem 'city' w słowniku `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["d.get('city')","d['city']","Oba powyższe","d.value('city')"]`)), CorrectAnswer: "Oba powyższe"},
-		{TaskID: 21, QuestionText: "Jak usunąć parę z kluczem 'country' ze słownika `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["del d['country']","d.pop('country')","Oba powyższe","d.remove('country')"]`)), CorrectAnswer: "Oba powyższe"},
+    {TaskID: 17, QuestionText: "Which LINQ clause is used to filter a collection?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Select","Where","OrderBy","GroupBy"]`)), CorrectAnswer: "Where"},
+    {TaskID: 17, QuestionText: "Which LINQ clause is used to project/transform elements of a collection?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Select","Where","OrderBy","GroupBy"]`)), CorrectAnswer: "Select"},
+    {TaskID: 17, QuestionText: "Which LINQ method returns the first element of a sequence, or a default value if the sequence is empty?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["First()","Single()","FirstOrDefault()","ElementAt(0)"]`)), CorrectAnswer: "FirstOrDefault()"},
 
-		// Task 22 (Python MEDIUM FILL_BLANK - Obsługa Wyjątków) - 4 pytania
-		{TaskID: 22, QuestionText: "Blok kodu, który może rzucić wyjątek, umieszczamy wewnątrz `___:`", Type: "FILL_BLANK", CorrectAnswer: "try"},
-		{TaskID: 22, QuestionText: "Aby złapać konkretny typ wyjątku, np. `ValueError`, używamy `___ ValueError:`", Type: "FILL_BLANK", CorrectAnswer: "except"},
-		{TaskID: 22, QuestionText: "Blok kodu, który wykona się zawsze, niezależnie od tego, czy wystąpił wyjątek, to `___:`", Type: "FILL_BLANK", CorrectAnswer: "finally"},
-		{TaskID: 22, QuestionText: "Aby rzucić własny wyjątek, używamy słowa kluczowego `___`.", Type: "FILL_BLANK", CorrectAnswer: "raise"},
+    {TaskID: 18, QuestionText: "What does Big O notation describe?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Exact execution time","Memory complexity","How execution time grows with input size","Number of lines of code"]`)), CorrectAnswer: "How execution time grows with input size"},
+    {TaskID: 18, QuestionText: "Which complexity is most efficient (fastest) for large N?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["O(N^2)","O(N log N)","O(N)","O(1)"]`)), CorrectAnswer: "O(1)"},
+    {TaskID: 18, QuestionText: "What is the typical time complexity of linear search in an unsorted array?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["O(1)","O(log N)","O(N)","O(N log N)"]`)), CorrectAnswer: "O(N)"},
 
-		// Task 23 (Python HARD QUIZ - List Comprehensions) - 3 pytania
-		{TaskID: 23, QuestionText: "Które list comprehension stworzy listę kwadratów liczb od 0 do 4?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["[x*x for x in range(5)]","[x^2 for x in range(4)]","[x**2 for x in range(0, 4)]","[square(x) for x in range(5)]"]`)), CorrectAnswer: "[x*x for x in range(5)]"},
-		{TaskID: 23, QuestionText: "Jak stworzyć listę liczb parzystych od 0 do 9 używając list comprehension?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["[x for x in range(10) if x % 2 == 0]","[x if x % 2 == 0 for x in range(10)]","[x for x in range(0, 9, 2)]","[x % 2 == 0 for x in range(10)]"]`)), CorrectAnswer: "[x for x in range(10) if x % 2 == 0]"},
-		{TaskID: 23, QuestionText: "Co robi `[x.upper() for x in ['a', 'b', 'c']]`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Tworzy listę ['A', 'B', 'C']","Tworzy krotkę ('A', 'B', 'C')","Zwraca błąd","Tworzy listę ['a', 'b', 'c']"]`)), CorrectAnswer: "Tworzy listę ['A', 'B', 'C']"},
+    {TaskID: 19, QuestionText: "A sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order is ___ sort.", Type: "FILL_BLANK", CorrectAnswer: "bubble"},
+    {TaskID: 19, QuestionText: "A divide-and-conquer algorithm that divides the list into halves, recursively sorts them, and then merges them is ___ sort.", Type: "FILL_BLANK", CorrectAnswer: "merge"},
+    {TaskID: 19, QuestionText: "A sorting algorithm that picks a 'pivot' element and partitions the array into elements smaller and larger than pivot is ___ sort.", Type: "FILL_BLANK", CorrectAnswer: "quick"},
 
-		// Task 24 (Go MEDIUM QUIZ - Interfejsy) - 4 pytania
-		{TaskID: 24, QuestionText: "Jak definiujemy interfejs `Writer` z metodą `Write` w Go?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["type Writer interface { Write([]byte) (int, error) }","interface Writer { Write(...) }","struct Writer interface { ... }","define Writer { ... }"]`)), CorrectAnswer: "type Writer interface { Write([]byte) (int, error) }"},
-		{TaskID: 24, QuestionText: "W Go, implementacja interfejsu jest:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Jawna (explicit) - trzeba użyć słowa kluczowego 'implements'","Niejawna (implicit) - wystarczy zaimplementować metody","Deklaratywna - trzeba zarejestrować typ","Automatyczna - kompilator sam wykrywa"]`)), CorrectAnswer: "Niejawna (implicit) - wystarczy zaimplementować metody"},
-		{TaskID: 24, QuestionText: "Co oznacza pusty interfejs `interface{}` w Go?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Typ, który nie ma metod","Typ, który może przechowywać wartość dowolnego typu","Błąd kompilacji","Interfejs bez implementacji"]`)), CorrectAnswer: "Typ, który może przechowywać wartość dowolnego typu"},
-		{TaskID: 24, QuestionText: "Jak sprawdzić, czy zmienna `v` typu `interface{}` przechowuje wartość typu `string`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["v.(string)","v as string","type(v) == string","(string)v"]`)), CorrectAnswer: "v.(string)"}, // Type Assertion
+    {TaskID: 20, QuestionText: "Which data structure follows LIFO (Last-In, First-Out) principle?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Queue","Stack","Linked List","Binary Tree"]`)), CorrectAnswer: "Stack"},
+    {TaskID: 20, QuestionText: "Which data structure follows FIFO (First-In, First-Out) principle?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Queue","Stack","Linked List","Array"]`)), CorrectAnswer: "Queue"},
+    {TaskID: 20, QuestionText: "In which data structure does each element (node) contain a pointer to the next element?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Array","Stack","Map","Linked List"]`)), CorrectAnswer: "Linked List"},
 
-		// Task 25 (Go EASY FILL_BLANK - Obsługa Błędów) - 3 pytania
-		{TaskID: 25, QuestionText: "Funkcje w Go, które mogą zwrócić błąd, zazwyczaj zwracają wartość błędu jako ___ wartość.", Type: "FILL_BLANK", CorrectAnswer: "ostatnią"}, // last
-		{TaskID: 25, QuestionText: "Sprawdź, czy zmienna `err` zawiera błąd: `if err != ___ { ... }`", Type: "FILL_BLANK", CorrectAnswer: "nil"},
-		{TaskID: 25, QuestionText: "Aby utworzyć nowy błąd z komunikatem, użyj pakietu `errors` i funkcji: `errors.___(\"komunikat błędu\")`", Type: "FILL_BLANK", CorrectAnswer: "New"},
+    {TaskID: 21, QuestionText: "How to create an empty dictionary in Python?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["{}","dict()","Both above","[]"]`)), CorrectAnswer: "Both above"},
+    {TaskID: 21, QuestionText: "How to add a key-value pair ('name': 'Alice') to dictionary `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["d.add('name', 'Alice')","d['name'] = 'Alice'","d.insert('name', 'Alice')","d.append({'name': 'Alice'})"]`)), CorrectAnswer: "d['name'] = 'Alice'"},
+    {TaskID: 21, QuestionText: "How to check if key 'age' exists in dictionary `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["'age' in d","d.contains('age')","d.has_key('age')","exists(d, 'age')"]`)), CorrectAnswer: "'age' in d"},
+    {TaskID: 21, QuestionText: "How to get the value associated with key 'city' in dictionary `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["d.get('city')","d['city']","Both above","d.value('city')"]`)), CorrectAnswer: "Both above"},
+    {TaskID: 21, QuestionText: "How to remove a key-value pair with key 'country' from dictionary `d`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["del d['country']","d.pop('country')","Both above","d.remove('country')"]`)), CorrectAnswer: "Both above"},
 
-		// Task 26 (JavaScript MEDIUM QUIZ - DOM Manipulation) - 6 pytań
-		{TaskID: 26, QuestionText: "Jak pobrać element HTML o ID 'myElement'?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["document.getElement('myElement')","document.querySelector('#myElement')","document.getElementById('myElement')","Obie odpowiedzi B i C są poprawne"]`)), CorrectAnswer: "Obie odpowiedzi B i C są poprawne"},
-		{TaskID: 26, QuestionText: "Jak zmienić tekst wewnątrz elementu `p` na 'Hello World'?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["p.text = 'Hello World'","p.innerHTML = 'Hello World'","p.textContent = 'Hello World'","Obie odpowiedzi B i C są poprawne"]`)), CorrectAnswer: "Obie odpowiedzi B i C są poprawne"},
-		{TaskID: 26, QuestionText: "Jak dodać klasę CSS 'active' do elementu `el`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["el.addClass('active')","el.className += ' active'","el.classList.add('active')","Obie odpowiedzi B i C są poprawne"]`)), CorrectAnswer: "el.classList.add('active')"},
-		{TaskID: 26, QuestionText: "Jak stworzyć nowy element `div`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["document.createElement('div')","new HTMLDivElement()","document.create('div')","document.newElement('div')"]`)), CorrectAnswer: "document.createElement('div')"},
-		{TaskID: 26, QuestionText: "Jak dodać nowo stworzony element `newDiv` jako dziecko do elementu `parent`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["parent.addChild(newDiv)","parent.append(newDiv)","parent.appendChild(newDiv)","Obie odpowiedzi B i C są poprawne"]`)), CorrectAnswer: "Obie odpowiedzi B i C są poprawne"},
-		{TaskID: 26, QuestionText: "Jak dodać nasłuchiwanie na kliknięcie do przycisku `btn`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["btn.onClick = function(){...}","btn.addEventListener('click', function(){...})","Oba powyższe","btn.attachEvent('onclick', function(){...})"]`)), CorrectAnswer: "Oba powyższe"},
+    {TaskID: 22, QuestionText: "Code block that might raise an exception is placed inside `___:`", Type: "FILL_BLANK", CorrectAnswer: "try"},
+    {TaskID: 22, QuestionText: "To catch a specific exception type, e.g., `ValueError`, use `___ ValueError:`", Type: "FILL_BLANK", CorrectAnswer: "except"},
+    {TaskID: 22, QuestionText: "Code block that always executes, regardless of whether an exception occurred, is `___:`", Type: "FILL_BLANK", CorrectAnswer: "finally"},
+    {TaskID: 22, QuestionText: "To raise a custom exception manually, use the keyword `___`.", Type: "FILL_BLANK", CorrectAnswer: "raise"},
 
-		// Task 27 (JavaScript HARD FILL_BLANK - Hoisting) - 5 pytań
-		{TaskID: 27, QuestionText: "Deklaracje zmiennych używające `___` są 'wynoszone' (hoisted) na górę zakresu, ale ich inicjalizacja (przypisanie wartości) nie.", Type: "FILL_BLANK", CorrectAnswer: "var"},
-		{TaskID: 27, QuestionText: "Deklaracje zmiennych używające `let` i `___` również są hoisted, ale trafiają do 'Temporal Dead Zone' (TDZ) i nie można ich użyć przed deklaracją.", Type: "FILL_BLANK", CorrectAnswer: "const"},
-		{TaskID: 27, QuestionText: "Deklaracje funkcji (function declarations: `function foo(){...}`) są hoisted w całości, łącznie z ich ___.", Type: "FILL_BLANK", CorrectAnswer: "ciałem"}, // body / definition
-		{TaskID: 27, QuestionText: "Wyrażenia funkcyjne (function expressions: `const bar = function(){...}`) przypisane do zmiennych `var` mają hoisted tylko deklarację ___.", Type: "FILL_BLANK", CorrectAnswer: "zmiennej"}, // variable
-		{TaskID: 27, QuestionText: "W trybie `'use ___';` hoisting dla `var` działa tak samo, ale próba użycia niezainicjalizowanej zmiennej rzuci ReferenceError (TDZ).", Type: "FILL_BLANK", CorrectAnswer: "strict"},
+    {TaskID: 23, QuestionText: "Which list comprehension creates a list of squares for numbers from 0 to 4?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["[x*x for x in range(5)]","[x^2 for x in range(4)]","[x**2 for x in range(0, 4)]","[square(x) for x in range(5)]"]`)), CorrectAnswer: "[x*x for x in range(5)]"},
+    {TaskID: 23, QuestionText: "How to create a list of even numbers from 0 to 9 using list comprehension?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["[x for x in range(10) if x % 2 == 0]","[x if x % 2 == 0 for x in range(10)]","[x for x in range(0, 9, 2)]","[x % 2 == 0 for x in range(10)]"]`)), CorrectAnswer: "[x for x in range(10) if x % 2 == 0]"},
+    {TaskID: 23, QuestionText: "What does `[x.upper() for x in ['a', 'b', 'c']]` do?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Creates list ['A', 'B', 'C']","Creates tuple ('A', 'B', 'C')","Returns error","Creates list ['a', 'b', 'c']"]`)), CorrectAnswer: "Creates list ['A', 'B', 'C']"},
 
-		// Task 28 (JavaScript HARD QUIZ - Promises) - 7 pytań
-		{TaskID: 28, QuestionText: "Co reprezentuje obiekt Promise w JavaScript?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Wynik operacji synchronicznej","Zmienną globalną","Zakończenie (lub niepowodzenie) operacji asynchronicznej i jej wynik","Funkcję zwrotną (callback)"]`)), CorrectAnswer: "Zakończenie (lub niepowodzenie) operacji asynchronicznej i jej wynik"},
-		{TaskID: 28, QuestionText: "Jakie trzy stany może mieć Promise?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Pending, Fulfilled, Rejected","Started, Running, Finished","Waiting, Success, Error","New, Active, Done"]`)), CorrectAnswer: "Pending, Fulfilled, Rejected"},
-		{TaskID: 28, QuestionText: "Która metoda jest używana do zarejestrowania funkcji zwrotnej, która zostanie wywołana, gdy Promise zakończy się sukcesem (fulfilled)?", Type: "QUIZ", Options: datatypes.JSON([]byte(`[".then()",".catch()",".finally()",".done()"]`)), CorrectAnswer: ".then()"},
-		{TaskID: 28, QuestionText: "Która metoda służy do obsługi błędu (rejected state) Promise?", Type: "QUIZ", Options: datatypes.JSON([]byte(`[".then(null, onRejected)",".catch(onRejected)","Oba powyższe",".error(onRejected)"]`)), CorrectAnswer: "Oba powyższe"},
-		{TaskID: 28, QuestionText: "Metoda `Promise.all(iterable)` zwraca Promise, który:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Rozwiązuje się, gdy pierwszy Promise w iterable się rozwiąże","Rozwiązuje się, gdy wszystkie Promises w iterable się rozwiążą","Odrzuca, gdy pierwszy Promise w iterable zostanie odrzucony","Obie odpowiedzi B i C są poprawne"]`)), CorrectAnswer: "Obie odpowiedzi B i C są poprawne"},
-		{TaskID: 28, QuestionText: "Metoda `Promise.race(iterable)` zwraca Promise, który:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Rozwiązuje się lub odrzuca, gdy tylko pierwszy Promise w iterable się rozwiąże lub zostanie odrzucony","Czeka na wszystkie Promises","Ignoruje odrzucone Promises","Zawsze się rozwiązuje"]`)), CorrectAnswer: "Rozwiązuje się lub odrzuca, gdy tylko pierwszy Promise w iterable się rozwiąże lub zostanie odrzucony"},
-		{TaskID: 28, QuestionText: "Jak stworzyć nowy Promise, który rozwiązuje się po 1 sekundzie?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["new Promise(resolve => setTimeout(resolve, 1000))","Promise.delay(1000)","setTimeout(1000).then()","async () => await delay(1000)"]`)), CorrectAnswer: "new Promise(resolve => setTimeout(resolve, 1000))"},
+    {TaskID: 24, QuestionText: "How to define an interface `Writer` with method `Write` in Go?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["type Writer interface { Write([]byte) (int, error) }","interface Writer { Write(...) }","struct Writer interface { ... }","define Writer { ... }"]`)), CorrectAnswer: "type Writer interface { Write([]byte) (int, error) }"},
+    {TaskID: 24, QuestionText: "In Go, interface implementation is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Explicit - need 'implements' keyword","Implicit - just implement methods","Declarative - need to register type","Automatic - compiler detects it"]`)), CorrectAnswer: "Implicit - just implement methods"},
+    {TaskID: 24, QuestionText: "What does empty interface `interface{}` mean in Go?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Type with no methods","Type that can hold any value","Compilation error","Interface without implementation"]`)), CorrectAnswer: "Type that can hold any value"},
+    {TaskID: 24, QuestionText: "How to check if interface variable `v` holds a `string` value?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["v.(string)","v as string","type(v) == string","(string)v"]`)), CorrectAnswer: "v.(string)"},
 
-		// Task 29 (TypeScript MEDIUM QUIZ - Klasy) - 5 pytań
-		{TaskID: 29, QuestionText: "Który modyfikator dostępu sprawia, że składowa klasy jest dostępna tylko wewnątrz tej klasy?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["public","private","protected","internal"]`)), CorrectAnswer: "private"},
-		{TaskID: 29, QuestionText: "Który modyfikator dostępu pozwala na dostęp do składowej w klasie dziedziczącej?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["public","private","protected","package"]`)), CorrectAnswer: "protected"},
-		{TaskID: 29, QuestionText: "Słowo kluczowe do wskazania, że klasa `Dog` dziedziczy po klasie `Animal`, to:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["inherits","extends","implements","derives"]`)), CorrectAnswer: "extends"},
-		{TaskID: 29, QuestionText: "Jak wywołać konstruktor klasy bazowej (nadrzędnej) z konstruktora klasy pochodnej?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["base()","parent()","super()","this()"]`)), CorrectAnswer: "super()"},
-		{TaskID: 29, QuestionText: "Co oznacza słowo kluczowe `static` przed metodą lub właściwością klasy?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Składowa jest stała i nie można jej zmienić","Składowa należy do samej klasy, a nie do instancji obiektu","Metoda jest asynchroniczna","Właściwość jest tylko do odczytu"]`)), CorrectAnswer: "Składowa należy do samej klasy, a nie do instancji obiektu"},
+    {TaskID: 25, QuestionText: "Functions in Go that can fail usually return the error as the ___ value.", Type: "FILL_BLANK", CorrectAnswer: "last"},
+    {TaskID: 25, QuestionText: "Check if variable `err` contains an error: `if err != ___ { ... }`", Type: "FILL_BLANK", CorrectAnswer: "nil"},
+    {TaskID: 25, QuestionText: "To create a new error with a message, use package `errors` and function: `errors.___(\"error message\")`", Type: "FILL_BLANK", CorrectAnswer: "New"},
 
-		// Task 30 (TypeScript EASY FILL_BLANK - Enums) - 4 pytania
-		{TaskID: 30, QuestionText: "Zdefiniuj enum `Direction` z wartościami North, East, South, West: `___ Direction { North, East, South, West }`", Type: "FILL_BLANK", CorrectAnswer: "enum"},
-		{TaskID: 30, QuestionText: "Domyślnie, pierwsza wartość enuma (North) będzie miała przypisaną liczbę ___.", Type: "FILL_BLANK", CorrectAnswer: "0"},
-		{TaskID: 30, QuestionText: "Możesz przypisać własne wartości liczbowe: `enum Status { Pending = 1, Approved = ___, Rejected = 5 }`", Type: "FILL_BLANK", CorrectAnswer: "2"}, // Zakładając domyślną inkrementację
-		{TaskID: 30, QuestionText: "Możesz też użyć stringów jako wartości enuma: `enum Color { Red = \"RED\", Green = \"___\" }`", Type: "FILL_BLANK", CorrectAnswer: "GREEN"},
+    {TaskID: 26, QuestionText: "How to retrieve an HTML element with ID 'myElement'?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["document.getElement('myElement')","document.querySelector('#myElement')","document.getElementById('myElement')","Both B and C are correct"]`)), CorrectAnswer: "Both B and C are correct"},
+    {TaskID: 26, QuestionText: "How to change text inside a `p` element to 'Hello World'?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["p.text = 'Hello World'","p.innerHTML = 'Hello World'","p.textContent = 'Hello World'","Both B and C are correct"]`)), CorrectAnswer: "Both B and C are correct"},
+    {TaskID: 26, QuestionText: "How to add CSS class 'active' to element `el`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["el.addClass('active')","el.className += ' active'","el.classList.add('active')","Both B and C are correct"]`)), CorrectAnswer: "el.classList.add('active')"},
+    {TaskID: 26, QuestionText: "How to create a new `div` element?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["document.createElement('div')","new HTMLDivElement()","document.create('div')","document.newElement('div')"]`)), CorrectAnswer: "document.createElement('div')"},
+    {TaskID: 26, QuestionText: "How to append newly created element `newDiv` as a child to `parent`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["parent.addChild(newDiv)","parent.append(newDiv)","parent.appendChild(newDiv)","Both B and C are correct"]`)), CorrectAnswer: "Both B and C are correct"},
+    {TaskID: 26, QuestionText: "How to add a click event listener to button `btn`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["btn.onClick = function(){...}","btn.addEventListener('click', function(){...})","Both above","btn.attachEvent('onclick', function(){...})"]`)), CorrectAnswer: "Both above"},
 
-		// Task 31 (C# MEDIUM QUIZ - Kolekcje) - 5 pytań
-		{TaskID: 31, QuestionText: "Która kolekcja reprezentuje dynamiczną listę obiektów określonego typu?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Array","List<T>","Dictionary<TKey, TValue>","ArrayList"]`)), CorrectAnswer: "List<T>"},
-		{TaskID: 31, QuestionText: "Która kolekcja przechowuje pary klucz-wartość?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Array","List<T>","Dictionary<TKey, TValue>","HashSet<T>"]`)), CorrectAnswer: "Dictionary<TKey, TValue>"},
-		{TaskID: 31, QuestionText: "Jak dodać element do `List<string> names`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["names.Append(\"Adam\");","names.Push(\"Adam\");","names.Add(\"Adam\");","names.Insert(\"Adam\");"]`)), CorrectAnswer: "names.Add(\"Adam\");"},
-		{TaskID: 31, QuestionText: "Jak uzyskać dostęp do wartości w `Dictionary<string, int> ages` dla klucza \"Bob\"?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["ages.Get(\"Bob\")","ages[\"Bob\"]","ages.Value(\"Bob\")","ages.Fetch(\"Bob\")"]`)), CorrectAnswer: "ages[\"Bob\"]"},
-		{TaskID: 31, QuestionText: "Która kolekcja NIE pozwala na duplikaty?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["List<T>","Dictionary<TKey, TValue>","HashSet<T>","Queue<T>"]`)), CorrectAnswer: "HashSet<T>"},
+    {TaskID: 27, QuestionText: "Variable declarations using `___` are hoisted to the top of their scope, but their initialization is not.", Type: "FILL_BLANK", CorrectAnswer: "var"},
+    {TaskID: 27, QuestionText: "Variable declarations using `let` and `___` are also hoisted but enter the 'Temporal Dead Zone' (TDZ).", Type: "FILL_BLANK", CorrectAnswer: "const"},
+    {TaskID: 27, QuestionText: "Function declarations (`function foo(){...}`) are hoisted completely, including their ___.", Type: "FILL_BLANK", CorrectAnswer: "body"},
+    {TaskID: 27, QuestionText: "Function expressions (`const bar = function(){...}`) assigned to `var` variables only have their ___ declaration hoisted.", Type: "FILL_BLANK", CorrectAnswer: "variable"},
+    {TaskID: 27, QuestionText: "In `'use ___';` mode, trying to use an undeclared variable throws a ReferenceError.", Type: "FILL_BLANK", CorrectAnswer: "strict"},
 
-		// Task 32 (C# EASY FILL_BLANK - Properties) - 3 pytania
-		{TaskID: 32, QuestionText: "Zdefiniuj publiczną właściwość `Name` typu string z akcesorami get i set: `public string Name { ___ ; ___ ; }`", Type: "FILL_BLANK", CorrectAnswer: "get set"}, // Lub "get; set;"
-		{TaskID: 32, QuestionText: "Automatycznie implementowana właściwość (auto-property): `public int Age { get; ___ ; }`", Type: "FILL_BLANK", CorrectAnswer: "set"},
-		{TaskID: 32, QuestionText: "Właściwość tylko do odczytu (bez set): `public double Pi { get { return 3.14; } ___ }` (wpisz słowo `private` jeśli chcesz prywatny setter)", Type: "FILL_BLANK", CorrectAnswer: ""}, // Pusty string oznacza brak settera
+    {TaskID: 28, QuestionText: "What does a Promise object represent in JavaScript?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Result of synchronous operation","Global variable","Completion (or failure) of an asynchronous operation and its resulting value","Callback function"]`)), CorrectAnswer: "Completion (or failure) of an asynchronous operation and its resulting value"},
+    {TaskID: 28, QuestionText: "What are the three states of a Promise?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Pending, Fulfilled, Rejected","Started, Running, Finished","Waiting, Success, Error","New, Active, Done"]`)), CorrectAnswer: "Pending, Fulfilled, Rejected"},
+    {TaskID: 28, QuestionText: "Which method is used to register a callback for successful Promise resolution?", Type: "QUIZ", Options: datatypes.JSON([]byte(`[".then()",".catch()",".finally()",".done()"]`)), CorrectAnswer: ".then()"},
+    {TaskID: 28, QuestionText: "Which method is used to handle Promise rejection (error)?", Type: "QUIZ", Options: datatypes.JSON([]byte(`[".then(null, onRejected)",".catch(onRejected)","Both above",".error(onRejected)"]`)), CorrectAnswer: "Both above"},
+    {TaskID: 28, QuestionText: "`Promise.all(iterable)` returns a Promise that:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Resolves when first Promise resolves","Resolves when all Promises resolve","Rejects when first Promise rejects","Both B and C are correct"]`)), CorrectAnswer: "Both B and C are correct"},
+    {TaskID: 28, QuestionText: "`Promise.race(iterable)` returns a Promise that:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Resolves or rejects as soon as one of the promises in iterable resolves or rejects","Waits for all Promises","Ignores rejected Promises","Always resolves"]`)), CorrectAnswer: "Resolves or rejects as soon as one of the promises in iterable resolves or rejects"},
+    {TaskID: 28, QuestionText: "How to create a new Promise that resolves after 1 second?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["new Promise(resolve => setTimeout(resolve, 1000))","Promise.delay(1000)","setTimeout(1000).then()","async () => await delay(1000)"]`)), CorrectAnswer: "new Promise(resolve => setTimeout(resolve, 1000))"},
 
-		// Task 33 (C# HARD QUIZ - Async/Await) - 6 pytań
-		{TaskID: 33, QuestionText: "Jakie słowo kluczowe oznacza metodę jako asynchroniczną w C#?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["async","await","Task","void"]`)), CorrectAnswer: "async"},
-		{TaskID: 33, QuestionText: "Jakie słowo kluczowe jest używane do oczekiwania na zakończenie operacji asynchronicznej?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["async","await","Task","Wait"]`)), CorrectAnswer: "await"},
-		{TaskID: 33, QuestionText: "Metoda oznaczona jako `async` musi zwracać:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["void","Task","Task<T>","Jedną z odpowiedzi B lub C"]`)), CorrectAnswer: "Jedną z odpowiedzi B lub C"},
-		{TaskID: 33, QuestionText: "Co się stanie, jeśli wywołasz metodę asynchroniczną bez `await`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Kod poczeka na jej zakończenie","Otrzymasz błąd kompilacji","Metoda wykona się synchronicznie","Metoda rozpocznie wykonywanie, a kod będzie kontynuowany natychmiast"]`)), CorrectAnswer: "Metoda rozpocznie wykonywanie, a kod będzie kontynuowany natychmiast"},
-		{TaskID: 33, QuestionText: "`Task.Run(() => { ... })` służy do:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Uruchomienia kodu w głównym wątku UI","Uruchomienia kodu synchronicznie","Uruchomienia kodu w wątku z puli wątków (ThreadPool)","Zatrzymania bieżącego zadania"]`)), CorrectAnswer: "Uruchomienia kodu w wątku z puli wątków (ThreadPool)"},
-		{TaskID: 33, QuestionText: "Co robi `ConfigureAwait(false)`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Przyspiesza wykonanie await","Powoduje, że kontynuacja po await nie musi wracać do oryginalnego kontekstu synchronizacji","Anuluje operację asynchroniczną","Ignoruje wyjątki"]`)), CorrectAnswer: "Powoduje, że kontynuacja po await nie musi wracać do oryginalnego kontekstu synchronizacji"},
+    {TaskID: 29, QuestionText: "Which access modifier makes a class member accessible only within that class?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["public","private","protected","internal"]`)), CorrectAnswer: "private"},
+    {TaskID: 29, QuestionText: "Which access modifier allows access to a member in derived classes?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["public","private","protected","package"]`)), CorrectAnswer: "protected"},
+    {TaskID: 29, QuestionText: "Keyword to indicate that class `Dog` inherits from class `Animal` is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["inherits","extends","implements","derives"]`)), CorrectAnswer: "extends"},
+    {TaskID: 29, QuestionText: "How to call the base class constructor from a derived class constructor?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["base()","parent()","super()","this()"]`)), CorrectAnswer: "super()"},
+    {TaskID: 29, QuestionText: "What does the `static` keyword mean before a class method or property?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Member is constant","Member belongs to the class itself, not instances","Method is asynchronous","Property is read-only"]`)), CorrectAnswer: "Member belongs to the class itself, not instances"},
 
-		// Task 34 (General EASY QUIZ - HTML) - 5 pytań
-		{TaskID: 34, QuestionText: "Który znacznik definiuje nagłówek najwyższego poziomu?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<header>","<h6>","<h1>","<head>"]`)), CorrectAnswer: "<h1>"},
-		{TaskID: 34, QuestionText: "Który znacznik służy do tworzenia akapitu tekstu?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<p>","<paragraph>","<text>","<div>"]`)), CorrectAnswer: "<p>"},
-		{TaskID: 34, QuestionText: "Który znacznik służy do tworzenia linku (hiperłącza)?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<link>","<a>","<href>","<url>"]`)), CorrectAnswer: "<a>"},
-		{TaskID: 34, QuestionText: "Który znacznik służy do wyświetlania obrazka?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<image>","<picture>","<img>","<src>"]`)), CorrectAnswer: "<img>"},
-		{TaskID: 34, QuestionText: "Który znacznik służy do tworzenia nieuporządkowanej listy (punktowanej)?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<ol>","<ul>","<li>","<list>"]`)), CorrectAnswer: "<ul>"},
+    {TaskID: 30, QuestionText: "Define an enum `Direction` with values North, East, South, West: `___ Direction { North, East, South, West }`", Type: "FILL_BLANK", CorrectAnswer: "enum"},
+    {TaskID: 30, QuestionText: "By default, the first value of an enum (North) will have the numeric value of ___.", Type: "FILL_BLANK", CorrectAnswer: "0"},
+    {TaskID: 30, QuestionText: "You can assign custom numeric values: `enum Status { Pending = 1, Approved = ___, Rejected = 5 }`", Type: "FILL_BLANK", CorrectAnswer: "2"},
+    {TaskID: 30, QuestionText: "You can also use string values: `enum Color { Red = \"RED\", Green = \"___\" }`", Type: "FILL_BLANK", CorrectAnswer: "GREEN"},
 
-		// Task 35 (General EASY FILL_BLANK - CSS) - 5 pytań
-		{TaskID: 35, QuestionText: "Aby ustawić kolor tekstu na czerwony: `color: ___;`", Type: "FILL_BLANK", CorrectAnswer: "red"},
-		{TaskID: 35, QuestionText: "Aby ustawić rozmiar czcionki na 16 pikseli: `font-size: 16___;`", Type: "FILL_BLANK", CorrectAnswer: "px"},
-		{TaskID: 35, QuestionText: "Aby wyśrodkować tekst w elemencie blokowym: `text-align: ___;`", Type: "FILL_BLANK", CorrectAnswer: "center"},
-		{TaskID: 35, QuestionText: "Selektor dla wszystkich elementów `p` z klasą `highlight`: `p.___highlight`", Type: "FILL_BLANK", CorrectAnswer: "."},
-		{TaskID: 35, QuestionText: "Selektor dla elementu o ID `main-content`: `___main-content`", Type: "FILL_BLANK", CorrectAnswer: "#"},
+    {TaskID: 31, QuestionText: "Which collection represents a dynamic list of objects of a specific type?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Array","List<T>","Dictionary<TKey, TValue>","ArrayList"]`)), CorrectAnswer: "List<T>"},
+    {TaskID: 31, QuestionText: "Which collection stores key-value pairs?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Array","List<T>","Dictionary<TKey, TValue>","HashSet<T>"]`)), CorrectAnswer: "Dictionary<TKey, TValue>"},
+    {TaskID: 31, QuestionText: "How to add an element to `List<string> names`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["names.Append(\"Adam\");","names.Push(\"Adam\");","names.Add(\"Adam\");","names.Insert(\"Adam\");"]`)), CorrectAnswer: "names.Add(\"Adam\");"},
+    {TaskID: 31, QuestionText: "How to access value in `Dictionary<string, int> ages` for key \"Bob\"?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["ages.Get(\"Bob\")","ages[\"Bob\"]","ages.Value(\"Bob\")","ages.Fetch(\"Bob\")"]`)), CorrectAnswer: "ages[\"Bob\"]"},
+    {TaskID: 31, QuestionText: "Which collection does NOT allow duplicates?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["List<T>","Dictionary<TKey, TValue>","HashSet<T>","Queue<T>"]`)), CorrectAnswer: "HashSet<T>"},
 
-		// Task 36 (General MEDIUM QUIZ - Singleton) - 4 pytania
-		{TaskID: 36, QuestionText: "Głównym celem wzorca Singleton jest:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Zapewnienie, że klasa ma tylko jedną instancję i zapewnienie globalnego punktu dostępu do niej","Stworzenie wielu instancji obiektu","Ukrycie implementacji klasy","Zezwolenie na dziedziczenie tylko raz"]`)), CorrectAnswer: "Zapewnienie, że klasa ma tylko jedną instancję i zapewnienie globalnego punktu dostępu do niej"},
-		{TaskID: 36, QuestionText: "Jak zazwyczaj uzyskuje się dostęp do instancji Singletona?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Przez publiczny konstruktor","Przez statyczną metodę fabryczną (np. getInstance)","Przez dziedziczenie","Przez wstrzykiwanie zależności"]`)), CorrectAnswer: "Przez statyczną metodę fabryczną (np. getInstance)"},
-		{TaskID: 36, QuestionText: "Aby zapobiec tworzeniu wielu instancji, konstruktor klasy Singleton powinien być:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["publiczny","prywatny","chroniony","statyczny"]`)), CorrectAnswer: "prywatny"},
-		{TaskID: 36, QuestionText: "Potencjalną wadą wzorca Singleton jest:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Zwiększona złożoność kodu","Utrudnione testowanie jednostkowe z powodu globalnego stanu","Poprawa wydajności","Wymuszenie hermetyzacji"]`)), CorrectAnswer: "Utrudnione testowanie jednostkowe z powodu globalnego stanu"},
+    {TaskID: 32, QuestionText: "Define a public string property `Name` with get and set accessors: `public string Name { ___ ; ___ ; }`", Type: "FILL_BLANK", CorrectAnswer: "get set"},
+    {TaskID: 32, QuestionText: "Auto-implemented property: `public int Age { get; ___ ; }`", Type: "FILL_BLANK", CorrectAnswer: "set"},
+    {TaskID: 32, QuestionText: "Read-only property (no set): `public double Pi { get { return 3.14; } ___ }` (leave blank if no setter)", Type: "FILL_BLANK", CorrectAnswer: ""},
 
-		// Task 37 (Algorithms MEDIUM QUIZ - Rekurencja) - 5 pytań
-		{TaskID: 37, QuestionText: "Co to jest rekurencja w programowaniu?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Użycie pętli for do iteracji","Definiowanie funkcji wewnątrz innej funkcji","Funkcja wywołująca samą siebie","Technika optymalizacji kodu"]`)), CorrectAnswer: "Funkcja wywołująca samą siebie"},
-		{TaskID: 37, QuestionText: "Co jest niezbędne, aby funkcja rekurencyjna się zakończyła?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Przypadek bazowy (base case)","Wywołanie rekurencyjne","Parametr wejściowy","Zwrócenie wartości"]`)), CorrectAnswer: "Przypadek bazowy (base case)"},
-		{TaskID: 37, QuestionText: "Co może się stać, jeśli funkcja rekurencyjna nie ma poprawnego przypadku bazowego?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Funkcja zwróci null","Program się zawiesi","Nieskończona rekurencja (Stack Overflow)","Funkcja wykona się tylko raz"]`)), CorrectAnswer: "Nieskończona rekurencja (Stack Overflow)"},
-		{TaskID: 37, QuestionText: "Który problem jest klasycznym przykładem do rozwiązania za pomocą rekurencji?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Obliczanie silni (factorial)","Sortowanie bąbelkowe","Przeszukiwanie liniowe","Sumowanie elementów tablicy iteracyjnie"]`)), CorrectAnswer: "Obliczanie silni (factorial)"},
-		{TaskID: 37, QuestionText: "Rekurencja często prowadzi do kodu, który jest:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Bardziej wydajny pamięciowo niż iteracja","Zawsze szybszy niż iteracja","Bardziej zwięzły i czytelny dla niektórych problemów","Trudniejszy do debugowania niż iteracja"]`)), CorrectAnswer: "Bardziej zwięzły i czytelny dla niektórych problemów"}, // Może też być trudniejszy do debugowania
+    {TaskID: 33, QuestionText: "Which keyword marks a method as asynchronous in C#?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["async","await","Task","void"]`)), CorrectAnswer: "async"},
+    {TaskID: 33, QuestionText: "Which keyword is used to wait for an asynchronous operation to complete?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["async","await","Task","Wait"]`)), CorrectAnswer: "await"},
+    {TaskID: 33, QuestionText: "An `async` method should typically return:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["void","Task","Task<T>","Either B or C"]`)), CorrectAnswer: "Either B or C"},
+    {TaskID: 33, QuestionText: "What happens if you call an async method without `await`?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Code waits for it","Compilation error","Runs synchronously","Method starts running, code continues immediately"]`)), CorrectAnswer: "Method starts running, code continues immediately"},
+    {TaskID: 33, QuestionText: "`Task.Run(() => { ... })` is used to:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Run code on UI thread","Run code synchronously","Run code on a ThreadPool thread","Stop current task"]`)), CorrectAnswer: "Run code on a ThreadPool thread"},
+    {TaskID: 33, QuestionText: "What does `ConfigureAwait(false)` do?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Speeds up await","Configures await to not marshal back to original context","Cancels async op","Ignores exceptions"]`)), CorrectAnswer: "Configures await to not marshal back to original context"},
 
-		// Task 38 (Algorithms HARD FILL_BLANK - Drzewa Binarne) - 7 pytań
-		{TaskID: 38, QuestionText: "Węzeł drzewa binarnego, który nie ma rodzica, to ___.", Type: "FILL_BLANK", CorrectAnswer: "korzeń"}, // root
-		{TaskID: 38, QuestionText: "Węzeł drzewa binarnego, który nie ma dzieci, to ___.", Type: "FILL_BLANK", CorrectAnswer: "liść"}, // leaf
-		{TaskID: 38, QuestionText: "Maksymalna liczba węzłów na poziomie `L` (gdzie korzeń jest na poziomie 0) w pełnym drzewie binarnym to 2 do potęgi ___.", Type: "FILL_BLANK", CorrectAnswer: "L"},
-		{TaskID: 38, QuestionText: "W binarnym drzewie poszukiwań (BST), wszystkie wartości w lewym poddrzewie węzła są ___ niż wartość węzła.", Type: "FILL_BLANK", CorrectAnswer: "mniejsze"}, // smaller / less than
-		{TaskID: 38, QuestionText: "W binarnym drzewie poszukiwań (BST), wszystkie wartości w prawym poddrzewie węzła są ___ niż wartość węzła.", Type: "FILL_BLANK", CorrectAnswer: "większe"}, // greater / larger than
-		{TaskID: 38, QuestionText: "Przejście drzewa, które odwiedza lewe poddrzewo, korzeń, a potem prawe poddrzewo, to przejście ___.", Type: "FILL_BLANK", CorrectAnswer: "in-order"}, // inorder
-		{TaskID: 38, QuestionText: "Wysokość drzewa binarnego to długość najdłuższej ścieżki od ___ do liścia.", Type: "FILL_BLANK", CorrectAnswer: "korzenia"}, // root
+    {TaskID: 34, QuestionText: "Which tag defines the highest level heading?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<header>","<h6>","<h1>","<head>"]`)), CorrectAnswer: "<h1>"},
+    {TaskID: 34, QuestionText: "Which tag defines a paragraph?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<p>","<paragraph>","<text>","<div>"]`)), CorrectAnswer: "<p>"},
+    {TaskID: 34, QuestionText: "Which tag defines a hyperlink?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<link>","<a>","<href>","<url>"]`)), CorrectAnswer: "<a>"},
+    {TaskID: 34, QuestionText: "Which tag defines an image?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<image>","<picture>","<img>","<src>"]`)), CorrectAnswer: "<img>"},
+    {TaskID: 34, QuestionText: "Which tag defines an unordered list?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["<ol>","<ul>","<li>","<list>"]`)), CorrectAnswer: "<ul>"},
 
-		// Task 39 (Algorithms HARD QUIZ - Grafy) - 6 pytań
-		{TaskID: 39, QuestionText: "Co składa się na graf w teorii grafów?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Węzły i Połączenia","Punkty i Linie","Wierzchołki i Krawędzie","Stany i Przejścia"]`)), CorrectAnswer: "Wierzchołki i Krawędzie"},
-		{TaskID: 39, QuestionText: "Graf, w którym krawędzie mają określony kierunek, nazywa się grafem ___.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Nieskierowanym","Skierowanym","Ważonym","Pełnym"]`)), CorrectAnswer: "Skierowanym"},
-		{TaskID: 39, QuestionText: "Algorytm przeszukiwania grafu, który eksploruje 'wszerz' poziom po poziomie, to:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Przeszukiwanie w głąb (DFS)","Przeszukiwanie wszerz (BFS)","Algorytm Dijkstry","Algorytm A*"]`)), CorrectAnswer: "Przeszukiwanie wszerz (BFS)"},
-		{TaskID: 39, QuestionText: "Algorytm przeszukiwania grafu, który eksploruje 'w głąb' najpierw jedną ścieżkę do końca, to:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Przeszukiwanie w głąb (DFS)","Przeszukiwanie wszerz (BFS)","Algorytm Kruskala","Algorytm Prima"]`)), CorrectAnswer: "Przeszukiwanie w głąb (DFS)"},
-		{TaskID: 39, QuestionText: "Algorytm Dijkstry służy do znajdowania:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Najkrótszej ścieżki w grafie ważonym (bez wag ujemnych)","Minimalnego drzewa rozpinającego","Maksymalnego przepływu w sieci","Silnie spójnych składowych"]`)), CorrectAnswer: "Najkrótszej ścieżki w grafie ważonym (bez wag ujemnych)"},
-		{TaskID: 39, QuestionText: "Macierz sąsiedztwa (adjacency matrix) grafu o N wierzchołkach ma rozmiar:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["N x 1","1 x N","N x N","Zależny od liczby krawędzi"]`)), CorrectAnswer: "N x N"},
+    {TaskID: 35, QuestionText: "To set text color to red: `color: ___;`", Type: "FILL_BLANK", CorrectAnswer: "red"},
+    {TaskID: 35, QuestionText: "To set font size to 16 pixels: `font-size: 16___;`", Type: "FILL_BLANK", CorrectAnswer: "px"},
+    {TaskID: 35, QuestionText: "To center text in a block element: `text-align: ___;`", Type: "FILL_BLANK", CorrectAnswer: "center"},
+    {TaskID: 35, QuestionText: "Selector for all `p` elements with class `highlight`: `p.___highlight`", Type: "FILL_BLANK", CorrectAnswer: "."},
+    {TaskID: 35, QuestionText: "Selector for element with ID `main-content`: `___main-content`", Type: "FILL_BLANK", CorrectAnswer: "#"},
 
-		// Task 40 (General MEDIUM FILL_BLANK - Model OSI) - 7 pytań
-		{TaskID: 40, QuestionText: "Warstwa 1 Modelu OSI to warstwa ___.", Type: "FILL_BLANK", CorrectAnswer: "fizyczna"}, // Physical
-		{TaskID: 40, QuestionText: "Warstwa 2 Modelu OSI, odpowiedzialna za ramki i adresy MAC, to warstwa ___ danych.", Type: "FILL_BLANK", CorrectAnswer: "łącza"}, // Data Link
-		{TaskID: 40, QuestionText: "Warstwa 3 Modelu OSI, odpowiedzialna za routing i adresy IP, to warstwa ___.", Type: "FILL_BLANK", CorrectAnswer: "sieci"}, // Network
-		{TaskID: 40, QuestionText: "Warstwa 4 Modelu OSI, zapewniająca niezawodne połączenie (TCP) lub szybkie (UDP), to warstwa ___.", Type: "FILL_BLANK", CorrectAnswer: "transportowa"}, // Transport
-		{TaskID: 40, QuestionText: "Warstwa 5 Modelu OSI, zarządzająca sesjami komunikacyjnymi, to warstwa ___.", Type: "FILL_BLANK", CorrectAnswer: "sesji"}, // Session
-		{TaskID: 40, QuestionText: "Warstwa 6 Modelu OSI, odpowiedzialna za formatowanie i szyfrowanie danych, to warstwa ___.", Type: "FILL_BLANK", CorrectAnswer: "prezentacji"}, // Presentation
-		{TaskID: 40, QuestionText: "Warstwa 7 Modelu OSI, najbliższa użytkownikowi (np. HTTP, FTP, SMTP), to warstwa ___.", Type: "FILL_BLANK", CorrectAnswer: "aplikacji"}, // Application
-	}
+    {TaskID: 36, QuestionText: "The main purpose of Singleton pattern is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Ensure a class has only one instance and provide global access to it","Create multiple instances","Hide implementation","Allow single inheritance"]`)), CorrectAnswer: "Ensure a class has only one instance and provide global access to it"},
+    {TaskID: 36, QuestionText: "How is the Singleton instance typically accessed?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Public constructor","Static factory method (e.g. getInstance)","Inheritance","Dependency Injection"]`)), CorrectAnswer: "Static factory method (e.g. getInstance)"},
+    {TaskID: 36, QuestionText: "To prevent creating multiple instances, Singleton constructor should be:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["public","private","protected","static"]`)), CorrectAnswer: "private"},
+    {TaskID: 36, QuestionText: "A potential drawback of Singleton is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Increased complexity","Harder unit testing due to global state","Improved performance","Enforced encapsulation"]`)), CorrectAnswer: "Harder unit testing due to global state"},
+
+    {TaskID: 37, QuestionText: "What is recursion in programming?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Using for loops","Defining function inside function","A function calling itself","Optimization technique"]`)), CorrectAnswer: "A function calling itself"},
+    {TaskID: 37, QuestionText: "What is necessary for a recursive function to terminate?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Base case","Recursive call","Input parameter","Return value"]`)), CorrectAnswer: "Base case"},
+    {TaskID: 37, QuestionText: "What happens if a recursive function has no base case?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Returns null","Program freezes","Stack Overflow","Executes once"]`)), CorrectAnswer: "Stack Overflow"},
+    {TaskID: 37, QuestionText: "Which problem is a classic example for recursion?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Factorial calculation","Bubble sort","Linear search","Array summation"]`)), CorrectAnswer: "Factorial calculation"},
+    {TaskID: 37, QuestionText: "Recursion often leads to code that is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["More memory efficient","Always faster","More concise and readable for certain problems","Harder to debug"]`)), CorrectAnswer: "More concise and readable for certain problems"},
+
+    {TaskID: 38, QuestionText: "A node in a binary tree with no parent is called ___.", Type: "FILL_BLANK", CorrectAnswer: "root"},
+    {TaskID: 38, QuestionText: "A node in a binary tree with no children is called a ___.", Type: "FILL_BLANK", CorrectAnswer: "leaf"},
+    {TaskID: 38, QuestionText: "Max number of nodes at level `L` in a binary tree is 2 to the power of ___.", Type: "FILL_BLANK", CorrectAnswer: "L"},
+    {TaskID: 38, QuestionText: "In a Binary Search Tree (BST), all values in the left subtree are ___ than the node's value.", Type: "FILL_BLANK", CorrectAnswer: "smaller"},
+    {TaskID: 38, QuestionText: "In a Binary Search Tree (BST), all values in the right subtree are ___ than the node's value.", Type: "FILL_BLANK", CorrectAnswer: "larger"},
+    {TaskID: 38, QuestionText: "Tree traversal that visits left subtree, root, then right subtree is ___.", Type: "FILL_BLANK", CorrectAnswer: "in-order"},
+    {TaskID: 38, QuestionText: "Height of a binary tree is the length of the longest path from ___ to a leaf.", Type: "FILL_BLANK", CorrectAnswer: "root"},
+
+    {TaskID: 39, QuestionText: "What constitutes a graph?", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Nodes and Connections","Points and Lines","Vertices and Edges","States and Transitions"]`)), CorrectAnswer: "Vertices and Edges"},
+    {TaskID: 39, QuestionText: "A graph where edges have a direction is called ___ graph.", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Undirected","Directed","Weighted","Complete"]`)), CorrectAnswer: "Directed"},
+    {TaskID: 39, QuestionText: "Graph traversal algorithm that explores level by level is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["DFS","BFS","Dijkstra","A*"]`)), CorrectAnswer: "BFS"},
+    {TaskID: 39, QuestionText: "Graph traversal algorithm that explores as deep as possible along each branch before backtracking is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["DFS","BFS","Kruskal","Prim"]`)), CorrectAnswer: "DFS"},
+    {TaskID: 39, QuestionText: "Dijkstra's algorithm is used for:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["Shortest path in weighted graph (non-negative)","MST","Max flow","Strongly connected components"]`)), CorrectAnswer: "Shortest path in weighted graph (non-negative)"},
+    {TaskID: 39, QuestionText: "Adjacency matrix size for a graph with N vertices is:", Type: "QUIZ", Options: datatypes.JSON([]byte(`["N x 1","1 x N","N x N","Depends on edges"]`)), CorrectAnswer: "N x N"},
+
+    {TaskID: 40, QuestionText: "Layer 1 of OSI Model is ___.", Type: "FILL_BLANK", CorrectAnswer: "Physical"},
+    {TaskID: 40, QuestionText: "Layer 2 of OSI Model (frames, MAC) is ___ Link.", Type: "FILL_BLANK", CorrectAnswer: "Data"},
+    {TaskID: 40, QuestionText: "Layer 3 of OSI Model (routing, IP) is ___.", Type: "FILL_BLANK", CorrectAnswer: "Network"},
+    {TaskID: 40, QuestionText: "Layer 4 of OSI Model (TCP, UDP) is ___.", Type: "FILL_BLANK", CorrectAnswer: "Transport"},
+    {TaskID: 40, QuestionText: "Layer 5 of OSI Model (sessions) is ___.", Type: "FILL_BLANK", CorrectAnswer: "Session"},
+    {TaskID: 40, QuestionText: "Layer 6 of OSI Model (encryption, formatting) is ___.", Type: "FILL_BLANK", CorrectAnswer: "Presentation"},
+    {TaskID: 40, QuestionText: "Layer 7 of OSI Model (HTTP, FTP) is ___.", Type: "FILL_BLANK", CorrectAnswer: "Application"},
+}
 
 	for _, q := range questions {
 		if err := db.Create(&q).Error; err != nil {
@@ -373,14 +303,9 @@ func SeedTestData(db *gorm.DB) error {
 		}
 	}
 
-	// ====================
-	// 5. Przykładowy progres
-	// ====================
 	progress := []models.UserTaskProgress{
-		// Alice (ID: 1) rozpoczęła zadanie 1 i 3
 		{UserID: 1, TaskID: 1, Progress: 0, Attempts: 0, Mistakes: 0, IsCompleted: false},
 		{UserID: 1, TaskID: 3, Progress: 0, Attempts: 0, Mistakes: 0, IsCompleted: false},
-		// Bob (ID: 2) rozpoczął zadanie 2
 		{UserID: 2, TaskID: 2, Progress: 0, Attempts: 0, Mistakes: 0, IsCompleted: false},
 	}
 	for _, p := range progress {
@@ -389,7 +314,6 @@ func SeedTestData(db *gorm.DB) error {
 		}
 	}
     
-    // ... (reszta Twojego kodu, np. friendships) ...
     
 	return nil
 }

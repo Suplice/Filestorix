@@ -7,8 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AdminOnly sprawdza czy zalogowany użytkownik ma rolę 'admin'
-// Wymaga wstrzyknięcia UserService, aby pobrać rolę użytkownika z bazy
 func AdminOnly(userService *services.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userIDRaw, exists := c.Get("userID")
@@ -25,7 +23,6 @@ func AdminOnly(userService *services.UserService) gin.HandlerFunc {
 			return
 		}
 
-		// Pobieramy usera, żeby sprawdzić rolę
 		user, err := userService.GetUserById(uint(userID))
 		if err != nil || user == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})

@@ -111,9 +111,8 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 12, // Zaokrąglone przyciski
+    borderRadius: 12,
   },
-  // Ciemniejsze tła dla przycisków akcji, żeby nie raziły w oczy
   acceptBtn: {
     backgroundColor: "rgba(34, 197, 94, 0.15)",
     borderWidth: 1,

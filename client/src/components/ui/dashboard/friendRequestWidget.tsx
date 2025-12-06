@@ -1,4 +1,3 @@
-// Ścieżka: components/dashboard/FriendRequestsWidget.tsx
 "use client";
 import { FriendshipInfo } from "@/lib/types/user";
 import {
@@ -18,7 +17,7 @@ import Link from "next/link";
 type FriendRequestsWidgetProps = {
   requests: FriendshipInfo[];
   isLoading: boolean;
-  onActionComplete: () => void; // Do odświeżenia
+  onActionComplete: () => void;
 };
 
 export function FriendRequestsWidget({
@@ -36,7 +35,6 @@ export function FriendRequestsWidget({
       </CardHeader>
       <CardContent className="space-y-2 max-h-48 overflow-y-auto pr-2">
         {" "}
-        {/* Limit wysokości i scroll */}
         {isLoading && (
           <>
             <Skeleton className="h-12 w-full" />

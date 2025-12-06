@@ -7,7 +7,7 @@ import {
   LeaderboardEntry,
   LeaderboardCriteria,
   LeaderboardFilter,
-} from "@/lib/types/leaderboard"; // Adjust path
+} from "@/lib/types/leaderboard";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -16,36 +16,34 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LeaderboardItem } from "@/components/ui/leaderboard/leaderboardItem";
 
 export default function LeaderboardPage() {
-  const { user: currentUser } = useAuth(); // Get current user for highlighting
-  const [activeTab, setActiveTab] = useState<LeaderboardCriteria>("level"); // Default tab
-  const [filter, setFilter] = useState<LeaderboardFilter>("all"); // Default filter
+  const { user: currentUser } = useAuth();
+  const [activeTab, setActiveTab] = useState<LeaderboardCriteria>("level");
+  const [filter, setFilter] = useState<LeaderboardFilter>("all");
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Callback to fetch data
   const loadLeaderboard = useCallback(async () => {
-    if (!currentUser) return; // Don't fetch if user isn't loaded yet
+    if (!currentUser) return;
 
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
     const data = await fetchLeaderboard(activeTab, filter);
     if (data) {
       setLeaderboardData(data.filter((i) => i.user.username !== "admin"));
     } else {
       setError(`Failed to load ${activeTab} leaderboard.`);
       toast.error(`Failed to load ${activeTab} leaderboard.`);
-      setLeaderboardData([]); // Clear data on error
+      setLeaderboardData([]);
     }
     setLoading(false);
-  }, [activeTab, filter, currentUser]); // Depend on tab, filter, and user
+  }, [activeTab, filter, currentUser]);
 
-  // Effect to load data when tab, filter, or user changes
   useEffect(() => {
     loadLeaderboard();
-  }, [loadLeaderboard]); // useEffect depends on the memoized callback
+  }, [loadLeaderboard]);
 
   const handleFilterChange = (checked: boolean | "indeterminate") => {
     setFilter(checked === true ? "friends" : "all");
@@ -55,13 +53,12 @@ export default function LeaderboardPage() {
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold">Leaderboard</h1>
-        {/* Filter Checkbox */}
         <div className="flex items-center space-x-2">
           <Checkbox
             id="friends-only-filter"
             checked={filter === "friends"}
             onCheckedChange={handleFilterChange}
-            disabled={loading || !currentUser} // Disable while loading or if no user
+            disabled={loading || !currentUser}
           />
           <Label
             htmlFor="friends-only-filter"
@@ -72,7 +69,6 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
-      {/* Tabs for Criteria */}
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as LeaderboardCriteria)}
@@ -90,12 +86,9 @@ export default function LeaderboardPage() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Content Area */}
         <div className="mt-4 min-h-[300px]">
           {" "}
-          {/* Min height to prevent layout shifts */}
           {loading && (
-            // Skeleton Loader for the list
             <div className="space-y-2">
               {[...Array(5)].map((_, i) => (
                 <Skeleton key={i} className="h-16 w-full rounded-md" />

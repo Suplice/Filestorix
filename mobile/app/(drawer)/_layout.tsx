@@ -6,15 +6,13 @@ export default function DrawerLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
-        // Wskazujemy nasz customowy komponent
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
-          // Ukrywamy domyślny header Drawera na rzecz nagłówka ekranu lub własnego
           headerShown: true,
           headerStyle: {
             backgroundColor: "#020617",
-            elevation: 0, // Android shadow remove
-            shadowOpacity: 0, // iOS shadow remove
+            elevation: 0,
+            shadowOpacity: 0,
             borderBottomWidth: 1,
             borderBottomColor: "#1e293b",
           },
@@ -22,8 +20,7 @@ export default function DrawerLayout() {
           headerTitleStyle: {
             fontWeight: "bold",
           },
-          // Ikona burgera (menu)
-          drawerType: "front", // slide, front, back
+          drawerType: "front",
           drawerStyle: {
             backgroundColor: "#020617",
             width: 300,
@@ -31,9 +28,9 @@ export default function DrawerLayout() {
         }}
       >
         <Drawer.Screen
-          name="home" // To musi odpowiadać plikowi app/(drawer)/home.tsx lub app/(drawer)/home/index.tsx
+          name="home"
           options={{
-            title: "CodeQuest", // Tytuł na górze ekranu
+            title: "CodeQuest",
           }}
         />
 

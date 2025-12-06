@@ -18,7 +18,6 @@ func NewSearchRepository(_db *gorm.DB, _logger *slog.Logger) *SearchRepository {
 	return &SearchRepository{db: _db, logger: _logger}
 }
 
-// SearchUsers searches for users by username (excluding current user)
 func (sr *SearchRepository) SearchUsers(query string, currentUserID uint, limit int) ([]dto.UserSearchResult, error) {
 	var users []dto.UserSearchResult
 	trimmedQuery := strings.TrimSpace(query)
@@ -28,8 +27,8 @@ func (sr *SearchRepository) SearchUsers(query string, currentUserID uint, limit 
 
 	searchPattern := "%" + trimmedQuery + "%"
 	err := sr.db.Model(&models.User{}).
-		Where("username ILIKE ? AND id != ?", searchPattern, currentUserID). // Exclude self
-		Select("id as ID, username, avatar_url as AvatarURL").            // Map to DTO fields
+		Where("username ILIKE ? AND id != ?", searchPattern, currentUserID). 
+		Select("id as ID, username, avatar_url as AvatarURL").            
 		Limit(limit).
 		Find(&users).Error
 
@@ -48,12 +47,11 @@ func (sr *SearchRepository) SearchCourses(query string, limit int) ([]dto.Course
 	}
 
 	searchPattern := "%" + trimmedQuery + "%"
-	// Search only active tasks? Add Where("is_active = ?", true) if needed.
 	err := sr.db.Model(&models.Task{}).
 		Where("title ILIKE ?", searchPattern).
-		Select("id as ID, title, language"). // Map to DTO fields
+		Select("id as ID, title, language").
 		Limit(limit).
-		Order("updated_at DESC"). // Optional: show recently updated first
+		Order("updated_at DESC"). 
 		Find(&courses).Error
 
 	if err != nil {

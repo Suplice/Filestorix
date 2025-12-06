@@ -1,5 +1,3 @@
-// Ścieżka pliku: components/quiz/QuestionRenderer.tsx
-
 "use client";
 
 import { TaskQuestion } from "@/lib/types/task";
@@ -9,7 +7,7 @@ import { Input } from "@/components/ui/input";
 
 type QuestionRendererProps = {
   question: TaskQuestion;
-  options: string[]; // Przyjmuje gotową tablicę opcji
+  options: string[];
   answer: string;
   onAnswerChange: (answer: string) => void;
   disabled: boolean;
@@ -22,7 +20,6 @@ export function QuestionRenderer({
   onAnswerChange,
   disabled,
 }: QuestionRendererProps) {
-  // --- PYTANIE TYPU "QUIZ" ---
   if (question.type === "QUIZ") {
     return (
       <div>
@@ -55,7 +52,6 @@ export function QuestionRenderer({
     );
   }
 
-  // --- PYTANIE TYPU "FILL_BLANK" ---
   if (question.type === "FILL_BLANK") {
     const parts = question.question_text.split("___");
     const preText = parts[0];
@@ -79,7 +75,6 @@ export function QuestionRenderer({
     );
   }
 
-  // Domyślny fallback (gdyby typ był nieznany)
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">{question.question_text}</h2>

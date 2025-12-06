@@ -1,12 +1,10 @@
-// Ścieżka: components/leaderboard/LeaderboardItem.tsx
-
 "use client";
 
 import { LeaderboardEntry } from "@/lib/types/leaderboard";
 import { User } from "@/lib/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Medal, Star, Coins, CheckSquare } from "lucide-react";
-import Link from "next/link"; // Import Link
+import Link from "next/link";
 
 type LeaderboardItemProps = {
   entry: LeaderboardEntry;
@@ -23,7 +21,6 @@ export function LeaderboardItem({
   const fallbackName =
     entry.user.username?.substring(0, 2).toUpperCase() ?? "?";
 
-  // Determine which value and icon to display (no changes here)
   let valueDisplay: React.ReactNode;
   switch (criteria) {
     case "level":
@@ -53,21 +50,16 @@ export function LeaderboardItem({
   }
 
   return (
-    // --- ZMIANA: Wrap the div with Link ---
     <Link
-      href={`/profile/${entry.user.ID}`} // Navigate to the user's profile
+      href={`/profile/${entry.user.ID}`}
       className={`flex items-center justify-between p-3 rounded-md transition-colors ${
         isCurrentUser
-          ? "bg-primary/10 border border-primary/30 ring-1 ring-primary/50" // Enhanced highlight
-          : "border border-transparent hover:bg-muted/50 dark:hover:bg-zinc-800/50 cursor-pointer" // Added cursor-pointer for non-current users
+          ? "bg-primary/10 border border-primary/30 ring-1 ring-primary/50"
+          : "border border-transparent hover:bg-muted/50 dark:hover:bg-zinc-800/50 cursor-pointer"
       }`}
       aria-label={`View profile for ${entry.user.username}`}
     >
-      {/* Left: Rank and User Info (content remains the same) */}
       <div className="flex items-center gap-4 pointer-events-none">
-        {" "}
-        {/* Added pointer-events-none to children */}
-        {/* Rank */}
         <div className="flex flex-col items-center w-8">
           {entry.rank <= 3 && entry.rank > 0 ? (
             <Medal
@@ -85,7 +77,6 @@ export function LeaderboardItem({
             </span>
           )}
         </div>
-        {/* Avatar and Name */}
         <Avatar className="h-10 w-10">
           <AvatarImage src={entry.user.avatarURL} alt={entry.user.username} />
           <AvatarFallback className="bg-muted text-xs">
@@ -100,13 +91,9 @@ export function LeaderboardItem({
         </span>
       </div>
 
-      {/* Right: Value (content remains the same) */}
       <div className="flex items-center text-sm font-medium ml-4 pointer-events-none">
-        {" "}
-        {/* Added pointer-events-none */}
         {valueDisplay}
       </div>
     </Link>
-    // --- KONIEC ZMIANY ---
   );
 }

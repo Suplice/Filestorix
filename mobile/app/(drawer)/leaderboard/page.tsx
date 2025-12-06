@@ -23,7 +23,6 @@ import { Stack } from "expo-router";
 export default function LeaderboardScreen() {
   const { user: currentUser } = useAuth();
 
-  // Stany
   const [activeTab, setActiveTab] = useState<LeaderboardCriteria>("level");
   const [filter, setFilter] = useState<LeaderboardFilter>("all");
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
@@ -32,7 +31,6 @@ export default function LeaderboardScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Funkcja pobierająca dane
   const loadLeaderboardData = useCallback(async () => {
     if (!currentUser) return;
 
@@ -42,7 +40,6 @@ export default function LeaderboardScreen() {
       if (data) {
         setLeaderboardData(data.filter((i) => i.user.username !== "admin"));
       } else {
-        // Obsługa błędu cicha lub toast, tutaj Alert dla RN
         setLeaderboardData([]);
       }
     } catch (error) {
@@ -68,7 +65,6 @@ export default function LeaderboardScreen() {
     setFilter((prev) => (prev === "all" ? "friends" : "all"));
   };
 
-  // Komponent pomocniczy dla Tabów
   const TabButton = ({
     title,
     value,
@@ -99,33 +95,29 @@ export default function LeaderboardScreen() {
           headerTitleStyle: { fontWeight: "bold" },
         }}
       />
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Leaderboard</Text>
 
-        {/* Filter Switch (Friends Only) */}
         <TouchableOpacity
           style={styles.filterContainer}
           onPress={toggleFilter}
           disabled={loading || !currentUser}
         >
           {filter === "friends" ? (
-            <CheckSquare size={20} color="#6366f1" /> // Checked: Indigo
+            <CheckSquare size={20} color="#6366f1" />
           ) : (
-            <Square size={20} color="#94a3b8" /> // Unchecked: Slate
+            <Square size={20} color="#94a3b8" />
           )}
           <Text style={styles.filterText}>Friends Only</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TabButton title="Level" value="level" />
         <TabButton title="Points" value="points" />
         <TabButton title="Courses" value="completed" />
       </View>
 
-      {/* Content List */}
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
@@ -174,7 +166,7 @@ export default function LeaderboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#020617", // Main Dark BG
+    backgroundColor: "#020617",
   },
   header: {
     flexDirection: "row",
@@ -195,16 +187,15 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   filterText: {
-    color: "#e2e8f0", // Light text
+    color: "#e2e8f0",
     fontSize: 14,
     fontWeight: "500",
   },
-  // Tabs Styles
   tabsContainer: {
     flexDirection: "row",
     marginHorizontal: 16,
     marginBottom: 16,
-    backgroundColor: "#1e293b", // Card BG
+    backgroundColor: "#1e293b",
     borderRadius: 12,
     padding: 4,
     borderWidth: 1,
@@ -218,10 +209,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   activeTabButton: {
-    backgroundColor: "#6366f1", // Indigo Accent
+    backgroundColor: "#6366f1",
   },
   tabText: {
-    color: "#94a3b8", // Muted text
+    color: "#94a3b8",
     fontWeight: "600",
     fontSize: 14,
   },
@@ -229,7 +220,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "700",
   },
-  // Content Styles
   scrollContent: {
     paddingHorizontal: 16,
     paddingBottom: 40,
@@ -242,7 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#334155",
-    overflow: "hidden", // Żeby dzieci nie wychodziły poza border radius
+    overflow: "hidden",
   },
   emptyContainer: {
     alignItems: "center",

@@ -11,7 +11,6 @@ import { fetchSystemStats, SystemStats } from "@/lib/api/admin";
 import { Users, CheckSquare, Layers, ArrowLeft } from "lucide-react-native";
 import { RNButton, RNSkeleton } from "@/components/nativeComponents";
 
-// Prosta karta statystyk (możesz użyć tej z Profilu, jeśli wolisz)
 const StatCard = ({ title, value, icon, color = "#94a3b8" }: any) => (
   <View style={styles.statCard}>
     <View style={styles.statHeader}>
@@ -42,7 +41,6 @@ export default function AdminDashboardScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header z przyciskiem powrotu */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => router.replace("/(drawer)/home")}
@@ -58,7 +56,6 @@ export default function AdminDashboardScreen() {
           Manage your users, tasks, and view system statistics.
         </Text>
 
-        {/* Sekcja Statystyk */}
         <View style={styles.statsGrid}>
           {loading ? (
             <>
@@ -86,7 +83,6 @@ export default function AdminDashboardScreen() {
           )}
         </View>
 
-        {/* Sekcja Szybkiej Nawigacji */}
         <Text style={styles.sectionTitle}>Quick Actions</Text>
 
         <View style={styles.card}>
@@ -136,7 +132,6 @@ const styles = StyleSheet.create({
   subtitle: { color: "#94a3b8", marginBottom: 24 },
   content: { padding: 20 },
 
-  // Statystyki
   statsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -160,7 +155,6 @@ const styles = StyleSheet.create({
   statTitle: { color: "#94a3b8", fontSize: 12, fontWeight: "600" },
   statValue: { fontSize: 24, fontWeight: "bold" },
 
-  // Karty Akcji
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",

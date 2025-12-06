@@ -13,24 +13,11 @@ type UserService struct {
 }
 
 
-// NewUserService creates a new instance of UserService.
-// It takes a UserRepository and a Logger as parameters and returns a pointer to UserService.
-//
-// Parameters:
-//   - _ur: A pointer to UserRepository which handles user data operations.
-//   - _logger: A pointer to slog.Logger for logging purposes.
-//
-// Returns:
-//   - A pointer to UserService.
 func NewUserService(_ur *repositories.UserRepository, _logger *slog.Logger ) *UserService{
 	return &UserService{userRepository: _ur, logger: _logger}
 }
 
 
-// GetUserByEmail retrieves a user by their email address.
-// It takes an email string as input and returns a pointer to a User model and an error.
-// If the user is found, it returns the user and a nil error.
-// If the user is not found or an error occurs, it returns nil and the error.
 func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 	user, err := us.userRepository.GetUserByEmail(email);
 
@@ -41,15 +28,6 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-// GetUserById retrieves a user by their unique ID.
-// It returns a pointer to the User model and an error if the user cannot be found or if there is an issue with the retrieval process.
-// 
-// Parameters:
-//   - id: The unique identifier of the user to be retrieved.
-//
-// Returns:
-//   - *models.User: A pointer to the User model if found.
-//   - error: An error if the user cannot be found or if there is an issue with the retrieval process.
 func (us *UserService) GetUserById(id uint) (*models.User, error) {
 	user, err := us.userRepository.GetUserById(id)
 

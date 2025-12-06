@@ -8,7 +8,7 @@ import { signInForm, signUpForm } from "@/lib/types/forms";
 import { fetchUserResult, User } from "@/lib/types/user";
 import { ErrorMessage } from "@/lib/utils/ApiResponses";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router"; // <--- ZMIANA: Router mobilny
+import { router } from "expo-router";
 import {
   createContext,
   Dispatch,
@@ -18,7 +18,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Alert, ActivityIndicator, View } from "react-native"; // <--- ZMIANA: Natywne komponenty
+import { Alert, ActivityIndicator, View } from "react-native";
 
 interface AuthContextType {
   user: User | null;
@@ -79,7 +79,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      // Sukces
       setUser(result.user!);
       setIsAuthenticated(true);
       router.replace("/(drawer)/home");
@@ -106,11 +105,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   const handleLogout = async () => {
     try {
-      // Usunięto useTransition - w RN lepiej robić to zwykłym async
       const result = await logout();
       if (result) {
         removeCredentials();
-        router.replace("/auth/signin"); // Dostosuj ścieżkę
+        router.replace("/auth/signin");
       } else {
         Alert.alert("Błąd", ErrorMessage.LOGOUT_FAILED);
       }
@@ -118,15 +116,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       Alert.alert("Błąd", ErrorMessage.UNEXPECTED_ERROR);
     }
   };
-
-  // // Jeśli trwa ładowanie początkowe, wyświetlamy Spinner na cały ekran
-  // if (isLoading) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-  //       <ActivityIndicator size="large" color="#0000ff" />
-  //     </View>
-  //   );
-  // }
 
   return (
     <AuthContext.Provider

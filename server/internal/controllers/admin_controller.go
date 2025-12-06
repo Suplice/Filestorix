@@ -25,8 +25,6 @@ func (ac *AdminController) DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
-
-	// Pobieramy ID admina z kontekstu (ustawione przez auth middleware)
 	adminID := uint(c.GetUint64("userID"))
 
 	if err := ac.adminService.DeleteUser(adminID, uint(targetID)); err != nil {
@@ -63,9 +61,7 @@ func (ac *AdminController) GetStats(c *gin.Context) {
 	c.JSON(http.StatusOK, stats)
 }
 
-// Helper method
 func (ac *AdminController) JSON(code int, obj interface{}) {
-	// Wrapper jeśli potrzebujesz customowego logowania odpowiedzi
 }
 
 func (ac *AdminController) GetAllUsers(c *gin.Context) {

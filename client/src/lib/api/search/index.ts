@@ -1,4 +1,3 @@
-// Ścieżka: lib/api/search.ts
 import { SearchResults } from "@/lib/types/search";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -7,7 +6,6 @@ export const searchCommandItems = async (
   query: string
 ): Promise<SearchResults | null> => {
   if (!query.trim()) {
-    // Return empty results immediately if query is empty
     return { users: [], courses: [] };
   }
   try {
@@ -24,11 +22,11 @@ export const searchCommandItems = async (
         .json()
         .catch(() => ({ error: response.statusText }));
       console.error("Error during search:", errorData.error);
-      return null; // Indicate error
+      return null;
     }
-    return await response.json(); // Returns SearchResults
+    return await response.json();
   } catch (error) {
     console.error("Network error during search:", error);
-    return null; // Indicate network error
+    return null;
   }
 };

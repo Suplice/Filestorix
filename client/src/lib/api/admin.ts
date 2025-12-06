@@ -24,7 +24,6 @@ export const fetchSystemStats = async (): Promise<SystemStats | null> => {
   }
 };
 
-// Usuwanie użytkownika
 export const deleteUser = async (userId: number): Promise<BaseResponse> => {
   try {
     const response = await fetch(`${API_URL}/admin/users/${userId}`, {

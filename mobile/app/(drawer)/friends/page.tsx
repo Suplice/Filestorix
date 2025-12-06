@@ -103,7 +103,6 @@ export default function FriendsScreen() {
           headerTitleStyle: { fontWeight: "bold" },
         }}
       />
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Friends</Text>
         {user && (
@@ -114,7 +113,7 @@ export default function FriendsScreen() {
               <UserPlus size={16} color="#fff" style={{ marginRight: 6 }} />
             }
             size="sm"
-            style={{ backgroundColor: "#4f46e5" }} // Indigo branding
+            style={{ backgroundColor: "#4f46e5" }}
           />
         )}
       </View>
@@ -125,7 +124,7 @@ export default function FriendsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#6366f1" // Indigo spinner
+            tintColor="#6366f1"
           />
         }
       >
@@ -145,7 +144,6 @@ export default function FriendsScreen() {
           </View>
         ) : user ? (
           <View>
-            {/* Incoming Requests */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 Incoming Requests{" "}
@@ -170,7 +168,6 @@ export default function FriendsScreen() {
               )}
             </View>
 
-            {/* Friends */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 Your Friends{" "}
@@ -193,7 +190,6 @@ export default function FriendsScreen() {
               )}
             </View>
 
-            {/* Sent Requests */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>
                 Sent Requests{" "}
@@ -235,7 +231,7 @@ export default function FriendsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#020617" }, // Main Dark BG
+  container: { flex: 1, backgroundColor: "#020617" },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -254,7 +250,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     marginBottom: 12,
   },
-  // Karta grupująca listę (jak widgety w przykładzie)
   listCard: {
     backgroundColor: "#1e293b",
     borderRadius: 16,
@@ -264,7 +259,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: "center",
-    color: "#94a3b8", // Muted text
+    color: "#94a3b8",
     fontStyle: "italic",
     marginTop: 10,
     marginBottom: 20,

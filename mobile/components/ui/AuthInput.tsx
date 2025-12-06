@@ -90,15 +90,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#0f172a", // slate-900
+    backgroundColor: "#0f172a",
     borderWidth: 2,
-    borderColor: "#1e293b", // slate-800
+    borderColor: "#1e293b",
     borderRadius: 16,
     paddingHorizontal: 16,
     height: 56,
   },
   containerFocused: {
-    borderColor: "#6366f1", // indigo-500
+    borderColor: "#6366f1",
     shadowColor: "#6366f1",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   containerError: {
-    borderColor: "#ef4444", // red-500
+    borderColor: "#ef4444",
   },
   icon: {
     marginRight: 10,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-    height: "100%", // Ważne dla klikalności
+    height: "100%",
   },
   errorContainer: {
     flexDirection: "row",

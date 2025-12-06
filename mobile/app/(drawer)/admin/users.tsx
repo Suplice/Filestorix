@@ -24,7 +24,6 @@ export default function AdminUsersScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // --- Stany dla usuwania ---
   const [userToDelete, setUserToDelete] = useState<UserDTO | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -68,16 +67,14 @@ export default function AdminUsersScreen() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // --- Funkcja potwierdzająca usunięcie (API) ---
   const confirmDelete = async () => {
     if (!userToDelete) return;
     setIsDeleting(true);
     try {
       const result = await deleteUser(userToDelete.ID);
       if (result.message) {
-        // Usuń z lokalnego stanu (szybciej niż odświeżanie z API)
         setUsers((prev) => prev.filter((u) => u.ID !== userToDelete.ID));
-        setUserToDelete(null); // Zamknij modal
+        setUserToDelete(null);
       } else {
         Alert.alert("Error", result.error || "Failed to delete user");
       }
@@ -109,7 +106,6 @@ export default function AdminUsersScreen() {
           </Text>
         </View>
       </View>
-      {/* Kliknięcie tutaj otwiera modal (ustawia userToDelete) */}
       <TouchableOpacity
         onPress={() => setUserToDelete(item)}
         style={styles.deleteBtn}
@@ -170,7 +166,6 @@ export default function AdminUsersScreen() {
         />
       )}
 
-      {/* --- MODAL POTWIERDZENIA --- */}
       <ConfirmationModal
         visible={!!userToDelete}
         title="Delete User?"

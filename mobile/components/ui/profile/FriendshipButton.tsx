@@ -183,13 +183,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#334155",
   },
   buttonPrimary: {
-    backgroundColor: "#4f46e5", // Indigo
+    backgroundColor: "#4f46e5",
   },
   buttonSecondary: {
-    backgroundColor: "#475569", // Slate
+    backgroundColor: "#475569",
   },
   buttonDestructive: {
-    backgroundColor: "#ef4444", // Red
+    backgroundColor: "#ef4444",
   },
   icon: {
     marginRight: 8,

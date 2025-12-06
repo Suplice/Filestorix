@@ -12,37 +12,34 @@ import {
 } from "react-native";
 import { ChevronDown, X } from "lucide-react-native";
 
-// --- BUTTON ---
 export const RNButton = ({
   onPress,
   title,
   variant = "primary",
   size = "default",
-  disabled, // Stan zablokowania (np. walidacja)
-  loading, // Stan ładowania (spinner)
+  disabled,
+  loading,
   icon,
   style,
 }: any) => {
-  // Kolory dostosowane do ciemnego motywu
-  let bg = "#4f46e5"; // Primary Indigo
+  let bg = "#4f46e5";
   let borderWidth = 0;
   let borderColor = "transparent";
 
   if (variant === "destructive") {
-    bg = "#ef4444"; // Red
+    bg = "#ef4444";
   } else if (variant === "outline") {
     bg = "transparent";
     borderWidth = 1;
-    borderColor = "#475569"; // Slate border
+    borderColor = "#475569";
   } else if (variant === "ghost") {
     bg = "transparent";
   } else if (variant === "secondary") {
-    bg = "#1e293b"; // Dark slate card bg
+    bg = "#1e293b";
   }
 
   const textColor = "#ffffff";
 
-  // Przycisk jest interaktywny tylko, gdy nie jest disabled i nie ładuje się
   const isInteractive = !disabled && !loading;
 
   return (
@@ -60,7 +57,7 @@ export const RNButton = ({
           justifyContent: "center",
           borderWidth: borderWidth,
           borderColor: borderColor,
-          opacity: disabled ? 0.5 : 1, // Tylko przyciemniamy przy disabled
+          opacity: disabled ? 0.5 : 1,
         },
         style,
       ]}
@@ -89,19 +86,18 @@ export const RNButton = ({
   );
 };
 
-// --- INPUT ---
 export const RNInput = (props: any) => (
   <TextInput
-    placeholderTextColor="#64748b" // Slate-500
+    placeholderTextColor="#64748b"
     style={[
       {
-        height: 52, // Wyższy input dla łatwiejszego klikania
-        borderColor: "#334155", // Slate-700
+        height: 52,
+        borderColor: "#334155",
         borderWidth: 1,
         borderRadius: 12,
         paddingHorizontal: 16,
-        backgroundColor: "#1e293b", // Dark Slate background
-        color: "#ffffff", // White text
+        backgroundColor: "#1e293b",
+        color: "#ffffff",
         fontSize: 16,
       },
       props.style,
@@ -110,7 +106,6 @@ export const RNInput = (props: any) => (
   />
 );
 
-// --- AVATAR ---
 export const RNAvatar = ({ src, fallback, size = 40 }: any) => {
   const [error, setError] = React.useState(false);
 
@@ -135,7 +130,7 @@ export const RNAvatar = ({ src, fallback, size = 40 }: any) => {
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: "#334155", // Slate-700 placeholder
+        backgroundColor: "#334155",
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -144,7 +139,7 @@ export const RNAvatar = ({ src, fallback, size = 40 }: any) => {
         style={{
           fontSize: size * 0.4,
           fontWeight: "bold",
-          color: "#cbd5e1", // Light slate text
+          color: "#cbd5e1",
         }}
       >
         {fallback}
@@ -153,7 +148,6 @@ export const RNAvatar = ({ src, fallback, size = 40 }: any) => {
   );
 };
 
-// --- SKELETON ---
 export const RNSkeleton = ({ style }: any) => (
   <View
     style={[
@@ -163,7 +157,6 @@ export const RNSkeleton = ({ style }: any) => (
   />
 );
 
-// --- BADGE ---
 export const RNBadge = ({ text, style }: any) => (
   <View
     style={[
@@ -182,7 +175,6 @@ export const RNBadge = ({ text, style }: any) => (
   </View>
 );
 
-// --- PROGRESS BAR ---
 export const RNProgress = ({
   value,
   style,
@@ -205,13 +197,12 @@ export const RNProgress = ({
       style={{
         width: `${Math.max(0, Math.min(100, value))}%`,
         height: "100%",
-        backgroundColor: "#6366f1", // Indigo
+        backgroundColor: "#6366f1",
       }}
     />
   </View>
 );
 
-// --- SIMPLE SELECT (Dropdown replacement) ---
 export const RNSelect = ({
   value,
   options,

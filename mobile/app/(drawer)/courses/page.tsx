@@ -9,8 +9,8 @@ import {
   TextInput,
 } from "react-native";
 import { useAuth } from "@/context/AuthContext";
-import { Stack, useFocusEffect } from "expo-router"; // DODANO useFocusEffect
-import { GetAllTasksForUser } from "@/lib/api/task"; // Bezpośrednie API
+import { Stack, useFocusEffect } from "expo-router";
+import { GetAllTasksForUser } from "@/lib/api/task";
 import { Task } from "@/lib/types/task";
 import { useTaskFilters } from "@/hooks/use-task-filters";
 import { RNSkeleton, RNButton, RNSelect } from "@/components/nativeComponents";
@@ -20,15 +20,11 @@ import { TaskItem } from "@/components/ui/tasks/TaskItem";
 export default function CoursesScreen() {
   const { user } = useAuth();
 
-  // Lokalny stan zadań zamiast hooka useTasks, aby kontrolować refresh
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Pobieranie danych
   const loadTasks = useCallback(async () => {
     if (!user) return;
-    // Pokaż loader tylko jeśli nie mamy danych (pierwsze ładowanie)
-    // Przy powrocie z zadania (focus) zrobimy cichy refresh
     if (tasks.length === 0) setLoading(true);
 
     try {
@@ -41,10 +37,8 @@ export default function CoursesScreen() {
     } finally {
       setLoading(false);
     }
-  }, [user]); // Zależność tylko od usera
+  }, [user]);
 
-  // --- KLUCZOWA ZMIANA ---
-  // Odświeżaj listę za każdym razem, gdy ekran zyskuje focus
   useFocusEffect(
     useCallback(() => {
       loadTasks();
@@ -57,7 +51,6 @@ export default function CoursesScreen() {
   );
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // Opcje do filtrów
   const typeOptions = [
     { label: "All Types", value: "all" },
     { label: "Quiz", value: "QUIZ" },
@@ -107,9 +100,7 @@ export default function CoursesScreen() {
           headerTitleStyle: { fontWeight: "bold" },
         }}
       />
-      {/* Header */}
       <View style={styles.header}>
-        {/* Ładny Input Wyszukiwania */}
         <View style={styles.searchContainer}>
           <Search size={20} color="#94a3b8" style={{ marginRight: 10 }} />
           <TextInput
@@ -121,7 +112,6 @@ export default function CoursesScreen() {
           />
         </View>
 
-        {/* Przycisk Filtrów */}
         <RNButton
           icon={<Filter size={22} color="#fff" />}
           onPress={() => setIsFilterModalOpen(true)}
@@ -134,7 +124,6 @@ export default function CoursesScreen() {
         />
       </View>
 
-      {/* Lista Zadań */}
       <ScrollView contentContainerStyle={styles.listContent}>
         {filteredTasks.length === 0 ? (
           <View style={{ marginTop: 40, alignItems: "center" }}>
@@ -151,7 +140,6 @@ export default function CoursesScreen() {
         )}
       </ScrollView>
 
-      {/* Modal Filtrów */}
       <Modal
         visible={isFilterModalOpen}
         animationType="slide"

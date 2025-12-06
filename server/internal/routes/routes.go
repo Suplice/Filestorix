@@ -11,16 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// SetupRoutes sets up the routes for the given router.
-// It initializes the necessary repositories, services, and controllers
-// for handling authentication-related requests.
-//
-// Parameters:
-//   - router: The Gin engine instance to which the authentication routes will be added.
-//   - db: The Gorm database instance used for database operations.
-//   - logger: The slog.Logger instance used for logging.
 func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
-	// Setup Repositories
 	authRepository := repositories.NewAuthRepository(db, logger)
 	userRepository := repositories.NewUserRepository(db, logger)
 	settingRepository := repositories.NewSettingRepository(db, logger)
@@ -31,7 +22,6 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	searchRepository := repositories.NewSearchRepository(db, logger)
 	adminRepository := repositories.NewAdminRepository(db, logger);
 
-	// Setup Services
 	userService := services.NewUserService(userRepository, logger)
 	authService := services.NewAuthService(logger, userService, authRepository)
 	settingService := services.NewSettingService(settingRepository, logger)
@@ -41,7 +31,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	profileService := services.NewProfileService(logger, profileRepository)
 	searchService := services.NewSearchService(searchRepository, logger)
 	adminService := services.NewAdminService(adminRepository, logger)
-	// Setup Controllers
+
 	authController := controllers.NewAuthController(logger, authService)
 	settingController := controllers.NewSettingsController(logger, settingService)
 	taskController := controllers.NewTaskController(logger, taskService)
@@ -109,9 +99,9 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	adminRoutes := router.Group("/admin")
 	adminRoutes.Use(middleware.ValidateJWT(), middleware.AdminOnly(userService)) 
 	{
-		adminRoutes.GET("/stats", adminController.GetStats)       // Statystyki dashboardu
-		adminRoutes.DELETE("/users/:id", adminController.DeleteUser) // Usuwanie użytkownika
-		adminRoutes.DELETE("/tasks/:id", adminController.DeleteTask) // Usuwanie zadania
+		adminRoutes.GET("/stats", adminController.GetStats)       
+		adminRoutes.DELETE("/users/:id", adminController.DeleteUser) 
+		adminRoutes.DELETE("/tasks/:id", adminController.DeleteTask) 
 		adminRoutes.GET("/users", adminController.GetAllUsers)
 	}
 }

@@ -13,14 +13,11 @@ type TaskItemProps = {
 export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
   const router = useRouter();
 
-  // Dane o postępie
   const userProgress = task.user_progress;
   const progress = userProgress?.progress ?? 0;
   const isCompleted = userProgress?.is_completed ?? false;
   const attempts = userProgress?.attempts ?? 0;
   const mistakes = userProgress?.mistakes ?? 0;
-
-  // Sprawdzamy, czy użytkownik w ogóle zaczął zadanie (ma wpis w progress lub attempts > 0)
   const hasStarted = !!userProgress;
 
   const difficultyColor =
@@ -39,7 +36,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
 
   return (
     <View style={styles.card}>
-      {/* Górny rząd: Ikona + Tytuł + Badge */}
       <View style={styles.topRow}>
         <View style={styles.iconContainer}>
           {isCompleted ? (
@@ -79,7 +75,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
         </View>
       </View>
 
-      {/* Środkowy rząd: Pasek postępu (Wyświetlany tylko gdy rozpoczęto) */}
       {hasStarted && (
         <View style={styles.progressRow}>
           <RNProgress
@@ -90,10 +85,8 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
         </View>
       )}
 
-      {/* Dolny rząd: Statystyki i Przycisk */}
       <View style={styles.bottomRow}>
         <View>
-          {/* Statystyki prób/błędów */}
           {hasStarted && !isCompleted && (
             <View style={{ flexDirection: "row", gap: 12, marginBottom: 6 }}>
               <View style={styles.statItem}>
@@ -108,7 +101,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
               </View>
             </View>
           )}
-          {/* Info o zadaniu */}
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <Text style={[styles.diffText, { color: difficultyColor }]}>
               {task.difficulty}
@@ -120,7 +112,6 @@ export function TaskItem({ task, isMyTask = true }: TaskItemProps) {
 
         {isMyTask && (
           <RNButton
-            // Logika tekstu przycisku:
             title={isCompleted ? "Retry" : hasStarted ? "Continue" : "Start"}
             size="sm"
             variant={hasStarted && !isCompleted ? "primary" : "outline"}
@@ -145,12 +136,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1,
     borderColor: "#334155",
-    // Cień dla iOS
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    // Cień dla Androida
     elevation: 3,
   },
   topRow: { flexDirection: "row", marginBottom: 12 },

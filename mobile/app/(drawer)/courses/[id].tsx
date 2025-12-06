@@ -9,7 +9,7 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
-import { useLocalSearchParams, useRouter, Stack } from "expo-router"; // Dodano Stack
+import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { GetTaskByIdForUser, SubmitAnswerForTask } from "@/lib/api/task";
 import { Task, UserAnswer } from "@/lib/types/task";
@@ -230,7 +230,6 @@ export default function CourseScreen() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={{ flex: 1 }}
     >
-      {/* Nadpisanie nagłówka */}
       <Stack.Screen
         options={{
           title: task ? task.title : "Zadanie",

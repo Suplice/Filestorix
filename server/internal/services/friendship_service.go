@@ -34,24 +34,20 @@ func (fs *FriendshipService) SearchUsers(query string, currentUserID uint) ([]dt
 }
 
 func (fs *FriendshipService) SendRequest(userID, friendID uint) error {
-	// Możesz dodać logikę biznesową, np. limit zaproszeń
 	return fs.repo.CreateFriendRequest(userID, friendID)
 }
 
 func (fs *FriendshipService) CancelRequest(friendshipID uint, userID uint) error {
-	// Możesz dodać tu dodatkową logikę, jeśli potrzebujesz
 	return fs.repo.CancelFriendRequest(friendshipID, userID)
 }
 
 func (fs *FriendshipService) RespondToRequest(friendshipID uint, currentUserID uint, action string) error {
-	// Mapuj akcję na status (np. "accept" -> "accepted", "decline" -> "declined")
 	var newStatus string
 	switch action {
 	case "accept":
 		newStatus = "accepted"
 	case "decline":
 		newStatus = "declined"
-	// Możesz dodać "block" -> "blocked"
 	default:
 		return errors.New("invalid action")
 	}
@@ -59,6 +55,5 @@ func (fs *FriendshipService) RespondToRequest(friendshipID uint, currentUserID u
 }
 
 func (fs *FriendshipService) RemoveFriend(friendshipID uint, currentUserID uint) error {
-	// Możesz dodać logikę biznesową, np. logowanie aktywności
 	return fs.repo.DeleteFriendship(friendshipID, currentUserID)
 }

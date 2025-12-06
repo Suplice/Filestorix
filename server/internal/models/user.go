@@ -18,19 +18,16 @@ type User struct {
 	GoogleID       string    `gorm:"size:255" json:"googleId"`
 	GithubID       string    `gorm:"size:255" json:"githubId"`
 
-	// Gamifikacja
 	Level          int       `gorm:"default:1" json:"level"`
 	XP             int       `gorm:"default:0" json:"xp"`
 	Points         int       `gorm:"default:0" json:"points"`
 	StreakCount    int       `gorm:"default:0" json:"streakCount"`
 	LastActiveDate time.Time `json:"lastActiveDate"`
 
-	// Relacje
 	TaskProgress []UserTaskProgress `gorm:"foreignKey:UserID" json:"task_progress"`
 	Friends      []Friendship       `gorm:"foreignKey:UserID" json:"friends"`
 	Badges       []UserBadge        `json:"badges"`
 	Activities   []ActivityLog      `json:"activities"`
 
-	// Dostęp do wszystkich zadań przez relację many2many
 	Tasks []Task `gorm:"many2many:user_task_progresses;joinForeignKey:UserID;joinReferences:TaskID" json:"tasks"`
 }

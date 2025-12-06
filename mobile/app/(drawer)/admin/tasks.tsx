@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
-// Używamy GetAllTasksForUser zamiast useTasks, aby mieć kontrolę nad odświeżaniem
 import { GetAllTasksForUser } from "@/lib/api/task";
 import { useTaskFilters } from "@/hooks/use-task-filters";
 import { deleteTask } from "@/lib/api/admin";
@@ -29,14 +28,12 @@ export default function AdminTasksScreen() {
   const router = useRouter();
   const { user } = useAuth();
 
-  // --- LOKALNY STAN ZADAŃ ZAMIAST HOOKÓW ---
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Funkcja pobierająca zadania (wywoływana na żądanie)
   const loadTasks = useCallback(async () => {
     if (!user) return;
     setLoading(true);
@@ -50,12 +47,10 @@ export default function AdminTasksScreen() {
     }
   }, [user]);
 
-  // Ładujemy zadania przy pierwszym montowaniu
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
 
-  // Używamy lokalnej tablicy do filtrowania
   const { filteredTasks, filters, setters } = useTaskFilters(tasks, user);
 
   const confirmDelete = async () => {
@@ -67,7 +62,6 @@ export default function AdminTasksScreen() {
       if (result.message) {
         Alert.alert("Success", result.message);
 
-        // KLUCZOWA ZMIANA: Po udanym usunięciu, na chama odświeżamy listę z API.
         loadTasks();
 
         setTaskToDelete(null);

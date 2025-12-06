@@ -34,7 +34,6 @@ func (fc *FriendshipController) GetAcceptedFriends(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, friends)
 }
 
-// GET /friends/sent
 func (fc *FriendshipController) GetSentRequests(ctx *gin.Context) {
 	userID := ctx.GetUint64("userID")
 	if userID == 0 {
@@ -50,7 +49,6 @@ func (fc *FriendshipController) GetSentRequests(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, requests)
 }
 
-// GET /friends/incoming
 func (fc *FriendshipController) GetIncomingRequests(ctx *gin.Context) {
 	userID := ctx.GetUint64("userID")
 	if userID == 0 {
@@ -66,7 +64,6 @@ func (fc *FriendshipController) GetIncomingRequests(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, requests)
 }
 
-// GET /users/search?q=...
 func (fc *FriendshipController) SearchUsers(ctx *gin.Context) {
 	userID := ctx.GetUint64("userID")
 	if userID == 0 {
@@ -74,7 +71,7 @@ func (fc *FriendshipController) SearchUsers(ctx *gin.Context) {
 		return
 	}
 
-	query := ctx.Query("q") // Pobierz parametr 'q' z URL
+	query := ctx.Query("q") 
 
 	users, err := fc.service.SearchUsers(query, uint(userID))
 	if err != nil {
@@ -85,7 +82,6 @@ func (fc *FriendshipController) SearchUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
-// POST /friends/request
 type SendRequestPayload struct {
 	FriendID uint `json:"friendId" binding:"required"`
 }
@@ -105,7 +101,6 @@ func (fc *FriendshipController) SendFriendRequest(ctx *gin.Context) {
 
 	err := fc.service.SendRequest(uint(userID), payload.FriendID)
 	if err != nil {
-		// Obsłuż specyficzne błędy z serwisu
 		if err.Error() == "cannot add yourself as a friend" || err.Error() == "friendship already exists or request is pending" {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
@@ -124,7 +119,6 @@ func (fc *FriendshipController) CancelFriendRequest(ctx *gin.Context) {
 		return
 	}
 
-	// Odczytaj ID zaproszenia z parametru URL
 	friendshipIDStr := ctx.Param("friendshipId")
 	friendshipID, err := strconv.ParseUint(friendshipIDStr, 10, 32)
 	if err != nil {
@@ -146,7 +140,7 @@ func (fc *FriendshipController) CancelFriendRequest(ctx *gin.Context) {
 }
 
 type RespondRequestPayload struct {
-	Action string `json:"action" binding:"required,oneof=accept decline"` // Wymagane pole: 'accept' lub 'decline'
+	Action string `json:"action" binding:"required,oneof=accept decline"` 
 }
 
 func (fc *FriendshipController) RespondToFriendRequest(ctx *gin.Context) {
@@ -194,8 +188,7 @@ func (fc *FriendshipController) RemoveFriend(ctx *gin.Context) {
 		return
 	}
 
-	// Odczytaj ID relacji z parametru URL
-	friendshipIDStr := ctx.Param("friendshipId") // Użyj tej samej nazwy co w routerze
+	friendshipIDStr := ctx.Param("friendshipId") 
 	friendshipID, err := strconv.ParseUint(friendshipIDStr, 10, 32)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid friendship ID format"})

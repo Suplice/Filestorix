@@ -1,4 +1,3 @@
-// Ścieżka: lib/api/profile.ts
 import { ProfileData } from "@/lib/types/profile";
 
 export const fetchUserProfile = async (

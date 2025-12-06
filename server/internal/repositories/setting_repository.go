@@ -19,8 +19,6 @@ func NewSettingRepository(_db *gorm.DB, _logger *slog.Logger) *SettingRepository
 	return &SettingRepository{db: _db, logger: _logger}
 }
 
-// GetAllUserSettings retrieves all settings for a given user.
-// It takes userId as a parameter and returns a slice of Settings or an error if retrieval fails.
 func (sr *SettingRepository) GetAllUserSettings(userId string) ([]*models.Settings, error) {
 	var settings []*models.Settings
 
@@ -33,10 +31,6 @@ func (sr *SettingRepository) GetAllUserSettings(userId string) ([]*models.Settin
 
 }
 
-// UpdateSettingsForUser updates the user's settings.
-// It takes userId and a slice of UserSetting DTOs as parameters.
-// Ensures that there are no duplicate setting keys before updating.
-// Returns nil if the update is successful, or an error otherwise.
 func (sr *SettingRepository) UpdateSettingsForUser(userId string, settings []dto.UserSetting) error {
 
 	tx := sr.db.Begin()

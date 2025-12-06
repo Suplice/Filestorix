@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import { useLocalSearchParams, useFocusEffect, Stack } from "expo-router"; // Dodano Stack
+import { useLocalSearchParams, useFocusEffect, Stack } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { fetchUserProfile } from "@/lib/api/profile";
 import { ProfileData } from "@/lib/types/profile";
@@ -22,7 +22,6 @@ import { FriendshipButton } from "@/components/ui/profile/FriendshipButton";
 import { StatCard } from "@/components/ui/profile/StatCard";
 import { TaskItem } from "@/components/ui/tasks/TaskItem";
 
-// --- LOGIKA XP ---
 const xpThresholds: { [key: number]: number } = {
   1: 0,
   2: 100,
@@ -78,7 +77,6 @@ export default function ProfileScreen() {
       setLoading(false);
       return;
     }
-    // Spinner tylko przy pierwszym ładowaniu (gdy brak danych)
     if (!profileData) setLoading(true);
 
     try {
@@ -90,9 +88,8 @@ export default function ProfileScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [profileId]); // Zależność tylko od ID
+  }, [profileId]);
 
-  // Odświeżaj przy każdym wejściu na ekran
   useFocusEffect(
     useCallback(() => {
       loadProfile();
@@ -143,7 +140,6 @@ export default function ProfileScreen() {
         />
       }
     >
-      {/* Dynamiczne ustawienie tytułu nagłówka zamiast "profile/[id]" */}
       <Stack.Screen
         options={{
           title: user.username || "Profile",
@@ -153,7 +149,6 @@ export default function ProfileScreen() {
         }}
       />
 
-      {/* 1. Header Profilu */}
       <View style={styles.headerCard}>
         <View style={styles.avatarContainer}>
           {user.avatarURL ? (
@@ -173,7 +168,6 @@ export default function ProfileScreen() {
           <Text style={styles.email}>{user.email}</Text>
         </View>
 
-        {/* --- SEKCJA XP PROGRESS BAR --- */}
         <View style={styles.xpContainer}>
           <View style={styles.xpHeader}>
             <View
@@ -197,7 +191,6 @@ export default function ProfileScreen() {
             />
           </View>
         </View>
-        {/* --- KONIEC SEKCJI XP --- */}
 
         {!isOwnProfile && friendshipWithView && (
           <View style={styles.actionButtonContainer}>
@@ -210,7 +203,6 @@ export default function ProfileScreen() {
         )}
       </View>
 
-      {/* 2. Siatka Statystyk */}
       <View style={styles.statsGrid}>
         <StatCard
           title="Level"
@@ -241,7 +233,6 @@ export default function ProfileScreen() {
         />
       </View>
 
-      {/* 3. Lista Postępów */}
       <View style={styles.tasksSection}>
         <Text style={styles.sectionTitle}>Task Progress</Text>
 
@@ -333,7 +324,6 @@ const styles = StyleSheet.create({
     color: "#94a3b8",
   },
 
-  // --- Style XP ---
   xpContainer: {
     width: "100%",
     marginBottom: 20,
@@ -367,8 +357,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#6366f1",
     borderRadius: 4,
   },
-  // ----------------
-
   actionButtonContainer: {
     width: "100%",
     alignItems: "center",

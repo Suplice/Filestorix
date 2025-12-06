@@ -19,7 +19,6 @@ func NewSearchController(service *services.SearchService, logger *slog.Logger) *
 	return &SearchController{service: service, logger: logger}
 }
 
-// GET /search?q=...
 func (sc *SearchController) Search(ctx *gin.Context) {
 	userID := ctx.GetUint64("userID")
 	if userID == 0 {
@@ -27,20 +26,14 @@ func (sc *SearchController) Search(ctx *gin.Context) {
 		return
 	}
 
-	query := ctx.Query("q") // Get search query from URL parameter 'q'
+	query := ctx.Query("q") 
 	trimmedQuery := strings.TrimSpace(query)
 
-	// Optional: Add minimum query length check
-	// if len(trimmedQuery) < 2 {
-	// 	 ctx.JSON(http.StatusOK, dtos.SearchResultsDTO{Users: []dtos.UserSearchResult{}, Courses: []dtos.CourseSearchResult{}})
-	// 	 return
-	// }
 
-	limitPerType := 5 // Limit results per category (e.g., 5 users, 5 courses)
+	limitPerType := 5 
 
 	results, err := sc.service.PerformSearch(trimmedQuery, uint(userID), limitPerType)
 	if err != nil {
-		// Service already logs the error
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to perform search"})
 		return
 	}

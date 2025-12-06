@@ -100,7 +100,6 @@ export function AddFriendModal({ isOpen, onClose }: AddFriendModalProps) {
               placeholder="Enter username..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              // ZMIANA TUTAJ: dodano color: "#ffffff"
               style={{ paddingLeft: 12, color: "#ffffff" }}
             />
           </View>

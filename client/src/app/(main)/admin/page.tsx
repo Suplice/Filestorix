@@ -30,7 +30,6 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        {/* Statystyki */}
         <div className="grid gap-4 md:grid-cols-3">
           <StatCard
             title="Total Users"
@@ -49,7 +48,6 @@ export default function AdminDashboardPage() {
           />
         </div>
 
-        {/* Szybka nawigacja */}
         <div className="grid gap-4 md:grid-cols-2">
           <div className="p-6 bg-card rounded-xl border flex flex-col gap-4 items-start">
             <div className="bg-primary/10 p-3 rounded-full">

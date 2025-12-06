@@ -1,5 +1,5 @@
 import { SettingRecord, UpdateSettingsResult } from "@/lib/types/settings";
-import { SettingsState } from "@/store/settingsSlice"; // Upewnij się, że ścieżka do store jest ok
+import { SettingsState } from "@/store/settingsSlice";
 import { useState } from "react";
 import { Alert } from "react-native";
 import { useModal } from "./use-modal";
@@ -56,9 +56,7 @@ const useLocalSettings = ({
       setTimeout(() => {
         hideModal();
       }, 100);
-    } catch {
-      // Błędy obsłuży react-query w useSettings, ale można dodać Alert tutaj
-    }
+    } catch {}
   };
 
   return {

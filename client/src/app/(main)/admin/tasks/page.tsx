@@ -5,7 +5,6 @@ import { useTaskFilters } from "@/hooks/use-task-filters";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-// Usunięto importy AlertDialog
 import {
   Trash2,
   Code,
@@ -21,7 +20,6 @@ import { TaskListSkeleton } from "@/components/ui/taskList/taskListSkeleton";
 import { TaskFilterControls } from "@/components/ui/taskList/taskFilterControls";
 import { useState } from "react";
 
-// --- Custom Modal Component ---
 function DeleteConfirmationModal({
   isOpen,
   title,
@@ -73,8 +71,6 @@ function DeleteConfirmationModal({
   );
 }
 
-// --- Zmieniony komponent elementu listy ---
-// Teraz tylko przekazuje informację "kliknięto usuń" do rodzica
 function AdminTaskItem({
   task,
   onDeleteClick,
@@ -131,12 +127,10 @@ function AdminTaskItem({
   );
 }
 
-// --- Główny komponent strony ---
 export default function AdminTasksPage() {
   const { tasks, loading } = useTasks();
   const { user } = useAuth();
 
-  // Stan dla modala usuwania
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -159,7 +153,7 @@ export default function AdminTasksPage() {
     }
 
     setIsDeleting(false);
-    setTaskToDelete(null); // Zamknij modal
+    setTaskToDelete(null);
   };
 
   if (loading)
@@ -203,7 +197,6 @@ export default function AdminTasksPage() {
         </div>
       </div>
 
-      {/* Renderowanie Custom Modala */}
       <DeleteConfirmationModal
         isOpen={!!taskToDelete}
         title="Delete Task?"

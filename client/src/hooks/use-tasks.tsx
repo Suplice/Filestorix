@@ -15,7 +15,7 @@ export function useTasks() {
       return;
     }
 
-    let isMounted = true; // Flaga do obsługi anulowania
+    let isMounted = true;
     (async () => {
       setLoading(true);
       const data = await GetAllTasksForUser(user.ID);

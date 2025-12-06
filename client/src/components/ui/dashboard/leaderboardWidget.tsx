@@ -1,4 +1,3 @@
-// Ścieżka: components/dashboard/LeaderboardWidget.tsx
 "use client";
 import { LeaderboardEntry } from "@/lib/types/leaderboard";
 import { User } from "@/lib/types/user";
@@ -18,7 +17,7 @@ import { LeaderboardItem } from "../leaderboard/leaderboardItem";
 
 type LeaderboardWidgetProps = {
   topEntries: LeaderboardEntry[];
-  currentUserEntry: LeaderboardEntry | undefined; // Pozycja zalogowanego usera
+  currentUserEntry: LeaderboardEntry | undefined;
   isLoading: boolean;
   criteria: "level" | "points" | "completed";
   currentUser: User | null;
@@ -31,9 +30,7 @@ export function LeaderboardWidget({
   criteria,
   currentUser,
 }: LeaderboardWidgetProps) {
-  // Pokaż top 3
   const displayEntries = topEntries.slice(0, 3);
-  // Sprawdź czy currentUser jest w top 3
   const isCurrentUserInTop =
     currentUserEntry &&
     displayEntries.some((entry) => entry.user.ID === currentUserEntry.user.ID);
@@ -43,7 +40,6 @@ export function LeaderboardWidget({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-yellow-500" /> Top Friends (Level){" "}
-          {/* Można dynamicznie zmieniać tytuł */}
         </CardTitle>
         <CardDescription>
           See how you stack up against your friends.
@@ -71,7 +67,6 @@ export function LeaderboardWidget({
               criteria={criteria}
             />
           ))}
-        {/* Pokaż pozycję usera, jeśli nie jest w top 3 */}
         {!isLoading && currentUserEntry && !isCurrentUserInTop && (
           <>
             <div className="text-center text-muted-foreground text-xs my-2">

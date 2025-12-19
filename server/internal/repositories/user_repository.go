@@ -43,3 +43,17 @@ func (ur *UserRepository) GetUserById(id uint) (*models.User, error){
 
 	return user, nil
 }
+
+func (ur *UserRepository) GetUserWithHistory(userID uint64) (*models.User, error) {
+    var user models.User
+    // Preloadujemy TaskProgress oraz zagnieżdżony Task, żeby znać język i typ zadania
+    err := ur.db.
+        Preload("TaskProgress").
+        Preload("TaskProgress.Task"). 
+        First(&user, userID).Error
+    
+    if err != nil {
+        return nil, err
+    }
+    return &user, nil
+}

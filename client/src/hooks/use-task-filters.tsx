@@ -4,6 +4,9 @@ import { useMemo, useState, useEffect } from "react";
 import { Task } from "@/lib/types/task";
 import { User } from "@/lib/types/user";
 
+// Adres backendu dla wersji Web (zazwyczaj localhost:5000)
+const API_URL = "http://localhost:5000";
+
 type StoredFilters = {
   type?: string;
   lang?: string;
@@ -14,6 +17,7 @@ type StoredFilters = {
   show?: "all" | "recommended";
 };
 
+// Helper do ładowania z localStorage (bezpieczny dla SSR/Next.js)
 const loadFiltersFromStorage = (userId: number | undefined): StoredFilters => {
   if (typeof window === "undefined" || !userId) {
     return {};
@@ -28,6 +32,7 @@ const loadFiltersFromStorage = (userId: number | undefined): StoredFilters => {
   }
 };
 
+// Helper do zapisywania do localStorage
 const saveFiltersToStorage = (
   userId: number | undefined,
   filters: StoredFilters
@@ -51,28 +56,10 @@ const saveFiltersToStorage = (
   }
 };
 
-const SCORE_WEIGHTS = {
-  NOT_ATTEMPTED_BONUS: 50,
-  DIFFICULTY_MATCH_BONUS: 25,
-  DIFFICULTY_ADJACENT_BONUS: 10,
-  MISTAKE_PENALTY: -5,
-  ATTEMPT_PENALTY: -2,
-};
-
-const getTargetDifficulty = (level: number): ("EASY" | "MEDIUM" | "HARD")[] => {
-  if (level <= 2) return ["EASY"];
-  if (level <= 4) return ["EASY", "MEDIUM"];
-  return ["EASY", "MEDIUM", "HARD"];
-};
-const getIdealDifficulty = (level: number): "EASY" | "MEDIUM" | "HARD" => {
-  if (level <= 2) return "EASY";
-  if (level <= 4) return "MEDIUM";
-  return "HARD";
-};
-
 export function useTaskFilters(tasks: Task[], user: User | null) {
   const userId = user?.ID;
 
+  // 1. Inicjalizacja stanów z localStorage (synchronicznie dla Weba)
   const [initialFilters] = useState(() => loadFiltersFromStorage(userId));
 
   const [typeFilter, setTypeFilter] = useState(initialFilters.type || "");
@@ -83,10 +70,17 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
   const [hideCompleted, setHideCompleted] = useState(
     initialFilters.hideCompleted || false
   );
+
+  // Przełącznik trybu: Wszystkie vs Rekomendowane (Backend)
   const [recommendationFilter, setRecommendationFilter] = useState<
     "all" | "recommended"
   >(initialFilters.show || "all");
 
+  // --- Nowe stany dla rekomendacji z API ---
+  const [recommendedTasks, setRecommendedTasks] = useState<Task[]>([]);
+  const [isLoadingRecs, setIsLoadingRecs] = useState(false);
+
+  // 2. Zapisywanie filtrów przy każdej zmianie
   useEffect(() => {
     const currentFilters: StoredFilters = {
       type: typeFilter || undefined,
@@ -109,6 +103,42 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     userId,
   ]);
 
+  // 3. Pobieranie rekomendacji z API
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      // Pobieramy tylko gdy użytkownik wybrał filtr "recommended" i jest zalogowany
+      if (recommendationFilter === "recommended" && userId) {
+        setIsLoadingRecs(true);
+        try {
+          const response = await fetch(`${API_URL}/tasks/recommended`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // WAŻNE: To sprawia, że ciasteczka (HttpOnly) są wysyłane z zapytaniem
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Error fetching recommendations: ${response.statusText}`
+            );
+          }
+
+          const data = await response.json();
+          setRecommendedTasks(data); // Backend zwraca posortowane wg Score
+        } catch (error) {
+          console.error("Failed to fetch recommended tasks:", error);
+          setRecommendedTasks([]);
+        } finally {
+          setIsLoadingRecs(false);
+        }
+      }
+    };
+
+    fetchRecommendations();
+  }, [recommendationFilter, userId]);
+
   const clearFilters = () => {
     setTypeFilter("");
     setLangFilter("");
@@ -122,71 +152,35 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     }
   };
 
+  // 4. Główna logika filtrowania i sortowania
   const filteredTasks = useMemo(() => {
-    let result = [...tasks];
+    // Wybór źródła danych: Backend (Rekomendacje) lub Wszystkie (Props)
+    let result =
+      recommendationFilter === "recommended"
+        ? [...recommendedTasks]
+        : [...tasks];
 
-    if (recommendationFilter === "recommended" && user) {
-      const targetDifficulties = getTargetDifficulty(user.level);
-      const idealDifficulty = getIdealDifficulty(user.level);
+    // A. Filtrowanie
+    if (typeFilter) result = result.filter((t) => t.type === typeFilter);
+    if (langFilter) result = result.filter((t) => t.language === langFilter);
 
-      result = result
-        .filter((t) => {
-          if (t.user_progress?.is_completed) return false;
-          return targetDifficulties.includes(t.difficulty);
-        })
-        .map((t) => {
-          let score = 0;
-          const progress = t.user_progress;
+    // Filtr trudności ma sens głównie w trybie "all", ale zostawiamy dla spójności
+    if (diffFilter) result = result.filter((t) => t.difficulty === diffFilter);
 
-          if (!progress || progress.attempts === 0) {
-            score += SCORE_WEIGHTS.NOT_ATTEMPTED_BONUS;
-          } else if (!progress.is_completed) {
-            score += (progress.mistakes || 0) * SCORE_WEIGHTS.MISTAKE_PENALTY;
-            score +=
-              Math.max(0, (progress.attempts || 0) - 1) *
-              SCORE_WEIGHTS.ATTEMPT_PENALTY;
-          }
-
-          if (t.difficulty === idealDifficulty) {
-            score += SCORE_WEIGHTS.DIFFICULTY_MATCH_BONUS;
-          } else {
-            const diffMap = { EASY: 1, MEDIUM: 2, HARD: 3 };
-            if (
-              Math.abs(diffMap[t.difficulty] - diffMap[idealDifficulty]) === 1
-            ) {
-              score += SCORE_WEIGHTS.DIFFICULTY_ADJACENT_BONUS;
-            }
-          }
-
-          score += (Math.random() - 0.5) * 0.1;
-          score += t.xp * 0.1;
-
-          return { ...t, recommendationScore: score };
-        })
-        .sort((a, b) => b.recommendationScore - a.recommendationScore);
-
-      if (typeFilter) result = result.filter((t) => t.type === typeFilter);
-      if (langFilter) result = result.filter((t) => t.language === langFilter);
-      if (searchQuery)
-        result = result.filter((t) =>
-          t.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    } else {
-      if (typeFilter) result = result.filter((t) => t.type === typeFilter);
-      if (langFilter) result = result.filter((t) => t.language === langFilter);
-      if (diffFilter)
-        result = result.filter((t) => t.difficulty === diffFilter);
-      if (searchQuery)
-        result = result.filter((t) =>
-          t.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }
+    if (searchQuery)
+      result = result.filter((t) =>
+        t.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
     if (hideCompleted) {
       result = result.filter((t) => !t.user_progress?.is_completed);
     }
 
-    if (recommendationFilter === "all") {
+    // B. Sortowanie
+    // W trybie "recommended" domyślna kolejność z API jest najważniejsza (wg algorytmu).
+    // Sortujemy tylko jeśli użytkownik wymusił konkretne kryterium.
+
+    if (sortBy) {
       switch (sortBy) {
         case "xp_asc":
           result.sort((a, b) => a.xp - b.xp);
@@ -220,21 +214,20 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
         case "alpha_desc":
           result.sort((a, b) => b.title.localeCompare(a.title));
           break;
-        default:
-          if (!sortBy) {
-            result.sort(
-              (a, b) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime()
-            );
-          }
-          break;
       }
+    } else if (recommendationFilter === "all") {
+      // Domyślne sortowanie tylko dla trybu "all" (np. najnowsze)
+      // Dla "recommended" zostawiamy tak jak przyszło z backendu
+      result.sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     }
 
     return result;
   }, [
     tasks,
+    recommendedTasks, // Zależność od danych z API
     typeFilter,
     langFilter,
     diffFilter,
@@ -242,7 +235,6 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
     searchQuery,
     hideCompleted,
     recommendationFilter,
-    user,
   ]);
 
   return {
@@ -267,5 +259,6 @@ export function useTaskFilters(tasks: Task[], user: User | null) {
       setRecommendationFilter,
     },
     clearFilters,
+    isLoadingRecs,
   };
 }

@@ -11,12 +11,13 @@ import (
 )
 
 type TaskController struct {
-	taskService *services.TaskService
-	logger      *slog.Logger
+    taskService *services.TaskService
+    recService  *services.RecommendationService 
+    logger      *slog.Logger
 }
 
-func NewTaskController(_logger *slog.Logger, _taskService *services.TaskService) *TaskController {
-	return &TaskController{taskService: _taskService, logger: _logger}
+func NewTaskController(l *slog.Logger, ts *services.TaskService, rs *services.RecommendationService) *TaskController {
+    return &TaskController{taskService: ts, recService: rs, logger: l}
 }
 
 func (tc *TaskController) GetAllTasksForUser(ctx *gin.Context) {
@@ -107,4 +108,17 @@ func (tc *TaskController) SubmitAnswer(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, result)
+}
+
+func (tc *TaskController) GetRecommendedTasks(ctx *gin.Context) {
+    userID := ctx.GetUint64("userID") // Z middleware
+
+    tasks, err := tc.recService.GetRecommendedTasks(userID)
+    if err != nil {
+        tc.logger.Error("Failed to get recommendations", "err", err)
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Recommendation engine failure"})
+        return
+    }
+
+    ctx.JSON(http.StatusOK, tasks)
 }

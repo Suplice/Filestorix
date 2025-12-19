@@ -6,15 +6,14 @@ import { useTasks } from "@/hooks/use-tasks";
 import { TaskFilterControls } from "./taskFilterControls";
 import { TaskItem } from "./taskItem";
 import { useAuth } from "@/context/AuthContext";
+import { Loader } from "lucide-react";
 
 export default function TasksListWithFilters() {
   const { tasks, loading } = useTasks();
   const { user } = useAuth();
 
-  const { filteredTasks, filters, setters, clearFilters } = useTaskFilters(
-    tasks,
-    user
-  );
+  const { filteredTasks, filters, setters, clearFilters, isLoadingRecs } =
+    useTaskFilters(tasks, user);
 
   if (loading) {
     return <TaskListSkeleton />;
@@ -38,6 +37,12 @@ export default function TasksListWithFilters() {
         {filteredTasks.length === 0 && (
           <div className="text-center text-muted-foreground py-10">
             No tasks found matching your criteria.
+          </div>
+        )}
+
+        {isLoadingRecs && (
+          <div className="w-full h-full">
+            <Loader className="animate-spin" />
           </div>
         )}
       </div>

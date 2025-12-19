@@ -301,3 +301,38 @@ func (tr *TaskRepository) checkAndAwardBadges(db *gorm.DB, userID uint) error {
 	}
 	return nil
 }
+
+// internal/repositories/task_repository.go
+
+func (tr *TaskRepository) GetUnfinishedTasks(userID uint64) ([]TaskForUser, error) {
+    // Subquery: Znajdź ID zadań, które user już ukończył
+    var tasks []models.Task
+    
+    // GORM: Wybierz zadania, których ID NIE MA w tabeli user_task_progress gdzie is_completed = true
+    err := tr.db.
+        Preload("TaskQuestions").
+        Where("id NOT IN (?)", tr.db.Table("user_task_progresses").Select("task_id").Where("user_id = ? AND is_completed = ?", userID, true)).
+        Where("is_active = ?", true).
+        Find(&tasks).Error
+
+    if err != nil {
+        return nil, err
+    }
+
+    // Mapowanie na DTO (TaskForUser) - użyj tej samej logiki co w GetAllTasksForUserDTO
+    // (skrótowo tutaj):
+    result := make([]TaskForUser, len(tasks))
+    for i, t := range tasks {
+        result[i] = TaskForUser{
+            ID: t.ID, 
+            Title: t.Title,
+            Type: t.Type,
+            Language: t.Language,
+            Difficulty: t.Difficulty,
+            XP: t.XP,
+            Points: t.Points,
+            // ... reszta pól
+        }
+    }
+    return result, nil
+}

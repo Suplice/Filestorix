@@ -31,10 +31,12 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	profileService := services.NewProfileService(logger, profileRepository)
 	searchService := services.NewSearchService(searchRepository, logger)
 	adminService := services.NewAdminService(adminRepository, logger)
+	recService := services.NewRecommendationService(taskRepository, userRepository, logger)
+
 
 	authController := controllers.NewAuthController(logger, authService)
 	settingController := controllers.NewSettingsController(logger, settingService)
-	taskController := controllers.NewTaskController(logger, taskService)
+	taskController := controllers.NewTaskController(logger, taskService, recService)
 	friendshipController := controllers.NewFriendshipController(friendshipService, logger)
 	leaderboardController := controllers.NewLeaderboardController(leaderboardService, logger)
 	profileController := controllers.NewProfileController(profileService, logger)
@@ -68,6 +70,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *slog.Logger) {
 	{
 		taskRoutes.GET("/:taskId/tasks/:userId",middleware.ValidateJWT(), taskController.GetTaskForUser)
 		taskRoutes.POST("/submit-answer",middleware.ValidateJWT(), taskController.SubmitAnswer)
+		taskRoutes.GET("/recommended", middleware.ValidateJWT(), taskController.GetRecommendedTasks)
 	}
 
 	friendshipRoutes := router.Group("friends")
